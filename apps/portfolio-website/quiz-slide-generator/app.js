@@ -134,29 +134,9 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// typewriter hero
 document.addEventListener("DOMContentLoaded", () => {
-  const text = "Quiz Slide Generator";
   const el = document.getElementById("hero-typer");
-  let i = 0;
-  let isDeleting = false;
-
-  function typeLoop() {
-    if (!isDeleting && i < text.length) {
-      el.textContent += text.charAt(i);
-      i++;
-      setTimeout(typeLoop, 120);
-    } else if (isDeleting && i > 0) {
-      el.textContent = text.substring(0, i - 1);
-      i--;
-      setTimeout(typeLoop, 80);
-    } else {
-      isDeleting = !isDeleting;
-      setTimeout(typeLoop, 1000);
-    }
-  }
-
-  typeLoop();
+  if (el) el.textContent = "Quiz Slide Generator";
 });
 
 // init

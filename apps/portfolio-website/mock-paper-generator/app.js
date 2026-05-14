@@ -139,33 +139,5 @@ form.addEventListener("submit", async (e) => {
 
 document.addEventListener("DOMContentLoaded", () => {
   const el = document.getElementById("hero-typer");
-  if (!el) return;
-
-  const texts = ["Mock Paper Generator"];
-  let textIndex = 0;
-  let charIndex = 0;
-  let deleting = false;
-
-  function type() {
-    const current = texts[textIndex];
-    if (!deleting) {
-      el.textContent = current.substring(0, charIndex + 1);
-      charIndex++;
-      if (charIndex === current.length) {
-        deleting = true;
-        setTimeout(type, 1500); // pause before deleting
-        return;
-      }
-    } else {
-      el.textContent = current.substring(0, charIndex - 1);
-      charIndex--;
-      if (charIndex === 0) {
-        deleting = false;
-        textIndex = (textIndex + 1) % texts.length;
-      }
-    }
-    setTimeout(type, deleting ? 80 : 120);
-  }
-
-  type();
+  if (el) el.textContent = "Mock Paper Generator";
 });

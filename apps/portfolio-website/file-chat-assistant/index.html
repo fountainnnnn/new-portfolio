@@ -4,92 +4,93 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mervin Ng | Document Q&A Chat Assistant</title>
+  <meta name="description" content="Upload documents and chat with them through a LangChain-powered assistant." />
   <link rel="shortcut icon" href="../img/logo.png" type="image/png">
   <link rel="apple-touch-icon" href="../img/logo.png">
-
-  <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-  <!-- AOS CSS -->
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-  <!-- Portfolio-style CSS -->
   <link rel="stylesheet" href="../file-chat-assistant/styles.css?v=20250926">
+  <link rel="stylesheet" href="../project-theme.css?v=20260514">
 </head>
-<body>
-
-  <!-- NAVBAR -->
-  <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+<body class="project-app project-file-chat">
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" aria-label="Primary navigation">
     <div class="container">
-      <a class="navbar-brand fw-bold" href="https://ngyuhang.com">Mervin's Hub</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <a class="navbar-brand fw-bold" href="../index.html#hero">Mervin's Hub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="https://ngyuhang.com#about">About Me</a></li>
-          <li class="nav-item"><a class="nav-link" href="https://ngyuhang.com#projects">Projects</a></li>
-          <li class="nav-item"><a class="nav-link" href="https://ngyuhang.com#skills">Skills</a></li>
-          <li class="nav-item"><a class="nav-link" href="https://ngyuhang.com#contact">Contact Me</a></li>
+          <li class="nav-item"><a class="nav-link" href="../index.html#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="../projects.html" aria-current="page">Projects</a></li>
+          <li class="nav-item"><a class="nav-link" href="../index.html#skills">Skills</a></li>
+          <li class="nav-item"><a class="nav-link" href="../index.html#contact">Contact</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <!-- HERO -->
-  <section id="hero" class="section d-flex align-items-center">
-    <div class="container hero-container text-center">
-      <h1 class="display-4 fw-bold" id="hero-title" data-aos="fade-up"></h1>
-      <p class="lead text-muted" data-aos="fade-up" data-aos-delay="100">Made by Mervin Ng</p>
-      <p class="mb-4" data-aos="fade-up" data-aos-delay="200">
-        Upload a PDF, DOCX, or TXT and start chatting instantly with our LangChain-powered Q&A tool.
-      </p>
-      <a id="get-started" href="#qa" class="btn btn-outline-dark" data-aos="fade-up" data-aos-delay="400">
-        Get Started <i class="bi bi-arrow-down-circle ms-2"></i>
-      </a>
-    </div>
-  </section>
+  <main>
+    <section id="hero" class="section project-hero">
+      <div class="container hero-container">
+        <div class="project-hero-copy">
+          <a class="project-back-link" href="../projects.html"><i class="bi bi-arrow-left"></i> All projects</a>
+          <p class="project-kicker">Document assistant</p>
+          <h1 id="hero-title">Document Q&A Chat Assistant</h1>
+          <p class="project-hero-lede">Upload a PDF, DOCX, or TXT file and ask questions against the document with a focused chat interface.</p>
+          <div class="project-hero-actions">
+            <a id="get-started" href="#qa" class="btn btn-accent">Open assistant <i class="bi bi-arrow-down-short"></i></a>
+            <a href="../projects.html" class="btn btn-outline-dark">Back to work</a>
+          </div>
+        </div>
+        <aside class="project-product-preview" aria-label="Document chat interface preview">
+          <div class="preview-window chat-preview">
+            <div class="preview-window-bar"><span></span><span></span><span></span></div>
+            <div class="preview-chat-row assistant">Upload received. Ask anything from the notes.</div>
+            <div class="preview-chat-row user">Summarize the key concepts.</div>
+            <div class="preview-chat-row assistant wide">Here are the three main ideas, with references from the uploaded document.</div>
+            <div class="preview-input-bar">Type your question...</div>
+          </div>
+        </aside>
+      </div>
+    </section>
 
-  <!-- MAIN -->
-  <section id="qa" class="section bg-light">
-    <div class="container" data-aos="fade-up">
-      <div class="row justify-content-center">
-        <div class="col-lg-8">
-          <!-- Upload card -->
-          <div class="card pastel-card shadow-sm mb-4">
-            <div class="card-body p-4">
-              <h3 class="fw-semibold mb-3 text-accent">Upload your document</h3>
+    <section id="qa" class="section project-workspace">
+      <div class="container">
+        <div class="project-section-heading">
+          <p class="project-kicker">Workspace</p>
+          <h2>Upload. Ask. Refine.</h2>
+          <p>The page keeps the upload flow and chat surface together so the document context always feels close.</p>
+        </div>
+
+        <div class="project-chat-grid">
+          <div class="card pastel-card project-form-card">
+            <div class="card-body">
+              <h3 class="fw-semibold mb-3 text-accent">Upload document</h3>
               <form id="upload-form" class="gy-3" enctype="multipart/form-data" method="post">
                 <div class="mb-3">
                   <label class="form-label">Choose file (.pdf / .docx / .txt)</label>
                   <input id="file-input" class="form-control" type="file" name="file" accept=".pdf,.docx,.txt" required />
                 </div>
 
-                <!-- API key -->
                 <div class="mb-3">
                   <label class="form-label">OpenAI API key (optional)</label>
-                  <input class="form-control" type="password" name="openai_api_key" placeholder="Insert your API Key" />
+                  <input class="form-control" type="password" name="openai_api_key" placeholder="Leave empty to use backend .env" />
                 </div>
 
-                <!-- Status -->
                 <div id="statusAlert" class="alert d-none" role="alert"></div>
-
-                <button type="submit" class="btn btn-accent px-4">Upload & Start</button>
+                <button type="submit" class="btn btn-accent px-4">Upload and start</button>
               </form>
             </div>
           </div>
 
-          <!-- Chat area -->
-          <div id="chat-area" class="card pastel-card shadow-sm">
-            <div class="card-body p-0 d-flex flex-column" style="height: 500px;">
+          <div id="chat-area" class="card pastel-card project-chat-card">
+            <div class="card-body p-0 d-flex flex-column">
               <h3 class="fw-semibold mb-0 p-3 text-accent border-bottom">Chat with your document</h3>
-
-              <!-- Messages -->
               <div id="messages" class="flex-grow-1 p-3">
                 <div class="text-muted small">Upload a document to begin.</div>
               </div>
 
-              <!-- Typing indicator -->
               <div id="typing-indicator" class="d-none p-3">
                 <div class="message assistant">
                   <div class="bubble d-flex gap-1">
@@ -98,154 +99,59 @@
                 </div>
               </div>
 
-              <!-- Chatbox input -->
               <form id="ask-form" class="d-flex gap-2 p-3 border-top">
                 <input type="text" name="question" class="form-control" placeholder="Type your question..." autocomplete="off" required disabled />
                 <button type="submit" class="btn btn-accent" disabled>Send</button>
               </form>
             </div>
           </div>
-
         </div>
       </div>
+    </section>
+
+    <section id="faq" class="section project-faq">
+      <div class="container">
+        <div class="project-section-heading">
+          <p class="project-kicker">Notes</p>
+          <h2>How it behaves.</h2>
+        </div>
+        <div class="accordion" id="faqAccordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="faq1">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1Collapse">What file formats are supported?</button>
+            </h2>
+            <div id="faq1Collapse" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">PDF, DOCX, and TXT files are supported.</div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="faq2">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2Collapse">Can I ask follow-up questions?</button>
+            </h2>
+            <div id="faq2Collapse" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">Yes. The chat can continue using context from the uploaded file.</div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="faq3">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3Collapse">Are answers guaranteed?</button>
+            </h2>
+            <div id="faq3Collapse" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">The assistant grounds answers in your document, but you should still review important outputs.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer footer-section bg-dark text-light py-4">
+    <div class="container text-center">
+      <small>&copy; 2025 Mervin Ng. All rights reserved.</small>
     </div>
-  </section>
+  </footer>
 
-  <!-- FAQ + FOOTER WRAPPER -->
-  <div class="contact-footer-wrapper">
-    <!-- FAQ -->
-<section id="faq" class="section">
-  <div class="container">
-    <h2 class="section-title text-center mb-5 text-accent">Frequently Asked Questions</h2>
-    <div class="accordion" id="faqAccordion">
-
-      <!-- Q1 -->
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="faq1">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1Collapse">
-            Q: What file formats are supported?
-          </button>
-        </h2>
-        <div id="faq1Collapse" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-          <div class="accordion-body">
-            A: Currently, you can upload <code>.pdf</code>, <code>.docx</code>, and <code>.txt</code> files.
-          </div>
-        </div>
-      </div>
-
-      <!-- Q2 -->
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="faq2">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2Collapse">
-            Q: Will my uploaded file be stored anywhere?
-          </button>
-        </h2>
-        <div id="faq2Collapse" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-          <div class="accordion-body">
-            A: No, your file is processed in memory for question generation and is not stored permanently.
-          </div>
-        </div>
-      </div>
-
-      <!-- Q3 -->
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="faq3">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3Collapse">
-            Q: How accurate are the answers?
-          </button>
-        </h2>
-        <div id="faq3Collapse" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-          <div class="accordion-body">
-            A: The system uses LangChain + OpenAI models. Answers are grounded in your document but may not always be perfect.
-          </div>
-        </div>
-      </div>
-
-      <!-- Q4 -->
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="faq4">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4Collapse">
-            Q: Can I ask follow-up questions?
-          </button>
-        </h2>
-        <div id="faq4Collapse" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-          <div class="accordion-body">
-            A: Yes, you can continue asking related questions and the system will use context from your uploaded file.
-          </div>
-        </div>
-      </div>
-
-      <!-- Q5 -->
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="faq5">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5Collapse">
-            Q: Do I need an OpenAI API key?
-          </button>
-        </h2>
-        <div id="faq5Collapse" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-          <div class="accordion-body">
-            A: No, a backend key is provided by default. Supplying your own is optional and may improve stability.
-          </div>
-        </div>
-      </div>
-
-      <!-- Q6 -->
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="faq6">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6Collapse">
-            Q: What happens if my document is very large?
-          </button>
-        </h2>
-        <div id="faq6Collapse" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-          <div class="accordion-body">
-            A: Large documents are automatically split into chunks for processing. This may increase response time.
-          </div>
-        </div>
-      </div>
-
-      <!-- Q7 -->
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="faq7">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq7Collapse">
-            Q: Can I download the generated Q&amp;A?
-          </button>
-        </h2>
-        <div id="faq7Collapse" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-          <div class="accordion-body">
-            A: Yes, you can export answers and references as text or copy them directly from the interface.
-          </div>
-        </div>
-      </div>
-
-      <!-- Q8 -->
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="faq8">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq8Collapse">
-            Q: Why does it sometimes take long to answer?
-          </button>
-        </h2>
-        <div id="faq8Collapse" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-          <div class="accordion-body">
-            A: Response time depends on file size, complexity, and the number of chunks processed by the model.
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-    <!-- FOOTER -->
-    <footer class="site-footer footer-section bg-dark text-light py-4">
-      <div class="container text-center">
-        <small>© 2025 Mervin Ng. All rights reserved.</small>
-      </div>
-    </footer>
-  </div>
-
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
   <script src="../file-chat-assistant/app.js?v=20250926" defer></script>
 </body>
 </html>

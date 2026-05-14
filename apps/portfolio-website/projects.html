@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Projects | Mervin Ng</title>
+  <meta name="description" content="Selected projects by Mervin Ng across AI tools, analytics, hackathons, and machine learning." />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +15,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <script src="speed-insights.js" defer></script>
 </head>
-<body class="listing-page">
+<body class="listing-page project-index-page">
   <nav class="navbar navbar-expand-lg fixed-top site-navbar" aria-label="Primary navigation">
     <div class="container">
       <a class="navbar-brand fw-bold" href="index.html#hero">Mervin's Hub</a>
@@ -35,45 +36,109 @@
   </nav>
 
   <main class="listing-main listing-page-reveal">
-    <header class="listing-hero">
-      <p class="listing-kicker">Selected Work</p>
-      <h1>All Projects</h1>
-      <p>A broader look at the apps and experiments I have built across AI tooling, document processing, backend systems, and interactive web experiences.</p>
+    <header class="listing-hero project-index-hero">
+      <p class="listing-kicker">Selected work</p>
+      <h1>Projects, experiments, and school builds.</h1>
+      <p>A growing shelf of things I built while learning AI, analytics, full-stack development, and shipping under time pressure.</p>
       <div class="listing-actions">
-        <a class="btn btn-outline-dark" href="index.html#projects"><i class="bi bi-arrow-left me-2"></i>Main page projects</a>
-        <a class="btn btn-outline-dark" href="index.html#contact">Contact me <i class="bi bi-send ms-2"></i></a>
+        <a class="btn btn-outline-dark" href="index.html#projects"><i class="bi bi-arrow-left me-2"></i>Main page</a>
+        <a class="btn btn-outline-dark" href="index.html#contact">Contact <i class="bi bi-send ms-2"></i></a>
       </div>
     </header>
 
-    <section class="listing-section" aria-label="All projects">
+    <section class="listing-section project-index-section" aria-labelledby="personalHackathonTitle">
+      <div class="project-index-heading">
+        <p class="listing-kicker">Personal / Hackathon Projects</p>
+        <h2 id="personalHackathonTitle">Larger builds with a real project brief</h2>
+        <p>Hackathon work, personal ML experiments, and future school projects will live here as the portfolio grows.</p>
+      </div>
+
+      <div class="projects-grid listing-projects-grid">
+        <a class="project-card" href="https://github.com/fountainnnnn/auto-dashboard" target="_blank" rel="noopener noreferrer">
+          <div class="project-card-thumb">
+            <img src="img/project-previews/auto-dashboard.png" alt="Auto Dashboard repository preview">
+          </div>
+          <div class="project-card-body">
+            <span class="project-card-label">Hackathon product</span>
+            <h3>Decidr Auto Dashboard</h3>
+            <p>Profiles CSV data and turns natural-language prompts into interactive dashboard charts.</p>
+            <div class="project-stack" aria-label="Technologies">
+              <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" alt="">Next.js</span>
+              <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span>
+              <span class="stack-chip"><i class="bi bi-graph-up"></i>Plotly</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="project-card" href="https://github.com/fountainnnnn/AgentLabs" target="_blank" rel="noopener noreferrer">
+          <div class="project-card-thumb">
+            <img src="img/project-previews/agentlabs.png" alt="AgentLabs repository preview">
+          </div>
+          <div class="project-card-body">
+            <span class="project-card-label">Hackathon lab</span>
+            <h3>AgentLabs LoRA Lab</h3>
+            <p>Workbench for LoRA training experiments, adapter simulation, and evaluation workflows.</p>
+            <div class="project-stack" aria-label="Technologies">
+              <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="">React</span>
+              <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span>
+              <span class="stack-chip"><i class="bi bi-cpu"></i>LoRA</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="project-card" href="https://github.com/fountainnnnn/Covid-CNN" target="_blank" rel="noopener noreferrer">
+          <div class="project-card-thumb">
+            <img src="img/project-previews/covid-cnn.png" alt="Covid CNN repository preview">
+          </div>
+          <div class="project-card-body">
+            <span class="project-card-label">Personal ML</span>
+            <h3>Covid CNN</h3>
+            <p>Notebook-based convolutional neural network experiment for radiography classification.</p>
+            <div class="project-stack" aria-label="Technologies">
+              <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span>
+              <span class="stack-chip"><i class="bi bi-gpu-card"></i>CNN</span>
+              <span class="stack-chip"><i class="bi bi-journal-code"></i>Notebook</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="listing-section project-index-section" aria-labelledby="learningExperimentsTitle">
+      <div class="project-index-heading">
+        <p class="listing-kicker">Experimental Learning Projects</p>
+        <h2 id="learningExperimentsTitle">Small apps built to learn new libraries</h2>
+        <p>These tools helped me practise FastAPI, LangChain, OCR, document generation, and front-end interaction patterns.</p>
+      </div>
+
       <div class="projects-grid listing-projects-grid">
         <a class="project-card" href="quiz-slide-generator/">
           <div class="project-card-thumb">
-            <img src="img/Quiz Generator.png" alt="Quiz Slide Deck Generator screenshot">
+            <img src="img/project-previews/quiz-slide-generator.png" alt="Quiz slide deck output preview">
           </div>
           <div class="project-card-body">
+            <span class="project-card-label">AI study tool</span>
             <h3>Quiz Slide Deck Generator</h3>
-            <p>Transforms PDFs/DOCX into AI-generated quiz slide decks with OCR + LLM question generation and PPTX output.</p>
+            <p>Transforms PDFs and slide decks into editable quiz presentations with answer slides.</p>
             <div class="project-stack" aria-label="Technologies">
               <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span>
               <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" alt="">FastAPI</span>
               <span class="stack-chip"><i class="bi bi-stars"></i>OpenAI</span>
-              <span class="stack-chip"><i class="bi bi-filetype-pptx"></i>PPTX</span>
             </div>
           </div>
         </a>
 
         <a class="project-card" href="mock-paper-generator/">
           <div class="project-card-thumb">
-            <img src="img/Mock Paper Generator.png" alt="Mock Paper Generator screenshot">
+            <img src="img/project-previews/mock-paper-generator.png" alt="Mock paper output preview">
           </div>
           <div class="project-card-body">
+            <span class="project-card-label">Exam workflow</span>
             <h3>Mock Paper Generator</h3>
-            <p>Converts study materials into formatted exam papers with answer keys, using OCR + LLMs and ReportLab PDF rendering.</p>
+            <p>Builds new practice papers and answer materials from uploaded source documents.</p>
             <div class="project-stack" aria-label="Technologies">
               <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span>
               <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" alt="">FastAPI</span>
-              <span class="stack-chip"><i class="bi bi-stars"></i>OpenAI</span>
               <span class="stack-chip"><i class="bi bi-filetype-pdf"></i>ReportLab</span>
             </div>
           </div>
@@ -81,14 +146,14 @@
 
         <a class="project-card" href="file-chat-assistant/">
           <div class="project-card-thumb">
-            <img src="img/Chat Assistant.png" alt="Document Q&A Chat Assistant screenshot">
+            <img src="img/project-previews/file-chat-assistant.png" alt="Document Q&A chat output preview">
           </div>
           <div class="project-card-body">
+            <span class="project-card-label">Document assistant</span>
             <h3>Document Q&A Chat Assistant</h3>
-            <p>Upload PDF/DOCX/TXT files and query them with LangChain + OpenAI. FastAPI backend with session-based chat UI.</p>
+            <p>Uploads PDF, DOCX, or TXT files and answers questions through a focused chat surface.</p>
             <div class="project-stack" aria-label="Technologies">
               <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span>
-              <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" alt="">FastAPI</span>
               <span class="stack-chip"><i class="bi bi-link-45deg"></i>LangChain</span>
               <span class="stack-chip"><i class="bi bi-stars"></i>OpenAI</span>
             </div>
@@ -97,11 +162,12 @@
 
         <a class="project-card" href="coding-quiz/">
           <div class="project-card-thumb">
-            <img src="img/coding quiz.png" alt="Coding Quiz screenshot">
+            <img src="img/project-previews/coding-quiz.png" alt="Coding quiz result preview">
           </div>
           <div class="project-card-body">
+            <span class="project-card-label">Coding practice</span>
             <h3>Coding Quiz</h3>
-            <p>Interactive multi-language coding quiz with randomized questions, real-time scoring, and a clean vanilla JS frontend.</p>
+            <p>Generates language-specific coding quizzes with topic controls and instant feedback.</p>
             <div class="project-stack" aria-label="Technologies">
               <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="">JavaScript</span>
               <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="">HTML5</span>
@@ -109,55 +175,8 @@
             </div>
           </div>
         </a>
-
-        <a class="project-card" href="https://github.com/fountainnnnn/auto-dashboard" target="_blank" rel="noopener noreferrer">
-          <div class="project-card-thumb project-card-thumb-placeholder">
-            <i class="bi bi-bar-chart-line placeholder-icon" aria-hidden="true"></i>
-          </div>
-          <div class="project-card-body">
-            <h3>Decidr Auto Dashboard</h3>
-            <p>Full-stack analytics dashboard generator that profiles CSV data and turns natural-language prompts into interactive charts.</p>
-            <div class="project-stack" aria-label="Technologies">
-              <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" alt="">Next.js</span>
-              <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span>
-              <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" alt="">FastAPI</span>
-              <span class="stack-chip"><i class="bi bi-graph-up"></i>Plotly</span>
-            </div>
-          </div>
-        </a>
-
-        <a class="project-card" href="https://github.com/fountainnnnn/Covid-CNN" target="_blank" rel="noopener noreferrer">
-          <div class="project-card-thumb project-card-thumb-placeholder">
-            <i class="bi bi-activity placeholder-icon" aria-hidden="true"></i>
-          </div>
-          <div class="project-card-body">
-            <h3>Covid CNN</h3>
-            <p>Notebook-based convolutional neural network experiment for COVID-19 radiography image classification.</p>
-            <div class="project-stack" aria-label="Technologies">
-              <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span>
-              <span class="stack-chip"><i class="bi bi-gpu-card"></i>CNN</span>
-              <span class="stack-chip"><i class="bi bi-journal-code"></i>Notebook</span>
-            </div>
-          </div>
-        </a>
-
-        <a class="project-card" href="https://github.com/fountainnnnn/AgentLabs" target="_blank" rel="noopener noreferrer">
-          <div class="project-card-thumb project-card-thumb-placeholder">
-            <i class="bi bi-cpu placeholder-icon" aria-hidden="true"></i>
-          </div>
-          <div class="project-card-body">
-            <h3>AgentLabs LoRA Lab</h3>
-            <p>Hackathon workbench for LoRA training experiments, adapter simulation, and adversarial evaluation workflows.</p>
-            <div class="project-stack" aria-label="Technologies">
-              <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="">React</span>
-              <span class="stack-chip"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="">Python</span>
-              <span class="stack-chip"><i class="bi bi-cpu"></i>LoRA</span>
-            </div>
-          </div>
-        </a>
       </div>
     </section>
-
   </main>
 
   <footer class="site-footer listing-footer bg-dark text-light py-4">
