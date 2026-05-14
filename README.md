@@ -16,8 +16,6 @@ services/
 
 projects/
   auto-dashboard/
-  covid-cnn/
-  agentlabs/
 
 infra/
   # Reverse proxy and VPS configuration.
@@ -33,10 +31,17 @@ infra/
 | `services/mock-generator` | `D:\SP Files\Personal Projects\backend-apis\mock-generator` |
 | `services/quiz-generator` | `D:\SP Files\Personal Projects\backend-apis\quiz-generator` |
 | `projects/auto-dashboard` | `D:\SP Files\Personal Projects\auto-dashboard` |
-| `projects/covid-cnn` | `D:\SP Files\Personal Projects\Covid CNN\Covid-CNN` |
-| `projects/agentlabs` | `D:\SP Files\Hackathons\AgentLabs` |
 
 Generated folders, dependency folders, virtualenvs, model weights, caches, and local datasets are intentionally excluded from Git.
+
+## Link-Only Projects
+
+These are shown on the portfolio projects page but are not copied into this repo.
+
+| Project | Link |
+| --- | --- |
+| Covid CNN | `https://github.com/fountainnnnn/Covid-CNN` |
+| AgentLabs LoRA Lab | `https://github.com/fountainnnnn/AgentLabs` |
 
 ## Deploy Shape
 
