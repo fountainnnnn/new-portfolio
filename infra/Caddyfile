@@ -1,0 +1,8 @@
+{
+  email admin@example.com
+}
+
+# Replace example.com after the real domain is known.
+example.com {
+  respond "new-portfolio-host is ready"
+}
