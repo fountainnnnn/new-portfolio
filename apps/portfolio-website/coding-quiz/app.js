@@ -1,7 +1,7 @@
 // Backend API (FastAPI running locally)
 const BACKEND_BASE_URL =
   new URLSearchParams(location.search).get("api") ||
-  "https://crystallizedcrust-coding-quiz.hf.space";
+  "/api/coding-quiz";
 
 document.addEventListener("DOMContentLoaded", () => {
   const setupCard = document.getElementById("setup-card");

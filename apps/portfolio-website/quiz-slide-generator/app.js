@@ -1,7 +1,7 @@
 // Backend origin
 const BACKEND_BASE_URL =
   new URLSearchParams(location.search).get("api") ||
-  "https://crystallizedcrust-quiz-generator.hf.space";
+  "/api/quiz-slide-generator";
 
 const form = document.getElementById("gen-form");
 const statusAlert = document.getElementById("statusAlert");

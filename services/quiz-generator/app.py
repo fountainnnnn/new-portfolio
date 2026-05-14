@@ -97,8 +97,12 @@ async def generate(
     out_path.write_bytes(data)
 
     # ✅ Always return a public HTTPS link
-    space_url = os.getenv("SPACE_URL", "https://crystallizedcrust-quiz-generator.hf.space")
-    abs_url = f"{space_url}/files/{out_name}"
+    public_base_url = (
+        request.headers.get("x-forwarded-prefix")
+        or os.getenv("PUBLIC_QUIZ_GENERATOR_BASE_URL")
+        or str(request.base_url).rstrip("/")
+    )
+    abs_url = f"{public_base_url}/files/{out_name}"
 
     return {"status": "ok", "filename": out_name, "url": abs_url}
 

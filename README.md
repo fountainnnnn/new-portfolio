@@ -52,3 +52,14 @@ docker compose up -d --build
 ```
 
 Project-specific apps and services will be added after the existing repos are copied in.
+
+## Local Service Ports
+
+The portfolio app uses same-origin routes and proxies them to local FastAPI services:
+
+| Website route | Local service |
+| --- | --- |
+| `/api/quiz-slide-generator/*` | `http://127.0.0.1:8011/*` |
+| `/api/mock-paper-generator/*` | `http://127.0.0.1:8012/*` |
+| `/api/file-chat-assistant/*` | `http://127.0.0.1:8013/*` |
+| `/api/coding-quiz/*` | `http://127.0.0.1:8014/*` |

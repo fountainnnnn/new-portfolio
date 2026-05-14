@@ -4,6 +4,8 @@ const fs = require("fs");
 const path = require("path");
 
 const rootDir = __dirname;
+const repoRootDir = path.resolve(rootDir, "../..");
+const repoEnvPath = path.join(repoRootDir, ".env");
 const envPath = path.join(rootDir, ".env");
 const rateLimit = new Map();
 const blockedStaticFiles = new Set([
@@ -14,8 +16,27 @@ const blockedStaticFiles = new Set([
   "server.js"
 ]);
 
+loadEnv(repoEnvPath);
 loadEnv(envPath);
 const port = Number(process.env.PORT || 3000);
+const projectApiTargets = [
+  {
+    prefix: "/api/quiz-slide-generator",
+    target: process.env.QUIZ_GENERATOR_API_URL || "http://127.0.0.1:8011",
+  },
+  {
+    prefix: "/api/mock-paper-generator",
+    target: process.env.MOCK_GENERATOR_API_URL || "http://127.0.0.1:8012",
+  },
+  {
+    prefix: "/api/file-chat-assistant",
+    target: process.env.FILE_CHAT_ASSISTANT_API_URL || "http://127.0.0.1:8013",
+  },
+  {
+    prefix: "/api/coding-quiz",
+    target: process.env.CODING_QUIZ_API_URL || "http://127.0.0.1:8014",
+  },
+];
 
 const profilePrompt = `
 You are the portfolio chat for Ng Yu Hang, who also goes by Mervin.
@@ -61,6 +82,10 @@ const mimeTypes = {
 const server = http.createServer(async (request, response) => {
   try {
     applyCorsHeaders(request, response);
+
+    if (proxyProjectApi(request, response)) {
+      return;
+    }
 
     if (request.method === "OPTIONS" && request.url === "/api/chat") {
       response.writeHead(204);
@@ -272,6 +297,53 @@ function cleanReply(reply) {
     .replace(/[ \t]{2,}/g, " ")
     .replace(/[ \t]+\n/g, "\n")
     .trim();
+}
+
+function proxyProjectApi(request, response) {
+  const url = new URL(request.url, `http://${request.headers.host}`);
+  const targetConfig = projectApiTargets.find(({ prefix }) => (
+    url.pathname === prefix || url.pathname.startsWith(`${prefix}/`)
+  ));
+  if (!targetConfig) return false;
+
+  const upstreamBase = new URL(targetConfig.target);
+  const upstreamPath = url.pathname.slice(targetConfig.prefix.length) || "/";
+  const upstreamUrl = new URL(upstreamPath + url.search, upstreamBase);
+  const transport = upstreamUrl.protocol === "https:" ? https : http;
+
+  const headers = { ...request.headers };
+  headers.host = upstreamUrl.host;
+  headers["x-forwarded-host"] = request.headers.host || "";
+  headers["x-forwarded-prefix"] = targetConfig.prefix;
+  headers["x-forwarded-proto"] = "http";
+
+  const proxyRequest = transport.request(
+    upstreamUrl,
+    {
+      method: request.method,
+      headers,
+    },
+    proxyResponse => {
+      const responseHeaders = { ...proxyResponse.headers };
+      delete responseHeaders["access-control-allow-origin"];
+      delete responseHeaders["access-control-allow-methods"];
+      delete responseHeaders["access-control-allow-headers"];
+      delete responseHeaders["content-encoding"];
+
+      response.writeHead(proxyResponse.statusCode || 502, responseHeaders);
+      proxyResponse.pipe(response);
+    },
+  );
+
+  proxyRequest.on("error", error => {
+    sendJson(response, 502, {
+      error: `Backend service unavailable for ${targetConfig.prefix}.`,
+      detail: error.message,
+    });
+  });
+
+  request.pipe(proxyRequest);
+  return true;
 }
 
 function serveStatic(request, response) {
