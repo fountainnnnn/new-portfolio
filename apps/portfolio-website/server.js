@@ -286,18 +286,32 @@ function serveStatic(request, response) {
   }
 
   fs.stat(filePath, (error, stats) => {
-    if (error || !stats.isFile()) {
+    if (error) {
       sendJson(response, 404, { error: "Not found." });
       return;
     }
 
-    const contentType = mimeTypes[path.extname(filePath).toLowerCase()] || "application/octet-stream";
-    response.writeHead(200, { "Content-Type": contentType });
-    if (request.method === "HEAD") {
-      response.end();
+    const finalPath = stats.isDirectory() ? path.join(filePath, "index.html") : filePath;
+    const finalRelativePath = path.relative(rootDir, finalPath);
+    if (finalRelativePath.startsWith("..") || path.isAbsolute(finalRelativePath) || isBlockedStaticPath(finalRelativePath)) {
+      sendJson(response, 403, { error: "Forbidden." });
       return;
     }
-    fs.createReadStream(filePath).pipe(response);
+
+    fs.stat(finalPath, (finalError, finalStats) => {
+      if (finalError || !finalStats.isFile()) {
+        sendJson(response, 404, { error: "Not found." });
+        return;
+      }
+
+      const contentType = mimeTypes[path.extname(finalPath).toLowerCase()] || "application/octet-stream";
+      response.writeHead(200, { "Content-Type": contentType });
+      if (request.method === "HEAD") {
+        response.end();
+        return;
+      }
+      fs.createReadStream(finalPath).pipe(response);
+    });
   });
 }
 
