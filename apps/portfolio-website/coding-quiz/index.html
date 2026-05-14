@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mervin Ng | AI Generated Quiz App</title>
+  <link rel="shortcut icon" href="../img/logo.png" type="image/png">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <!-- AOS CSS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <!-- App CSS -->
+  <link rel="stylesheet" href="../coding-quiz/styles.css?v=20250926">
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="https://ngyuhang.com">Mervin's Hub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="https://ngyuhang.com#about">About Me</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://ngyuhang.com#projects">Projects</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://ngyuhang.com#skills">Skills</a></li>
+          <li class="nav-item"><a class="nav-link" href="https://ngyuhang.com#contact">Contact Me</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero" class="section hero-section d-flex align-items-center">
+    <div class="container hero-container text-center">
+      <h1 class="display-4 fw-bold">
+        <span id="hero-typer"></span><span class="cursor">|</span>
+      </h1>
+      <p class="lead text-muted mt-3">Challenge yourself with coding questions across multiple languages.</p>
+      <a id="get-started" href="#quiz" class="btn btn-outline-dark mt-4">
+        Get Started <i class="bi bi-arrow-down-circle ms-2"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- QUIZ SECTION -->
+  <main id="quiz" class="quiz-section section bg-light">
+    <div class="quiz-wrapper container d-flex justify-content-center align-items-center">
+      <div id="setup-card" class="quiz-card">
+        <h1 class="fw-bold" style="color: #7c3aed; font-size: 1.4rem">Start Your Quiz</h1>
+
+        <!-- Language -->
+        <label for="language">Choose Language:</label>
+        <select id="language" class="input-select">
+          <option value="javascript" selected>JavaScript</option>
+          <option value="python">Python</option>
+          <option value="cpp">C++</option>
+        </select>
+
+        <!-- Topic -->
+        <label for="topic">Choose Topic:</label>
+        <select id="topic" class="input-select">
+          <option value="mixed" selected>Mixed</option>
+          <option value="loops">Loops</option>
+          <option value="arrays">Arrays</option>
+          <option value="functions">Functions</option>
+          <option value="conditionals">Conditionals</option>
+          <option value="objects">Objects</option>
+          <option value="classes">Classes</option>
+        </select>
+
+        <!-- Difficulty -->
+        <label for="difficulty">Difficulty:</label>
+        <select id="difficulty" class="input-select">
+          <option value="easy">Easy</option>
+          <option value="mixed" selected>Mixed</option>
+          <option value="hard">Hard</option>
+        </select>
+
+        <!-- Number of Questions -->
+        <label for="num-questions">
+          Number of Questions: <span id="numOutput">10</span> (max 30)
+        </label>
+        <input 
+          type="range" 
+          id="num-questions" 
+          class="input-range" 
+          min="5" 
+          max="30" 
+          step="1"
+          value="10" 
+          oninput="numOutput.textContent = this.value"
+        />
+
+        <button id="start-btn" class="btn btn-accent mt-2">Start Quiz</button>
+      </div>
+
+      <!-- QUIZ -->
+      <div id="quiz-container" class="quiz-card hidden">
+        <div class="quiz-header">
+          <h2 id="question-text"></h2>
+          <pre id="code-block" class="code-block hidden"></pre>
+        </div>
+        <div id="options" class="options"></div>
+        <div id="dragdrop-zone" class="dragdrop-zone hidden"></div>
+        <div id="dragdrop-actions" class="quiz-actions hidden">
+          <button id="submit-order-btn" class="btn btn-primary">Submit Order</button>
+        </div>
+        <div id="feedback" class="feedback hidden"></div>
+      </div>
+
+      <!-- RESULT -->
+      <div id="result-card" class="quiz-card hidden">
+        <h2>Quiz Complete 🎉</h2>
+        <p id="score-text"></p>
+        <button id="restart-btn" class="btn btn-accent">Restart Quiz</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- LOADING OVERLAY -->
+  <div id="loading-overlay" class="loading-overlay hidden">
+    <div class="spinner"></div>
+    <p>Generating questions...</p>
+  </div>
+
+  <!-- FAQ + FOOTER WRAPPER -->
+  <div class="contact-footer-wrapper">
+    <!-- FAQ -->
+<section id="faq" class="faq-section section mt-5 pt-5">
+  <div class="container">
+    <h2 class="section-title text-center mb-5 text-accent">Frequently Asked Questions</h2>
+    <div class="accordion" id="faqAccordion">
+
+      <!-- Q1 -->
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq1">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1Collapse">
+            Q: How many questions can I generate?
+          </button>
+        </h2>
+        <div id="faq1Collapse" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">A: You can generate up to 30 questions per quiz.</div>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq2">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2Collapse">
+            Q: Can I choose specific coding topics?
+          </button>
+        </h2>
+        <div id="faq2Collapse" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">A: Yes, you can pick from loops, arrays, functions, conditionals, objects, and classes.</div>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq3">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3Collapse">
+            Q: Does it support multiple programming languages?
+          </button>
+        </h2>
+        <div id="faq3Collapse" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">A: Currently JavaScript, Python, and C++ are available. More will be added soon!</div>
+        </div>
+      </div>
+
+      <!-- Q6 -->
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq6">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6Collapse">
+            Q: How difficult are the questions?
+          </button>
+        </h2>
+        <div id="faq6Collapse" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">A: You can select difficulty levels: easy, medium, hard, or mixed.</div>
+        </div>
+      </div>
+
+      <!-- Q8 -->
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="faq8">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq8Collapse">
+            Q: Why does generating sometimes feel slow?
+          </button>
+        </h2>
+        <div id="faq8Collapse" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">A: Generation speed depends on your chosen question count and coding topic complexity.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer footer-section bg-dark text-light py-4">
+      <div class="container text-center">
+        <small>© 2025 Mervin Ng. All rights reserved.</small>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
+  <script src="../coding-quiz/app.js" defer></script>
+</body>
+</html>

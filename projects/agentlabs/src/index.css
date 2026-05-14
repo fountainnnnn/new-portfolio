@@ -1,0 +1,470 @@
+@import "tailwindcss";
+
+:root {
+  color: #1d1d1f;
+  background: #fcfcf7;
+  font-family:
+    Inter, Geist, "Segoe UI Variable", system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  --af-bg: #fcfcf7;
+  --af-canvas: #faf9f6;
+  --af-panel: #fdfdfd;
+  --af-warm: #fbf5df;
+  --af-cool: #f2f8fc;
+  --af-lavender: #f4f1f8;
+  --af-blue-soft: #f0f8ff;
+  --af-border: #dcd8cc;
+  --af-border-strong: #c7c2b8;
+  --af-text: #1d1d1f;
+  --af-secondary: #575a60;
+  --af-muted: #7a7d85;
+  --af-success: #21865a;
+  --af-danger: #c2414b;
+  --af-warning: #c77700;
+  --af-info: #2563eb;
+  --af-purple: #7c3aed;
+  --af-cyan: #0284c7;
+  --af-radius-card: 12px;
+  --af-radius-panel: 16px;
+  --af-radius-button: 9px;
+  --af-shadow-ring: 0 0 0 1px rgba(29, 29, 31, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--af-bg);
+  color: var(--af-text);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: rgba(37, 99, 235, 0.16);
+}
+
+.af-mono {
+  font-family:
+    "SFMono-Regular", "Cascadia Mono", "Roboto Mono", ui-monospace, Menlo,
+    Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.af-topbar {
+  min-height: 64px;
+  background: var(--af-canvas);
+  border-bottom: 1px solid var(--af-border);
+}
+
+.af-brand-link {
+  display: inline-flex;
+  max-width: 300px;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  color: var(--af-text);
+}
+
+.af-brand-link > span {
+  min-width: 0;
+}
+
+.af-brand-link:focus-visible,
+.af-button:focus-visible,
+.af-chip-button:focus-visible,
+.af-row-button:focus-visible {
+  outline: 2px solid var(--af-info);
+  outline-offset: 2px;
+}
+
+.af-brand-logo {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.af-brand-monogram {
+  display: grid;
+  place-items: center;
+  border: 1px solid #c7c2b8;
+  border-radius: 8px;
+  background: #f4f1f8;
+  color: #7c3aed;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.af-brand-word {
+  display: block;
+  font-size: 18px;
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.af-brand-subtitle {
+  display: block;
+  margin-top: 4px;
+  overflow: hidden;
+  color: var(--af-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.af-page {
+  min-height: 100dvh;
+  background: var(--af-bg);
+  color: var(--af-text);
+}
+
+.af-page-main {
+  padding: 24px;
+}
+
+.af-container-wide {
+  width: 100%;
+  max-width: 1680px;
+  margin: 0 auto;
+}
+
+.af-panel {
+  background: var(--af-panel);
+  border: 1px solid var(--af-border);
+  border-radius: var(--af-radius-card);
+}
+
+.af-panel-canvas {
+  background: var(--af-canvas);
+  border: 1px solid var(--af-border);
+  border-radius: var(--af-radius-panel);
+}
+
+.af-panel-cool {
+  background: var(--af-cool);
+  border: 1px solid var(--af-border);
+  border-radius: var(--af-radius-card);
+}
+
+.af-panel-warm {
+  background: var(--af-warm);
+  border: 1px solid var(--af-border);
+  border-radius: var(--af-radius-card);
+}
+
+.af-panel-lavender {
+  background: var(--af-lavender);
+  border: 1px solid var(--af-border);
+  border-radius: var(--af-radius-card);
+}
+
+.af-section-label {
+  color: var(--af-muted);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.af-body {
+  color: var(--af-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.af-meta {
+  color: var(--af-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.af-chip,
+.af-status-chip {
+  display: inline-flex;
+  min-height: 26px;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--af-border);
+  border-radius: 8px;
+  background: var(--af-panel);
+  color: var(--af-secondary);
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.af-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--af-success);
+}
+
+.af-button {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: var(--af-radius-button);
+  border: 1px solid var(--af-border);
+  background: var(--af-panel);
+  color: var(--af-secondary);
+  padding: 0 13px;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.af-button:hover {
+  border-color: var(--af-border-strong);
+  background: var(--af-canvas);
+}
+
+.af-button:active {
+  transform: translateY(1px);
+}
+
+.af-button-primary {
+  border-color: var(--af-info);
+  background: var(--af-info);
+  color: #ffffff;
+}
+
+.af-button-primary:hover {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
+}
+
+.af-button-purple {
+  border-color: var(--af-purple);
+  background: var(--af-purple);
+  color: #ffffff;
+}
+
+.af-button-purple:hover {
+  border-color: #6d28d9;
+  background: #6d28d9;
+}
+
+.af-button-quiet {
+  background: transparent;
+}
+
+.af-button:disabled {
+  opacity: 0.48;
+}
+
+.af-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.af-metric {
+  min-width: 0;
+  border: 1px solid var(--af-border);
+  border-radius: 12px;
+  background: var(--af-canvas);
+  padding: 12px;
+}
+
+.af-metric-label {
+  display: block;
+  color: var(--af-muted);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.af-metric-value {
+  display: block;
+  margin-top: 6px;
+  color: var(--af-text);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.af-metric-helper {
+  display: block;
+  margin-top: 8px;
+  color: var(--af-muted);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.af-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.af-table th,
+.af-table td {
+  border-bottom: 1px solid var(--af-border);
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.af-table th {
+  color: var(--af-muted);
+  font-size: 12px;
+  font-weight: 650;
+  text-transform: uppercase;
+}
+
+.af-table td {
+  color: var(--af-secondary);
+  font-size: 13px;
+}
+
+.af-workspace {
+  display: grid;
+  min-height: calc(100dvh - 64px);
+  grid-template-columns: minmax(430px, 456px) minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.af-left-panel {
+  min-height: 0;
+  overflow-y: auto;
+  border-right: 1px solid var(--af-border);
+  background: var(--af-canvas);
+  padding: 16px;
+}
+
+.af-left-panel-inner {
+  display: grid;
+  gap: 12px;
+}
+
+.af-right-panel {
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  background: var(--af-bg);
+  padding: 16px;
+}
+
+.af-simulation-grid {
+  display: grid;
+  min-height: 100%;
+  grid-template-rows: auto minmax(320px, 1fr) auto auto;
+  gap: 12px;
+}
+
+.af-simulation-frame {
+  min-height: 320px;
+  max-height: 56vh;
+  overflow: hidden;
+  border: 1px solid var(--af-border);
+  border-radius: 18px;
+  background: var(--af-canvas);
+}
+
+.af-log {
+  display: grid;
+  gap: 6px;
+}
+
+.af-log-row {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 10px;
+  border: 1px solid var(--af-border);
+  border-radius: 8px;
+  background: var(--af-panel);
+  padding: 8px 10px;
+  color: var(--af-secondary);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.af-row-button {
+  width: 100%;
+  border: 1px solid var(--af-border);
+  border-radius: 10px;
+  background: var(--af-panel);
+  color: var(--af-text);
+  text-align: left;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.af-row-button:hover {
+  border-color: var(--af-border-strong);
+  background: var(--af-canvas);
+}
+
+@media (max-width: 1100px) {
+  .af-workspace {
+    grid-template-columns: 1fr;
+    overflow: auto;
+  }
+
+  .af-left-panel {
+    border-right: 0;
+    border-bottom: 1px solid var(--af-border);
+  }
+
+  .af-metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .af-page-main,
+  .af-right-panel,
+  .af-left-panel {
+    padding: 16px;
+  }
+
+  .af-metric-grid {
+    grid-template-columns: 1fr;
+  }
+}

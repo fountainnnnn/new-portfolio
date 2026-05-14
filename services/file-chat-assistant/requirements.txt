@@ -1,0 +1,19 @@
+# Core API + serving
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-multipart==0.0.9
+python-dotenv==1.0.1
+pydantic==2.8.2
+
+# LangChain stack (aligned versions)
+langchain==0.2.15
+langchain-community==0.2.14
+langchain-openai==0.1.21
+faiss-cpu==1.8.0.post1
+
+# OpenAI client
+openai==1.107.1
+
+# Document loaders
+pypdf==5.1.0
+docx2txt==0.8

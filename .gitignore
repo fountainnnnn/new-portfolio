@@ -3,6 +3,8 @@ node_modules/
 .venv/
 venv/
 __pycache__/
+.models/
+.cache/
 
 # Build output
 dist/
@@ -27,6 +29,25 @@ pnpm-debug.log*
 Thumbs.db
 .vscode/
 .idea/
+.tools/
+.pytest_cache/
+.agentlabs/
 
 # Nested repo metadata after imports
 **/.git/
+
+# Large local datasets should be linked or restored separately.
+dataset/
+
+# Generated analysis/cache data
+pbitools_cache/
+pbix_probe/
+*.sqlite
+*.sqlite3
+
+# Model/checkpoint artifacts should stay outside normal Git.
+*.pth
+*.pt
+*.onnx
+*.safetensors
+*.ckpt
