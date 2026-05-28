@@ -50,6 +50,8 @@ const port = Number(process.env.PORT || 3000);
 const proxyTimeoutMs = Number(process.env.PROXY_TIMEOUT_MS || 300000);
 const chatRateWindowMs = Number(process.env.CHAT_RATE_WINDOW_MS || 60_000);
 const chatRateMax = Number(process.env.CHAT_RATE_MAX || 20);
+const chatOpenAiTimeoutMs = Number(process.env.CHAT_OPENAI_TIMEOUT_MS || 30_000);
+const chatModel = process.env.PORTFOLIO_OPENAI_MODEL || process.env.OPENAI_MODEL || "gpt-4.1-mini";
 const projectApiRateWindowMs = Number(process.env.PROJECT_API_RATE_WINDOW_MS || 60_000);
 const projectApiRateMax = Number(process.env.PROJECT_API_RATE_MAX || 8);
 const projectApiUploadRateMax = Number(process.env.PROJECT_API_UPLOAD_RATE_MAX || 4);
@@ -91,9 +93,10 @@ const projectPageTargets = [
   },
 ];
 
+const currentAge = new Date().getFullYear() - 2007;
 const profilePrompt = `
 You are the portfolio chat for Ng Yu Hang, who also goes by Mervin.
-Speak in Mervin's voice as an 18-year-old Singapore Polytechnic student in Singapore and an aspiring AI full-stack developer.
+Speak in Mervin's voice as a ${currentAge}-year-old Singapore Polytechnic student in Singapore and an aspiring AI full-stack developer.
 Tone: warm, direct, student-like, modestly confident, concise. Keep answers natural and not salesy.
 Do not use emojis, hashtags, hype phrases, or corporate-sounding filler.
 
@@ -190,6 +193,11 @@ server.on("upgrade", (request, socket, head) => {
 
 server.listen(port, () => {
   console.log(`Portfolio server running at http://localhost:${port}`);
+  console.log("Portfolio chat config", {
+    keyConfigured: Boolean(process.env.OPENAI_API_KEY),
+    model: chatModel,
+    timeoutMs: chatOpenAiTimeoutMs,
+  });
 });
 
 function loadEnv(filePath) {
@@ -257,7 +265,14 @@ async function handleChat(request, response) {
     return;
   }
 
-  const body = await readJsonBody(request);
+  let body;
+  try {
+    body = await readJsonBody(request);
+  } catch (error) {
+    sendJson(response, 400, { error: "Send valid JSON." });
+    return;
+  }
+
   const messages = normalizeMessages(body.messages);
   if (messages.length === 0) {
     sendJson(response, 400, { error: "Send a message first." });
@@ -265,16 +280,27 @@ async function handleChat(request, response) {
   }
 
   const payload = {
-    model: process.env.OPENAI_MODEL || "gpt-4.1-mini",
+    model: chatModel,
     instructions: profilePrompt,
     input: messages,
     max_output_tokens: 420
   };
 
-  const apiResponse = await postJson("https://api.openai.com/v1/responses", payload, {
-    Authorization: `Bearer ${key}`,
-    "Content-Type": "application/json"
-  });
+  let apiResponse;
+  try {
+    apiResponse = await postJson("https://api.openai.com/v1/responses", payload, {
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json"
+    }, chatOpenAiTimeoutMs);
+  } catch (error) {
+    console.error("Chat OpenAI request error", {
+      name: error.name,
+      message: error.message,
+      code: error.code,
+    });
+    sendJson(response, 502, { error: "Chat is unavailable right now." });
+    return;
+  }
 
   if (!apiResponse.ok) {
     console.error("Chat request failed", apiResponse.statusCode, apiResponse.body);
@@ -356,10 +382,16 @@ function normalizeMessages(messages) {
     .filter(message => message.content);
 }
 
-function postJson(url, payload, headers) {
+function postJson(url, payload, headers, timeoutMs) {
   return new Promise((resolve, reject) => {
     const body = JSON.stringify(payload);
-    const request = https.request(url, { method: "POST", headers }, response => {
+    const request = https.request(url, {
+      method: "POST",
+      headers: {
+        ...headers,
+        "Content-Length": Buffer.byteLength(body),
+      },
+    }, response => {
       let data = "";
       response.on("data", chunk => {
         data += chunk;
@@ -373,6 +405,10 @@ function postJson(url, payload, headers) {
         }
         resolve({ ok: response.statusCode >= 200 && response.statusCode < 300, statusCode: response.statusCode, body: parsed });
       });
+    });
+
+    request.setTimeout(timeoutMs, () => {
+      request.destroy(new Error(`OpenAI request timed out after ${Math.round(timeoutMs / 1000)}s.`));
     });
 
     request.on("error", reject);
