@@ -1209,7 +1209,11 @@ def chatbot_message():
         reply = generate_chat_response(message, page_context)
     except ChatbotError as exc:
         status = 400 if message else 500
-        return jsonify({"error": str(exc)}), status
+        code = getattr(exc, "diagnostic_code", None)
+        payload = {"error": str(exc)}
+        if code:
+            payload["code"] = code
+        return jsonify(payload), status
 
     return jsonify({"reply": reply})
 

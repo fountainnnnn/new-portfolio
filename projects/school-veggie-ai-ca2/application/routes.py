@@ -1349,13 +1349,20 @@ def api_chat():
             max_tokens=650,
         )
         reply = (response.choices[0].message.content or "").strip()
-    except Exception:
-        app.logger.exception("OpenAI chat request failed")
+    except Exception as exc:
+        status_code = getattr(exc, "status_code", None) or getattr(exc, "status", None)
+        error_code = getattr(exc, "code", None) or getattr(getattr(exc, "body", None), "code", None)
+        diagnostic_code = f"chat_upstream_http_{status_code}" if status_code else "chat_upstream_error"
+        app.logger.exception(
+            "OpenAI chat request failed",
+            extra={"status_code": status_code, "error_code": error_code, "diagnostic_code": diagnostic_code},
+        )
         return (
             jsonify(
                 {
                     "ok": False,
                     "error": "openai_error",
+                    "code": diagnostic_code,
                     "message": "Assistant is unavailable right now. Please try again in a moment.",
                 }
             ),

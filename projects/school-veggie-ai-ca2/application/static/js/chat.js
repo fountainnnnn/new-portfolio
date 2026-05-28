@@ -799,7 +799,8 @@ function setupChat() {
 
         const data = await response.json().catch(() => ({}));
         if (!response.ok || !data || !data.ok) {
-          const msg = (data && data.message) || "Unable to reach the assistant right now.";
+          const code = data && data.code ? ` (${data.code})` : "";
+          const msg = `${(data && data.message) || "Unable to reach the assistant right now."}${code}`;
           if (pendingTypingId) updateMessage(pendingTypingId, msg);
           setStatus("Error");
           return;

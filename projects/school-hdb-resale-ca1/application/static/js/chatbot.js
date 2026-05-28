@@ -209,7 +209,8 @@ document.addEventListener("DOMContentLoaded", () => {
         hideTypingIndicator();
         appendMessage(payload.reply, "bot", { markdown: true });
       } else {
-        throw new Error(payload?.error || "Sorry, I could not reply right now.");
+        const suffix = payload?.code ? ` (${payload.code})` : "";
+        throw new Error(`${payload?.error || "Sorry, I could not reply right now."}${suffix}`);
       }
     } catch (error) {
       hideTypingIndicator();

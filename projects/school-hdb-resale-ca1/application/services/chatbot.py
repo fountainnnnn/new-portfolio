@@ -14,6 +14,10 @@ from openai import OpenAI
 class ChatbotError(RuntimeError):
     """Raised when the chat assistant cannot respond."""
 
+    def __init__(self, message: str, diagnostic_code: str | None = None):
+        super().__init__(message)
+        self.diagnostic_code = diagnostic_code
+
 
 _client_cache: Dict[str, OpenAI] = {}
 
@@ -134,7 +138,9 @@ def generate_chat_response(message: str, page_context: str = "") -> str:
             temperature=0.4,
         )
     except Exception as exc:  # pragma: no cover - API failure surface to caller
-        raise ChatbotError(f"Chat service temporarily unavailable: {exc}") from exc
+        status_code = getattr(exc, "status_code", None) or getattr(exc, "status", None)
+        diagnostic_code = f"chat_upstream_http_{status_code}" if status_code else "chat_upstream_error"
+        raise ChatbotError(f"Chat service temporarily unavailable: {exc}", diagnostic_code) from exc
 
     try:
         return completion.choices[0].message.content.strip()

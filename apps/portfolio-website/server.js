@@ -298,19 +298,33 @@ async function handleChat(request, response) {
       message: error.message,
       code: error.code,
     });
-    sendJson(response, 502, { error: "Chat is unavailable right now." });
+    sendJson(response, 502, {
+      error: "Chat is unavailable right now.",
+      code: classifyChatRequestError(error),
+    });
     return;
   }
 
   if (!apiResponse.ok) {
-    console.error("Chat request failed", apiResponse.statusCode, apiResponse.body);
-    sendJson(response, 502, { error: "Chat is unavailable right now." });
+    const errorSummary = summarizeUpstreamError(apiResponse.body);
+    console.error("Chat request failed", {
+      statusCode: apiResponse.statusCode,
+      error: errorSummary,
+    });
+    sendJson(response, 502, {
+      error: "Chat is unavailable right now.",
+      code: `chat_upstream_http_${apiResponse.statusCode || "unknown"}`,
+    });
     return;
   }
 
   const reply = cleanReply(extractReply(apiResponse.body));
   if (!reply) {
-    sendJson(response, 502, { error: "Chat is unavailable right now." });
+    console.error("Chat request returned no usable reply", summarizeUpstreamError(apiResponse.body));
+    sendJson(response, 502, {
+      error: "Chat is unavailable right now.",
+      code: "chat_empty_reply",
+    });
     return;
   }
 
@@ -415,6 +429,27 @@ function postJson(url, payload, headers, timeoutMs) {
     request.write(body);
     request.end();
   });
+}
+
+function classifyChatRequestError(error) {
+  if (/timed out/i.test(error.message || "")) return "chat_upstream_timeout";
+  if (error.code) return `chat_upstream_network_${String(error.code).toLowerCase()}`;
+  return "chat_upstream_network";
+}
+
+function summarizeUpstreamError(body) {
+  const upstreamError = body && typeof body === "object" ? body.error : null;
+  if (upstreamError && typeof upstreamError === "object") {
+    return {
+      type: upstreamError.type,
+      code: upstreamError.code,
+      message: upstreamError.message,
+    };
+  }
+  if (typeof body?.raw === "string") {
+    return { rawPreview: body.raw.slice(0, 300) };
+  }
+  return body;
 }
 
 function extractReply(body) {
