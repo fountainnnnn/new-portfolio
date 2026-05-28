@@ -663,7 +663,7 @@ function HomePage() {
           <div className="container about-container">
             <h2 className="section-title">About Me</h2>
             <p className="text-center">
-              Hello, I&apos;m Yu Hang, though most people know me as Mervin. I&apos;m a {age}-year-old student at Singapore Polytechnic, pursuing a Diploma in Applied AI & Analytics. From a young age, I&apos;ve been fascinated by computers and technology, and this passion has grown into a strong interest in building AI tools and full-stack applications with AI integration. My goal is to one day create a groundbreaking application that impacts millions of people worldwide.
+              Hello, I&apos;m Yu Hang, though most people know me as Mervin. I&apos;m a {age}-year-old student at Singapore Polytechnic, pursuing a Diploma in Applied AI & Analytics. From a young age, I&apos;ve been fascinated by computers and technology, and this passion has grown into a strong interest in building AI tools and full-stack applications with AI integration. I&apos;m currently experimenting with AI harnesses and agents like OpenClaw, Hermes, etc. I hope to one day build an highly impactful product that helps millions of people worldwide.
             </p>
           </div>
         </section>
