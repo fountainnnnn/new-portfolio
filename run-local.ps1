@@ -54,6 +54,8 @@ if (-not (Test-Path "node_modules")) {
     Write-Host "Installing portfolio web dependencies..."
     & $npmPath install
 }
+Write-Host "Building portfolio React frontend..."
+& $npmPath run build
 
 # 3. Setup Microservices virtualenvs and install dependencies
 Write-Host ""

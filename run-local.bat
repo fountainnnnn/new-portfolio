@@ -39,6 +39,8 @@ if not exist "node_modules" (
   echo Installing portfolio web dependencies...
   call npm install
 )
+echo Building portfolio React frontend...
+call npm run build
 
 :: 4. Setup Microservices virtualenvs and install dependencies
 echo.

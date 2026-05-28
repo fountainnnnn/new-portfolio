@@ -195,11 +195,13 @@ async def generate_questions(
     n: int = 10,
     model_name: str | None = None,
     api_key: str | None = None,
-    batch_size: int = 1,
+    batch_size: int | None = None,
 ) -> QuestionResult:
     client = configure_openai(api_key)
     system_prompt = QG_SYSTEM_TEMPLATE.format(language=language)
-    selected_model = model_name or os.getenv("CODING_QUIZ_MODEL", "gpt-5-mini")
+    selected_model = model_name or os.getenv("CODING_QUIZ_MODEL", "gpt-4.1")
+    request_timeout_seconds = float(os.getenv("CODING_QUIZ_OPENAI_TIMEOUT_SECONDS", "20"))
+    effective_batch_size = max(1, int(batch_size or os.getenv("CODING_QUIZ_BATCH_SIZE", "5")))
 
     type_cycle = ["mcq", "fill_code", "drag_drop"]
     desired_types = [type_cycle[i % len(type_cycle)] for i in range(n)]
@@ -227,23 +229,27 @@ async def generate_questions(
         )
 
         async with semaphore:
-            resp = await client.chat.completions.create(
-                model=selected_model,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt},
-                ],
-                response_format={"type": "json_object"},
+            resp = await asyncio.wait_for(
+                client.chat.completions.create(
+                    model=selected_model,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt},
+                    ],
+                    response_format={"type": "json_object"},
+                    timeout=request_timeout_seconds,
+                ),
+                timeout=request_timeout_seconds,
             )
         raw = resp.choices[0].message.content or ""
         return _parse_json_response(raw)
 
     def build_type_batches(question_types: List[str]) -> List[Dict[str, int]]:
-        effective_batch_size = max(1, min(batch_size, len(question_types)))
+        sized_batch = max(1, min(effective_batch_size, len(question_types)))
         batches: List[Dict[str, int]] = []
-        for start in range(0, len(question_types), effective_batch_size):
+        for start in range(0, len(question_types), sized_batch):
             batch: Dict[str, int] = {}
-            for kind in question_types[start:start + effective_batch_size]:
+            for kind in question_types[start:start + sized_batch]:
                 batch[kind] = batch.get(kind, 0) + 1
             batches.append(batch)
         return batches
@@ -358,15 +364,30 @@ async def generate_questions(
     for q in items:
         process_question(q)
 
+    def current_type_counts() -> Dict[str, int]:
+        counts = {kind: 0 for kind in type_cycle}
+        for item in safe_list:
+            counts[item["type"]] = counts.get(item["type"], 0) + 1
+        return counts
+
+    async def top_up(question_types: List[str], label: str) -> None:
+        missing_before = n - len(safe_list)
+        if missing_before <= 0:
+            return
+
+        logger.warning(f"Regenerating {missing_before} {label} question(s) due to dropped invalid ones...")
+        extras = await request_parallel(question_types[:missing_before])
+        for q in extras:
+            if len(safe_list) < n:
+                process_question(q)
+
     # Enforce question count after filtering with bounded retries.
     attempts = 0
-    while len(safe_list) < n and attempts < 3:
+    max_retry_attempts = int(os.getenv("CODING_QUIZ_RETRY_ATTEMPTS", "0"))
+    while len(safe_list) < n and attempts < max_retry_attempts:
         attempts += 1
         missing = n - len(safe_list)
-        logger.warning(f"Regenerating {missing} extra question(s) due to dropped invalid ones...")
-        current_counts = {kind: 0 for kind in type_cycle}
-        for item in safe_list:
-            current_counts[item["type"]] = current_counts.get(item["type"], 0) + 1
+        current_counts = current_type_counts()
         remaining_types = {
             kind: max(0, type_requirements.get(kind, 0) - current_counts.get(kind, 0))
             for kind in type_cycle
@@ -376,10 +397,80 @@ async def generate_questions(
             retry_types.extend([kind] * remaining_types[kind])
         while len(retry_types) < missing:
             retry_types.append(type_cycle[len(retry_types) % len(type_cycle)])
-        extras = await request_parallel(retry_types[:missing])
-        for q in extras:
-            if len(safe_list) < n:
-                process_question(q)
+        await top_up(retry_types, "extra")
+
+    def add_local_fallback_questions() -> None:
+        syntax = {
+            "python": {
+                "loop": "for item in items:",
+                "function": "def total(values):",
+                "array": "values = [1, 2, 3]",
+                "index": "len(values) - 1",
+            },
+            "javascript": {
+                "loop": "for (const item of items) {",
+                "function": "function total(values) {",
+                "array": "const values = [1, 2, 3];",
+                "index": "values.length - 1",
+            },
+            "cpp": {
+                "loop": "for (auto item : items) {",
+                "function": "int total(vector<int> values) {",
+                "array": "vector<int> values = {1, 2, 3};",
+                "index": "values.size() - 1",
+            },
+        }.get(language.lower(), {})
+        fallback_bank = [
+            {
+                "question": f"Which {language} snippet starts a loop over every item in a collection?",
+                "options": [syntax.get("loop", "for item in items:"), "if item in items:", "return items", "break items"],
+                "answer": [syntax.get("loop", "for item in items:")],
+                "explanation": "A for loop visits each element in the collection without manually managing every index.",
+            },
+            {
+                "question": f"Which {language} snippet begins a reusable function definition?",
+                "options": [syntax.get("function", "def total(values):"), "while total(values):", "import total(values)", "class total(values)"],
+                "answer": [syntax.get("function", "def total(values):")],
+                "explanation": "A function definition names a reusable block that can receive values and return a result.",
+            },
+            {
+                "question": f"Which expression points to the final valid index in a {language} list or array?",
+                "options": [syntax.get("index", "len(values) - 1"), "len(values)", "0 - len(values)", "values + 1"],
+                "answer": [syntax.get("index", "len(values) - 1")],
+                "explanation": "Indexes start at zero, so the last valid position is one less than the collection length.",
+            },
+            {
+                "question": f"Which {language} snippet creates a small numeric collection?",
+                "options": [syntax.get("array", "values = [1, 2, 3]"), "values == 1, 2, 3", "values -> [1, 2, 3]", "values call [1, 2, 3]"],
+                "answer": [syntax.get("array", "values = [1, 2, 3]")],
+                "explanation": "This syntax initializes a collection so later code can loop through or index the values.",
+            },
+        ]
+        fallback_index = 0
+        while len(safe_list) < n:
+            template = fallback_bank[fallback_index % len(fallback_bank)]
+            fallback_index += 1
+            qid = str(uuid.uuid4())
+            safe_list.append(
+                {
+                    "question_id": qid,
+                    "type": "mcq",
+                    "question": template["question"],
+                    "options": template["options"],
+                    "code_with_blanks": None,
+                }
+            )
+            secret_list.append(
+                {
+                    "question_id": qid,
+                    "answer": template["answer"],
+                    "explanation": template["explanation"],
+                }
+            )
+
+    if len(safe_list) < n:
+        logger.warning("Using local fallback questions to complete quiz after model generation shortfall.")
+        add_local_fallback_questions()
 
     if len(safe_list) < n:
         raise HTTPException(status_code=502, detail=f"Generated only {len(safe_list)} valid questions out of {n}.")

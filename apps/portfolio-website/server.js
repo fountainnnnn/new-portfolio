@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const rootDir = __dirname;
+const distDir = path.join(rootDir, "dist");
 const repoRootDir = path.resolve(rootDir, "../..");
 const repoEnvPath = path.join(repoRootDir, ".env");
 const envPath = path.join(rootDir, ".env");
@@ -17,6 +18,23 @@ const blockedStaticFiles = new Set([
 ]);
 const blockedStaticExtensions = new Set([
   ".pbix"
+]);
+const blockedStaticDirectories = new Set([
+  "src"
+]);
+const reactAppRoutes = new Set([
+  "/",
+  "/index.html",
+  "/projects.html",
+  "/certificates.html",
+  "/quiz-slide-generator",
+  "/quiz-slide-generator/",
+  "/mock-paper-generator",
+  "/mock-paper-generator/",
+  "/file-chat-assistant",
+  "/file-chat-assistant/",
+  "/coding-quiz",
+  "/coding-quiz/",
 ]);
 
 loadEnv(repoEnvPath);
@@ -499,8 +517,18 @@ function proxyRequestToTarget(request, response, url, targetConfig, options) {
 function serveStatic(request, response) {
   const url = new URL(request.url, `http://${request.headers.host}`);
   const requestedPath = decodeURIComponent(url.pathname === "/" ? "/index.html" : url.pathname);
-  let filePath = path.normalize(path.join(rootDir, requestedPath));
-  const relativePath = path.relative(rootDir, filePath);
+  if (reactAppRoutes.has(url.pathname)) {
+    const appIndex = path.join(distDir, "index.html");
+    if (fs.existsSync(appIndex)) {
+      sendStaticFile(request, response, appIndex);
+      return;
+    }
+  }
+
+  const pathPartsForBase = requestedPath.split("/").filter(Boolean);
+  const staticBaseDir = pathPartsForBase[0] === "assets" && fs.existsSync(distDir) ? distDir : rootDir;
+  let filePath = path.normalize(path.join(staticBaseDir, requestedPath));
+  const relativePath = path.relative(staticBaseDir, filePath);
 
   if (relativePath.startsWith("..") || path.isAbsolute(relativePath) || isBlockedStaticPath(relativePath)) {
     sendJson(response, 403, { error: "Forbidden." });
@@ -519,55 +547,59 @@ function serveStatic(request, response) {
     }
 
     const finalPath = stats.isDirectory() ? path.join(filePath, "index.html") : filePath;
-    const finalRelativePath = path.relative(rootDir, finalPath);
+    const finalRelativePath = path.relative(staticBaseDir, finalPath);
     if (finalRelativePath.startsWith("..") || path.isAbsolute(finalRelativePath) || isBlockedStaticPath(finalRelativePath)) {
       sendJson(response, 403, { error: "Forbidden." });
       return;
     }
 
-    fs.stat(finalPath, (finalError, finalStats) => {
-      if (finalError || !finalStats.isFile()) {
-        sendJson(response, 404, { error: "Not found." });
-        return;
-      }
+    sendStaticFile(request, response, finalPath);
+  });
+}
 
-      const contentType = mimeTypes[path.extname(finalPath).toLowerCase()] || "application/octet-stream";
-      const range = parseRangeHeader(request.headers.range, finalStats.size);
-      if (range === false) {
-        response.writeHead(416, {
-          "Content-Range": `bytes */${finalStats.size}`,
-          "Accept-Ranges": "bytes"
-        });
-        response.end();
-        return;
-      }
+function sendStaticFile(request, response, finalPath) {
+  fs.stat(finalPath, (finalError, finalStats) => {
+    if (finalError || !finalStats.isFile()) {
+      sendJson(response, 404, { error: "Not found." });
+      return;
+    }
 
-      if (range) {
-        response.writeHead(206, {
-          "Content-Type": contentType,
-          "Content-Length": range.end - range.start + 1,
-          "Content-Range": `bytes ${range.start}-${range.end}/${finalStats.size}`,
-          "Accept-Ranges": "bytes"
-        });
-        if (request.method === "HEAD") {
-          response.end();
-          return;
-        }
-        fs.createReadStream(finalPath, { start: range.start, end: range.end }).pipe(response);
-        return;
-      }
+    const contentType = mimeTypes[path.extname(finalPath).toLowerCase()] || "application/octet-stream";
+    const range = parseRangeHeader(request.headers.range, finalStats.size);
+    if (range === false) {
+      response.writeHead(416, {
+        "Content-Range": `bytes */${finalStats.size}`,
+        "Accept-Ranges": "bytes"
+      });
+      response.end();
+      return;
+    }
 
-      response.writeHead(200, {
+    if (range) {
+      response.writeHead(206, {
         "Content-Type": contentType,
-        "Content-Length": finalStats.size,
+        "Content-Length": range.end - range.start + 1,
+        "Content-Range": `bytes ${range.start}-${range.end}/${finalStats.size}`,
         "Accept-Ranges": "bytes"
       });
       if (request.method === "HEAD") {
         response.end();
         return;
       }
-      fs.createReadStream(finalPath).pipe(response);
+      fs.createReadStream(finalPath, { start: range.start, end: range.end }).pipe(response);
+      return;
+    }
+
+    response.writeHead(200, {
+      "Content-Type": contentType,
+      "Content-Length": finalStats.size,
+      "Accept-Ranges": "bytes"
     });
+    if (request.method === "HEAD") {
+      response.end();
+      return;
+    }
+    fs.createReadStream(finalPath).pipe(response);
   });
 }
 
@@ -601,6 +633,7 @@ function isBlockedStaticPath(relativePath) {
   const parts = relativePath.split(path.sep);
   return (
     parts.some(part => part.startsWith(".")) ||
+    parts.some(part => blockedStaticDirectories.has(part.toLowerCase())) ||
     blockedStaticFiles.has(path.basename(relativePath).toLowerCase()) ||
     blockedStaticExtensions.has(path.extname(relativePath).toLowerCase())
   );
