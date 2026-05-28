@@ -26,11 +26,11 @@
                              },
     "files":  [
                   {
-                      "path":  "aiml-ca1/notebooks/aiml-ca1-part-a.html",
+                      "path":  "aiml-ca1/notebooks/aiml-ca1-part-a",
                       "bytes":  2320417
                   },
                   {
-                      "path":  "aiml-ca1/notebooks/aiml-ca1-part-b.html",
+                      "path":  "aiml-ca1/notebooks/aiml-ca1-part-b",
                       "bytes":  1705657
                   },
                   {
@@ -194,11 +194,11 @@
                       "bytes":  446038
                   },
                   {
-                      "path":  "aiml-ca2/notebooks/aiml-ca2-part-a.html",
+                      "path":  "aiml-ca2/notebooks/aiml-ca2-part-a",
                       "bytes":  4652544
                   },
                   {
-                      "path":  "aiml-ca2/notebooks/aiml-ca2-part-b.html",
+                      "path":  "aiml-ca2/notebooks/aiml-ca2-part-b",
                       "bytes":  2934581
                   },
                   {

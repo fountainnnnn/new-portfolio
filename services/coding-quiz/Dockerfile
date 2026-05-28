@@ -36,6 +36,6 @@ EXPOSE 7860
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s CMD curl -f http://localhost:7860/healthz || exit 1
 
 # --------------------------------------------------------
-# Start FastAPI app (with reload, only watch /app dir)
+# Start FastAPI app
 # --------------------------------------------------------
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860", "--reload", "--reload-dir", "/app"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860"]

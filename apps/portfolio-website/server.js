@@ -1,4 +1,4 @@
-const http = require("http");
+﻿const http = require("http");
 const https = require("https");
 const fs = require("fs");
 const path = require("path");
@@ -25,8 +25,10 @@ const blockedStaticDirectories = new Set([
 const reactAppRoutes = new Set([
   "/",
   "/index.html",
-  "/projects.html",
-  "/certificates.html",
+  "/projects",
+  "//projects",
+  "/certificates",
+  "//certificates",
   "/quiz-slide-generator",
   "/quiz-slide-generator/",
   "/mock-paper-generator",
@@ -35,6 +37,11 @@ const reactAppRoutes = new Set([
   "/file-chat-assistant/",
   "/coding-quiz",
   "/coding-quiz/",
+]);
+
+const legacyRouteRedirects = new Map([
+  ["/fed-ca2/Achievements", "/fed-ca2/achievements"],
+  ["/fed-ca2/Achievements.html", "/fed-ca2/achievements"],
 ]);
 
 loadEnv(repoEnvPath);
@@ -516,6 +523,12 @@ function proxyRequestToTarget(request, response, url, targetConfig, options) {
 
 function serveStatic(request, response) {
   const url = new URL(request.url, `http://${request.headers.host}`);
+  const cleanPath = cleanPublicPath(url.pathname);
+  if (cleanPath !== url.pathname) {
+    response.writeHead(308, { Location: `${cleanPath}${url.search}` });
+    response.end();
+    return;
+  }
   const requestedPath = decodeURIComponent(url.pathname === "/" ? "/index.html" : url.pathname);
   if (reactAppRoutes.has(url.pathname)) {
     const appIndex = path.join(distDir, "index.html");
@@ -542,7 +555,24 @@ function serveStatic(request, response) {
 
   fs.stat(filePath, (error, stats) => {
     if (error) {
+      const fallbackHtmlPath = !path.extname(filePath) ? `${filePath}.html` : "";
+      if (fallbackHtmlPath && fallbackHtmlPath.startsWith(rootDir)) {
+        fs.stat(fallbackHtmlPath, (fallbackError, fallbackStats) => {
+          if (fallbackError || !fallbackStats.isFile()) {
+            sendJson(response, 404, { error: "Not found." });
+            return;
+          }
+          sendStaticFile(request, response, fallbackHtmlPath);
+        });
+        return;
+      }
       sendJson(response, 404, { error: "Not found." });
+      return;
+    }
+
+    if (stats.isDirectory() && !url.pathname.endsWith("/")) {
+      response.writeHead(308, { Location: `${url.pathname}/${url.search}` });
+      response.end();
       return;
     }
 
@@ -555,6 +585,23 @@ function serveStatic(request, response) {
 
     sendStaticFile(request, response, finalPath);
   });
+}
+
+function cleanPublicPath(pathname) {
+  if (legacyRouteRedirects.has(pathname)) {
+    return legacyRouteRedirects.get(pathname);
+  }
+  if (pathname === "/index.html") {
+    return "/";
+  }
+  if (pathname.endsWith("/index.html")) {
+    const directoryPath = pathname.slice(0, -"/index.html".length);
+    return directoryPath ? `${directoryPath}/` : "/";
+  }
+  if (pathname.endsWith(".html")) {
+    return pathname.slice(0, -".html".length);
+  }
+  return pathname;
 }
 
 function sendStaticFile(request, response, finalPath) {

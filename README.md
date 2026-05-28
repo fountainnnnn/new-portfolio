@@ -89,3 +89,6 @@ in `.env`, then run:
 ```bash
 docker compose up -d --build
 ```
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for the full VPS checklist, clean-route
+health checks, and update commands.

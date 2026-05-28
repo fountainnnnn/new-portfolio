@@ -28,9 +28,9 @@ const cdn = {
 
 const navItems = [
   { label: "About", href: "/#about", section: "about" },
-  { label: "Projects", href: "/projects.html", section: "projects" },
+  { label: "Projects", href: "/projects", section: "projects" },
   { label: "Skills", href: "/#skills", section: "skills" },
-  { label: "Certifications", href: "/certificates.html", section: "certifications" },
+  { label: "Certifications", href: "/certificates", section: "certifications" },
   { label: "Contact", href: "/#contact", section: "contact", cta: true },
 ];
 
@@ -127,24 +127,24 @@ const projectGroups = [
     title: "Coursework converted into portfolio viewers",
     description: "School work sits lower on the page, with demos or modal viewers depending on the artifact.",
     projects: [
-      artifactProject("CNN Computer Vision Paper", "Research paper", "/school-projects/artifacts/dele-ca2/paper/dele-ca2-part-c-paper-viewer.html", "/img/project-previews/school-dele-ca2-paper.png", "Technical paper on CNN foundations, architectural advances, and real-world computer vision applications.", ["Python", "CNN", "Paper"], [
-        file("Research Paper", "CNN Computer Vision Paper", "/school-projects/artifacts/dele-ca2/paper/dele-ca2-part-c-paper-viewer.html"),
-        file("Notebook Export", "CNN Computer Vision Notebook", "/school-projects/artifacts/dele-ca2/paper/dele-ca2-part-c.html"),
+      artifactProject("CNN Computer Vision Paper", "Research paper", "/school-projects/artifacts/dele-ca2/paper/dele-ca2-part-c-paper-viewer", "/img/project-previews/school-dele-ca2-paper.png", "Technical paper on CNN foundations, architectural advances, and real-world computer vision applications.", ["Python", "CNN", "Paper"], [
+        file("Research Paper", "CNN Computer Vision Paper", "/school-projects/artifacts/dele-ca2/paper/dele-ca2-part-c-paper-viewer"),
+        file("Notebook Export", "CNN Computer Vision Notebook", "/school-projects/artifacts/dele-ca2/paper/dele-ca2-part-c"),
       ]),
-      artifactProject("DQN Pendulum Agent", "Reinforcement learning", "/school-projects/artifacts/dele-ca2/notebooks/dele-ca2-part-b.html", "/img/project-previews/school-dele-ca2-dqn.png", "DQN Pendulum experiment covering reinforcement learning setup, agent training, and evaluation workflow.", ["Python", "DQN", "Slides"], [
-        file("Notebook Export", "DQN Pendulum Agent Notebook", "/school-projects/artifacts/dele-ca2/notebooks/dele-ca2-part-b.html"),
-        file("Slides", "DQN Pendulum Agent Slides", "/school-projects/artifacts/dele-ca2/slides/dqn-pendulum-agent-slides.html"),
+      artifactProject("DQN Pendulum Agent", "Reinforcement learning", "/school-projects/artifacts/dele-ca2/notebooks/dele-ca2-part-b", "/img/project-previews/school-dele-ca2-dqn.png", "DQN Pendulum experiment covering reinforcement learning setup, agent training, and evaluation workflow.", ["Python", "DQN", "Slides"], [
+        file("Notebook Export", "DQN Pendulum Agent Notebook", "/school-projects/artifacts/dele-ca2/notebooks/dele-ca2-part-b"),
+        file("Slides", "DQN Pendulum Agent Slides", "/school-projects/artifacts/dele-ca2/slides/dqn-pendulum-agent-slides"),
       ]),
-      artifactProject("GAN Image Generator", "Generative AI", "/school-projects/artifacts/dele-ca2/notebooks/dele-ca2-part-a.html", "/img/project-previews/school-dele-ca2-gan.png", "GAN image-generation notebook with generated samples, architecture diagrams, and presentation slides.", ["Python", "TensorFlow", "GAN"], [
-        file("Notebook Export", "GAN Image Generator Notebook", "/school-projects/artifacts/dele-ca2/notebooks/dele-ca2-part-a.html"),
-        file("Slides", "GAN Image Generator Slides", "/school-projects/artifacts/dele-ca2/slides/gan-image-generator-slides.html"),
+      artifactProject("GAN Image Generator", "Generative AI", "/school-projects/artifacts/dele-ca2/notebooks/dele-ca2-part-a", "/img/project-previews/school-dele-ca2-gan.png", "GAN image-generation notebook with generated samples, architecture diagrams, and presentation slides.", ["Python", "TensorFlow", "GAN"], [
+        file("Notebook Export", "GAN Image Generator Notebook", "/school-projects/artifacts/dele-ca2/notebooks/dele-ca2-part-a"),
+        file("Slides", "GAN Image Generator Slides", "/school-projects/artifacts/dele-ca2/slides/gan-image-generator-slides"),
         file("Generated Images", "GAN Generated Image Samples", "/school-projects/artifacts/dele-ca2/assets/dele-ca2-generated-images.png", "image"),
       ]),
-      artifactProject("Vegetable CNN & House Price RNN", "Deep learning", "/school-projects/artifacts/dele-ca1/notebooks/dele-ca1-part-a.html", "/img/project-previews/school-dele-ca1.png", "Two deep-learning notebooks covering vegetable image classification, house price forecasting, model tuning, and slide decks.", ["Python", "TensorFlow", "CNN/RNN"], [
-        file("Vegetable Notebook", "Vegetable CNN Classifier Notebook", "/school-projects/artifacts/dele-ca1/notebooks/dele-ca1-part-a.html"),
-        file("Vegetable Slides", "Vegetable CNN Classifier Slides", "/school-projects/artifacts/dele-ca1/slides/dele-ca1-part-a-viewer.html"),
-        file("House Price Notebook", "House Price RNN Forecast Notebook", "/school-projects/artifacts/dele-ca1/notebooks/dele-ca1-part-b.html"),
-        file("House Price Slides", "House Price RNN Forecast Slides", "/school-projects/artifacts/dele-ca1/slides/dele-ca1-part-b-viewer.html"),
+      artifactProject("Vegetable CNN & House Price RNN", "Deep learning", "/school-projects/artifacts/dele-ca1/notebooks/dele-ca1-part-a", "/img/project-previews/school-dele-ca1.png", "Two deep-learning notebooks covering vegetable image classification, house price forecasting, model tuning, and slide decks.", ["Python", "TensorFlow", "CNN/RNN"], [
+        file("Vegetable Notebook", "Vegetable CNN Classifier Notebook", "/school-projects/artifacts/dele-ca1/notebooks/dele-ca1-part-a"),
+        file("Vegetable Slides", "Vegetable CNN Classifier Slides", "/school-projects/artifacts/dele-ca1/slides/dele-ca1-part-a-viewer"),
+        file("House Price Notebook", "House Price RNN Forecast Notebook", "/school-projects/artifacts/dele-ca1/notebooks/dele-ca1-part-b"),
+        file("House Price Slides", "House Price RNN Forecast Slides", "/school-projects/artifacts/dele-ca1/slides/dele-ca1-part-b-viewer"),
       ]),
       project("VeggieAI Classifier", "Image classifier", "Demo", "/school-veggie-ai-ca2/", "/img/project-previews/school-veggie-ai-ca2.png", "Flask app for vegetable image classification with model-service integration, auth, chat, and report exports.", ["Python", "CNN", "Docker"]),
       project("HDB Resale Price Predictor", "Prediction app", "Demo", "/school-hdb-resale-ca1/", "/img/project-previews/school-hdb-resale-ca1.png", "Flask deployment project for Singapore HDB resale predictions, user accounts, and model-backed insights.", ["Python", "Flask", "Docker"]),
@@ -155,16 +155,16 @@ const projectGroups = [
       artifactProject("Prestige Mall Customer Dashboard", "Power BI report", "/school-projects/artifacts/data-fundamentals-ca2/powerbi/data-fundamentals-ca2-report-page.png", "/img/project-previews/school-df-ca2.png", "Power BI report export showing mall customer profiles, utility consumption, and individual insights.", ["Power BI", "Data model", "Visuals"], [
         file("Report Image", "Prestige Mall Customer Dashboard", "/school-projects/artifacts/data-fundamentals-ca2/powerbi/data-fundamentals-ca2-report-page.png", "image"),
       ]),
-      artifactProject("Energy Forecasting & Customer Segmentation", "Forecasting + clustering", "/school-projects/artifacts/aiml-ca2/notebooks/aiml-ca2-part-a.html", "/img/project-previews/school-aiml-ca2.png", "Energy consumption forecasting and customer segmentation notebooks with exported slide decks.", ["Python", "Pandas", "NumPy"], [
-        file("Forecast Notebook", "Energy Forecasting Notebook", "/school-projects/artifacts/aiml-ca2/notebooks/aiml-ca2-part-a.html"),
+      artifactProject("Energy Forecasting & Customer Segmentation", "Forecasting + clustering", "/school-projects/artifacts/aiml-ca2/notebooks/aiml-ca2-part-a", "/img/project-previews/school-aiml-ca2.png", "Energy consumption forecasting and customer segmentation notebooks with exported slide decks.", ["Python", "Pandas", "NumPy"], [
+        file("Forecast Notebook", "Energy Forecasting Notebook", "/school-projects/artifacts/aiml-ca2/notebooks/aiml-ca2-part-a"),
         file("Forecast Slides", "Energy Forecasting Slides", "/school-projects/artifacts/aiml-ca2/slides/aiml-ca2-part-a.pdf"),
-        file("Segmentation Notebook", "Customer Segmentation Notebook", "/school-projects/artifacts/aiml-ca2/notebooks/aiml-ca2-part-b.html"),
+        file("Segmentation Notebook", "Customer Segmentation Notebook", "/school-projects/artifacts/aiml-ca2/notebooks/aiml-ca2-part-b"),
         file("Segmentation Slides", "Customer Segmentation Slides", "/school-projects/artifacts/aiml-ca2/slides/aiml-ca2-part-b.pdf"),
       ]),
-      artifactProject("Factory Status & Housing Price Models", "Model workflow", "/school-projects/artifacts/aiml-ca1/notebooks/aiml-ca1-part-a.html", "/img/project-previews/school-aiml-ca1.png", "Notebook and slide viewer for factory machine status classification and housing price regression workflows.", ["Python", "Jupyter", "Scikit-learn"], [
-        file("Factory Notebook", "Factory Status Classifier Notebook", "/school-projects/artifacts/aiml-ca1/notebooks/aiml-ca1-part-a.html"),
+      artifactProject("Factory Status & Housing Price Models", "Model workflow", "/school-projects/artifacts/aiml-ca1/notebooks/aiml-ca1-part-a", "/img/project-previews/school-aiml-ca1.png", "Notebook and slide viewer for factory machine status classification and housing price regression workflows.", ["Python", "Jupyter", "Scikit-learn"], [
+        file("Factory Notebook", "Factory Status Classifier Notebook", "/school-projects/artifacts/aiml-ca1/notebooks/aiml-ca1-part-a"),
         file("Factory Slides", "Factory Status Classifier Slides", "/school-projects/artifacts/aiml-ca1/slides/aiml-ca1-part-a.pdf"),
-        file("Housing Notebook", "Housing Price Regression Notebook", "/school-projects/artifacts/aiml-ca1/notebooks/aiml-ca1-part-b.html"),
+        file("Housing Notebook", "Housing Price Regression Notebook", "/school-projects/artifacts/aiml-ca1/notebooks/aiml-ca1-part-b"),
         file("Housing Slides", "Housing Price Regression Slides", "/school-projects/artifacts/aiml-ca1/slides/aiml-ca1-part-b.pdf"),
       ]),
       project("SP 70th Anniversary Website", "Frontend website", "Demo", "/fed-ca2/", "/img/project-previews/school-fed-ca2.png", "Multi-page Bootstrap website with a feedback form, anniversary timeline, and hosted media.", ["HTML5", "CSS3", "Bootstrap"]),
@@ -235,8 +235,8 @@ function cert(title, issuer, category, href, preview = href) {
 
 function getRoute() {
   const path = window.location.pathname;
-  if (path.endsWith("/projects.html")) return "projects";
-  if (path.endsWith("/certificates.html")) return "certificates";
+  if (path === "/projects" || path.endsWith("/projects.html")) return "projects";
+  if (path === "/certificates" || path.endsWith("/certificates.html")) return "certificates";
   if (path.startsWith("/quiz-slide-generator")) return "quiz-slide";
   if (path.startsWith("/mock-paper-generator")) return "mock-paper";
   if (path.startsWith("/file-chat-assistant")) return "file-chat";
@@ -348,7 +348,7 @@ function HomePage() {
               {featuredProjects.map((item) => <ProjectCard key={item.title} item={item} />)}
             </div>
             <div className="text-center mt-4">
-              <a className="btn btn-outline-dark" href="/projects.html">View all projects <ArrowRight size={18} /></a>
+              <a className="btn btn-outline-dark" href="/projects">View all projects <ArrowRight size={18} /></a>
             </div>
           </div>
         </section>
@@ -403,7 +403,7 @@ function HomeCertifications() {
           {cards.map((item) => <CertificateCard key={item.title} item={item} onClick={() => setActive(item)} />)}
         </div>
         <div className="text-center mt-4">
-          <a className="btn btn-outline-dark" href="/certificates.html">View all certificates <ArrowRight size={18} /></a>
+          <a className="btn btn-outline-dark" href="/certificates">View all certificates <ArrowRight size={18} /></a>
         </div>
       </div>
       <CertificateModal item={active} onClose={() => setActive(null)} />
@@ -515,7 +515,7 @@ function CertificatesPage() {
           <p>A compact archive of the AI, cloud, data, LLM, app-building, and payment integration certificates I have earned or completed.</p>
           <div className="listing-actions">
             <a className="btn btn-outline-dark" href="/#certifications"><ArrowLeft size={18} /> Main page certificates</a>
-            <a className="btn btn-outline-dark" href="/projects.html">View projects <ArrowRight size={18} /></a>
+            <a className="btn btn-outline-dark" href="/projects">View projects <ArrowRight size={18} /></a>
           </div>
         </header>
         <section className="listing-section" aria-label="All certificates">
@@ -614,13 +614,13 @@ function ProjectShell({ bodyClass, kicker, title, lede, cta, preview, children }
         <section id="hero" className="section project-hero">
           <div className="container hero-container">
             <div className="project-hero-copy">
-              <a className="project-back-link" href="/projects.html"><ArrowLeft size={16} /> All projects</a>
+          <a className="project-back-link" href="/projects"><ArrowLeft size={16} /> All projects</a>
               <p className="project-kicker">{kicker}</p>
               <h1>{title}</h1>
               <p className="project-hero-lede">{lede}</p>
               <div className="project-hero-actions">
                 <a id="get-started" href={cta.href} className="btn btn-accent">{cta.label} <ArrowDown size={18} /></a>
-                <a href="/projects.html" className="btn btn-outline-dark">Back to work</a>
+            <a href="/projects" className="btn btn-outline-dark">Back to work</a>
               </div>
             </div>
             <aside className="project-product-preview">{preview}</aside>
