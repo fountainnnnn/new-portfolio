@@ -50,7 +50,7 @@ app.config.setdefault(
         ),
     ),
 )
-app.config.setdefault("SQLALCHEMY_DATABASE_URI", os.getenv("SQLALCHEMY_DATABASE_URI", _default_sqlite_uri()))
+app.config.setdefault("SQLALCHEMY_DATABASE_URI", os.getenv("SQLALCHEMY_DATABASE_URI") or _default_sqlite_uri())
 app.config.setdefault("SQLALCHEMY_TRACK_MODIFICATIONS", False)
 app.config.setdefault("MAX_CONTENT_LENGTH", int(os.getenv("MAX_CONTENT_LENGTH", "16777216")))
 app.config.setdefault("SESSION_COOKIE_SAMESITE", os.getenv("SESSION_COOKIE_SAMESITE", "Lax"))

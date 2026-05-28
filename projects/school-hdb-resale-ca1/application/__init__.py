@@ -33,12 +33,29 @@ if os.getenv("FLASK_ENV", "").lower() == "production":
     if not app.config.get("SECRET_KEY"):
         raise RuntimeError("SECRET_KEY must be set in production.")
 app.config.setdefault("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
-app.config.setdefault("OPENAI_CHAT_MODEL", os.getenv("OPENAI_CHAT_MODEL", "gpt-4o-mini"))
+if os.getenv("OPENAI_CHAT_MODEL"):
+    app.config["OPENAI_CHAT_MODEL"] = os.getenv("OPENAI_CHAT_MODEL")
+else:
+    app.config.setdefault("OPENAI_CHAT_MODEL", "gpt-4o-mini")
+if os.getenv("OPENAI_INSIGHTS_MODEL"):
+    app.config["OPENAI_INSIGHTS_MODEL"] = os.getenv("OPENAI_INSIGHTS_MODEL")
 app.config.setdefault(
     "CHATBOT_CONTEXT_PATH",
     os.getenv("CHATBOT_CONTEXT_PATH", "application/resources/chatbot_context.txt"),
 )
-app.config.setdefault("CHATBOT_TITLE", os.getenv("CHATBOT_TITLE", "HDB Resale Copilot"))
+if os.getenv("CHATBOT_TITLE"):
+    app.config["CHATBOT_TITLE"] = os.getenv("CHATBOT_TITLE")
+else:
+    app.config.setdefault("CHATBOT_TITLE", "HDB Resale Copilot")
+
+for config_key in (
+    "MODEL_PACKAGE_PATH",
+    "DEMAND_MODEL_PACKAGE_PATH",
+    "EXIT_VALUE_MODEL_PATH",
+    "MODEL_DATASET_PATH",
+):
+    if os.getenv(config_key):
+        app.config[config_key] = os.getenv(config_key)
 
 # Ensure FLASK_APP and FLASK_ENV are set in environment variables
 if not os.getenv("FLASK_APP"):
@@ -48,7 +65,10 @@ if not os.getenv("FLASK_ENV"):
     app.config.setdefault("FLASK_ENV", "development")
 
 # Set default database URI if not already set
-app.config.setdefault("SQLALCHEMY_DATABASE_URI", _default_sqlite_uri())
+if os.getenv("SQLALCHEMY_DATABASE_URI"):
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
+else:
+    app.config.setdefault("SQLALCHEMY_DATABASE_URI", _default_sqlite_uri())
 app.config.setdefault("SQLALCHEMY_TRACK_MODIFICATIONS", False)
 
 db.init_app(app)
