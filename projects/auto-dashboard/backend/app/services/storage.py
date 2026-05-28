@@ -44,7 +44,8 @@ class DashboardRecord:
 class SQLiteStorage:
     def __init__(self, database_path: str | Path | None = None) -> None:
         default_path = Path(__file__).resolve().parents[2] / "data" / "autodash.sqlite"
-        self.database_path = Path(database_path or os.environ.get("AUTODASH_DB_PATH", default_path))
+        configured_path = database_path or os.environ.get("AUTODASH_DB_PATH") or default_path
+        self.database_path = Path(configured_path)
         self.database_path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.Lock()
         # Process-local LRU caches. The big win is the dataset cache: deserialising a

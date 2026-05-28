@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   ArrowDown,
@@ -14,7 +14,6 @@ import {
   MessageCircle,
   PlayCircle,
   Send,
-  Sparkles,
   Upload,
   X,
   XCircle,
@@ -32,6 +31,13 @@ const navItems = [
   { label: "Skills", href: "/#skills", section: "skills" },
   { label: "Certifications", href: "/certificates", section: "certifications" },
   { label: "Contact", href: "/#contact", section: "contact", cta: true },
+];
+
+const motionScripts = [
+  "https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js",
+  "https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js",
+  "https://unpkg.com/lenis@1.3.4/dist/lenis.min.js",
+  "/motion.js",
 ];
 
 const stackLogos = {
@@ -57,9 +63,13 @@ const stackLogos = {
   CSS3: `${cdn.devicon}/css3/css3-original.svg`,
   Vite: `${cdn.simple}/vite/646CFF`,
   Telegram: `${cdn.simple}/telegram/6B7280`,
+  "Google Cloud": "/img/issuer-logos/google-cloud.png",
+  AWS: "/img/issuer-logos/aws-academy.png",
+  "Hugging Face": "/img/issuer-logos/hugging-face.png",
+  IBM: "/img/issuer-logos/ibm.png",
   GSAP: "/img/issuer-logos/gsap.svg",
   Lenis: "",
-  OpenClaw: "/img/issuer-logos/openclaw-mark.png",
+  OpenClaw: "/img/issuer-logos/openclaw-wordmark.png",
   Playwright: "/img/issuer-logos/playwright.svg",
   n8n: "/img/issuer-logos/n8n.svg",
   Claude: "/img/issuer-logos/claude.svg",
@@ -177,14 +187,41 @@ const skills = [
   ["HTML5", stackLogos.HTML5], ["CSS3", stackLogos.CSS3], ["Tailwind CSS", `${cdn.simple}/tailwindcss/38BDF8`], ["FastAPI", stackLogos.FastAPI], ["PyTorch", stackLogos.PyTorch],
   ["TensorFlow", stackLogos.TensorFlow], ["Pandas", stackLogos.Pandas], ["NumPy", stackLogos.NumPy], ["Scikit-learn", stackLogos["Scikit-learn"]], ["Matplotlib", `${cdn.simple}/python/3776AB`],
   ["Plotly", stackLogos.Plotly], ["MySQL", stackLogos.MySQL], ["Bootstrap", stackLogos.Bootstrap], ["Node.js", stackLogos["Node.js"]], ["Express", `${cdn.simple}/express/111827`],
-  ["SQLite", `${cdn.devicon}/sqlite/sqlite-original.svg`], ["Docker", stackLogos.Docker], ["Vercel", `${cdn.simple}/vercel/111827`], ["Cloud Services", `${cdn.simple}/icloud/38BDF8`], ["VPS Hosting", `${cdn.simple}/serverfault/4B5563`],
+  ["SQLite", `${cdn.devicon}/sqlite/sqlite-original.svg`], ["Docker", stackLogos.Docker], ["Vercel", `${cdn.simple}/vercel/111827`], ["Cloud Services", ""], ["VPS Hosting", ""],
   ["Docker Compose", stackLogos.Docker], ["Caddy", stackLogos.Caddy], ["Telegram", stackLogos.Telegram], ["Telegraf", stackLogos.Telegram], ["Ollama", `${cdn.simple}/ollama/111827`],
   ["n8n", stackLogos.n8n], ["OpenClaw", stackLogos.OpenClaw], ["AI Agents", ""], ["AI Automation", ""], ["Codex", ""],
   ["Claude", stackLogos.Claude], ["OpenAI", ""], ["LangChain", `${cdn.simple}/langchain/1C3C3C`], ["Playwright", stackLogos.Playwright], ["GSAP", stackLogos.GSAP],
   ["Lenis", stackLogos.Lenis], ["shadcn/ui", "/img/issuer-logos/shadcnui.svg"], ["ReportLab", ""], ["OCR", ""], ["NLP", ""],
-  ["Computer Vision", ""], ["LLM Fine-Tuning", ""], ["Google Cloud", `${cdn.devicon}/googlecloud/googlecloud-original.svg`], ["AWS", ""], ["Azure", `${cdn.devicon}/azure/azure-original.svg`],
-  ["AppSheet", `${cdn.simple}/google/4285F4`], ["Hugging Face", `${cdn.simple}/huggingface/FFD21E`], ["Watson Studio", ""], ["RAG Systems", ""], ["Payment APIs", ""],
+  ["Computer Vision", ""], ["LLM Fine-Tuning", ""], ["Google Cloud", stackLogos["Google Cloud"]], ["AWS", stackLogos.AWS], ["Azure", `${cdn.devicon}/azure/azure-original.svg`],
+  ["AppSheet", ""], ["Hugging Face", stackLogos["Hugging Face"]], ["Watson Studio", stackLogos.IBM], ["RAG Systems", ""], ["Payment APIs", ""],
 ];
+
+const skillFallbackIcons = {
+  "Cloud Services": "bi-cloud-fill",
+  "VPS Hosting": "bi-server",
+  Telegraf: "bi-telegram",
+  "AI Agents": "bi-cpu",
+  "AI Automation": "bi-lightning-charge",
+  Codex: "bi-terminal",
+  OpenAI: "bi-stars",
+  Lenis: "bi-mouse2",
+  ReportLab: "bi-filetype-pdf",
+  OCR: "bi-file-earmark-text",
+  NLP: "bi-chat-square-text",
+  "Computer Vision": "bi-image",
+  "LLM Fine-Tuning": "bi-sliders",
+  AppSheet: "bi-phone",
+  "RAG Systems": "bi-diagram-3",
+  "Payment APIs": "bi-credit-card",
+};
+
+const skillLogoClassByName = {
+  OpenClaw: "skill-logo-wide",
+  "Google Cloud": "skill-logo-wide",
+  AWS: "skill-logo-wide skill-logo-dark",
+  "Hugging Face": "skill-logo-round",
+  "Watson Studio": "skill-logo-wide",
+};
 
 const certificates = [
   cert("IBM Artificial Intelligence Fundamentals", "IBM", "AI Foundations", "/certificates/IBM Artificial Intelligence Fundamentals.png"),
@@ -217,6 +254,54 @@ const certificates = [
   cert("AI-Ready ASEAN Certificate", "AI Singapore", "AI Readiness", "/certificates/AI-READY-ASEAN_AI-READY-ASEAN_Ng-Yu-Hang.pdf", "/certificates/AI-READY-ASEAN_AI-READY-ASEAN_Ng-Yu-Hang.png"),
 ];
 
+const issuerClassByName = {
+  IBM: "cert-issuer-ibm",
+  DataCamp: "cert-issuer-datacamp",
+  NVIDIA: "cert-issuer-nvidia",
+  "Google Cloud": "cert-issuer-google",
+  Google: "cert-issuer-google-course",
+  "Hugging Face": "cert-issuer-huggingface",
+  "AWS Academy": "cert-issuer-aws",
+  NETS: "cert-issuer-nets",
+  "AI Singapore": "cert-issuer-aisingapore",
+};
+
+const issuerShortName = {
+  IBM: "IBM",
+  DataCamp: "DC",
+  NVIDIA: "NVIDIA",
+  "Google Cloud": "Google",
+  Google: "Google",
+  "Hugging Face": "HF",
+  "AWS Academy": "AWS",
+  NETS: "NETS",
+  "AI Singapore": "AI",
+};
+
+const categoryIconClass = {
+  "AI Foundations": "bi-cpu",
+  "Vision & Language": "bi-eye",
+  "AI Ethics": "bi-shield-check",
+  "ML + Deep Learning": "bi-diagram-3",
+  "NLP + Vision": "bi-chat-square-text",
+  "Watson Studio": "bi-bar-chart",
+  "Generative AI": "bi-stars",
+  "Deep Learning": "bi-cpu",
+  "Data Visualization": "bi-graph-up",
+  "Computer Vision": "bi-image",
+  Retrieval: "bi-link-45deg",
+  "App Building": "bi-phone",
+  Planning: "bi-kanban",
+  Research: "bi-search",
+  Communication: "bi-chat-dots",
+  "Content Creation": "bi-magic",
+  LLMs: "bi-sliders",
+  Cloud: "bi-cloud",
+  Payments: "bi-credit-card",
+  "AI Training": "bi-mortarboard",
+  "AI Readiness": "bi-stars",
+};
+
 function project(title, category, kind, href, image, description, stack) {
   return { title, category, kind, href, image, description, stack };
 }
@@ -248,6 +333,10 @@ function App() {
   const [route, setRoute] = useState(getRoute);
 
   useEffect(() => {
+    loadMotionScripts();
+  }, []);
+
+  useEffect(() => {
     const onPop = () => setRoute(getRoute());
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
@@ -275,6 +364,33 @@ function App() {
   return <HomePage />;
 }
 
+function loadMotionScripts() {
+  if (window.__portfolioMotionLoading) return;
+  window.__portfolioMotionLoading = true;
+
+  let chain = Promise.resolve();
+  motionScripts.forEach((src) => {
+    chain = chain.then(() => new Promise((resolve, reject) => {
+      const existing = document.querySelector(`script[data-portfolio-motion="${src}"]`);
+      if (existing) {
+        resolve();
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = src;
+      script.dataset.portfolioMotion = src;
+      script.onload = resolve;
+      script.onerror = reject;
+      document.body.appendChild(script);
+    }));
+  });
+
+  chain.catch(() => {
+    document.documentElement.classList.add("motion-unavailable");
+  });
+}
+
 function SiteNav({ active = "" }) {
   const [open, setOpen] = useState(false);
   return (
@@ -285,11 +401,17 @@ function SiteNav({ active = "" }) {
           <span className="nav-toggle-line"></span>
           <span className="nav-toggle-line"></span>
         </button>
-        <div className={`collapse navbar-collapse justify-content-end ${open ? "show" : ""}`}>
+        <div id="navbarNav" className={`collapse navbar-collapse justify-content-end ${open ? "show" : ""}`}>
           <ul className="navbar-nav nav-menu">
             {navItems.map((item) => (
               <li className="nav-item" key={item.label}>
-                <a className={`nav-link ${item.cta ? "nav-link-cta" : ""}`} href={item.href} aria-current={active === item.section ? "page" : undefined} onClick={() => setOpen(false)}>
+                <a
+                  className={`nav-link ${item.cta ? "nav-link-cta" : ""}`}
+                  href={item.href}
+                  data-section={item.section}
+                  aria-current={active === item.section ? "page" : undefined}
+                  onClick={() => setOpen(false)}
+                >
                   {item.label}
                 </a>
               </li>
@@ -301,18 +423,219 @@ function SiteNav({ active = "" }) {
   );
 }
 
+function useLegacyHomeInteractions() {
+  useEffect(() => {
+    const sections = [...document.querySelectorAll(".section")];
+    const projectsSection = document.querySelector("#projects");
+    const skillsSection = document.querySelector("#skills");
+    const footer = document.querySelector("footer");
+    const navLinks = [...document.querySelectorAll(".nav-link")]
+      .filter((link) => link.dataset.section || link.getAttribute("href")?.startsWith("#"));
+    const pageActiveLink = document.querySelector(".nav-link[aria-current='page']");
+    const navMenu = document.querySelector(".nav-menu");
+    const navTrackedSections = sections;
+    const snapTargets = [...sections, ...(footer ? [footer] : [])];
+    const cleanup = [];
+    const observers = [];
+    let currentIndex = 0;
+    let navScrollTicking = false;
+
+    const getNavSectionId = (link) => link.dataset.section || link.getAttribute("href")?.replace(/^#/, "").replace(/^\/#/, "");
+
+    const updateNavIndicator = (activeLink = document.querySelector(".nav-link[aria-current='page']")) => {
+      if (!navMenu) return;
+
+      if (!activeLink || !navMenu.contains(activeLink)) {
+        navMenu.style.setProperty("--nav-indicator-opacity", "0");
+        return;
+      }
+
+      const menuRect = navMenu.getBoundingClientRect();
+      const linkRect = activeLink.getBoundingClientRect();
+      if (linkRect.width === 0 || linkRect.height === 0) {
+        navMenu.style.setProperty("--nav-indicator-opacity", "0");
+        return;
+      }
+
+      navMenu.style.setProperty("--nav-indicator-x", `${linkRect.left - menuRect.left}px`);
+      navMenu.style.setProperty("--nav-indicator-y", `${linkRect.top - menuRect.top}px`);
+      navMenu.style.setProperty("--nav-indicator-width", `${linkRect.width}px`);
+      navMenu.style.setProperty("--nav-indicator-height", `${linkRect.height}px`);
+      navMenu.style.setProperty("--nav-indicator-opacity", "1");
+    };
+
+    const setActiveNav = (sectionId) => {
+      if (!sectionId && pageActiveLink && navMenu?.contains(pageActiveLink)) {
+        pageActiveLink.setAttribute("aria-current", "page");
+        requestAnimationFrame(() => updateNavIndicator(pageActiveLink));
+        return;
+      }
+
+      let activeLink = null;
+      navLinks.forEach((link) => {
+        const targetId = getNavSectionId(link);
+        if (targetId === sectionId) {
+          link.setAttribute("aria-current", "page");
+          activeLink = link;
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      });
+
+      requestAnimationFrame(() => updateNavIndicator(activeLink));
+    };
+
+    const getCurrentSectionId = () => {
+      const marker = Math.min(window.innerHeight * 0.45, window.innerHeight - 1);
+      return navTrackedSections.find((section) => {
+        const rect = section.getBoundingClientRect();
+        return rect.top <= marker && rect.bottom > marker;
+      })?.id || "";
+    };
+
+    const onResize = () => requestAnimationFrame(() => updateNavIndicator());
+    window.addEventListener("resize", onResize);
+    cleanup.push(() => window.removeEventListener("resize", onResize));
+
+    navLinks.forEach((link) => {
+      const onClick = () => setActiveNav(getNavSectionId(link));
+      link.addEventListener("click", onClick);
+      cleanup.push(() => link.removeEventListener("click", onClick));
+    });
+
+    const fadeObserver = new IntersectionObserver((entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("show");
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    sections.forEach((element) => fadeObserver.observe(element));
+    observers.push(fadeObserver);
+
+    const scrollToTarget = (index) => {
+      if (index >= 0 && index < snapTargets.length) {
+        snapTargets[index].scrollIntoView({ behavior: "smooth" });
+        currentIndex = index;
+      }
+    };
+
+    const onKeydown = (event) => {
+      if (document.body.classList.contains("modal-open")) return;
+      if (event.target.closest?.("input, textarea, select, button, .portfolio-chat")) return;
+
+      if (event.key === "ArrowDown" || event.key === "PageDown") {
+        if (currentIndex < snapTargets.length - 1) {
+          event.preventDefault();
+          scrollToTarget(currentIndex + 1);
+        }
+      }
+
+      if (event.key === "ArrowUp" || event.key === "PageUp") {
+        if (currentIndex > 0) {
+          event.preventDefault();
+          scrollToTarget(currentIndex - 1);
+        }
+      }
+    };
+    document.addEventListener("keydown", onKeydown);
+    cleanup.push(() => document.removeEventListener("keydown", onKeydown));
+
+    const activeObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const idx = snapTargets.indexOf(entry.target);
+          if (idx !== -1) {
+            currentIndex = idx;
+            setActiveNav(getCurrentSectionId() || entry.target.id);
+          }
+        }
+      });
+    }, { threshold: 0.6 });
+    sections.forEach((element) => activeObserver.observe(element));
+    observers.push(activeObserver);
+
+    if (skillsSection) {
+      const skillsChatObserver = new IntersectionObserver((entries) => {
+        document.body.classList.toggle("skills-in-view", entries.some((entry) => entry.isIntersecting));
+      }, { threshold: 0.18 });
+      skillsChatObserver.observe(skillsSection);
+      observers.push(skillsChatObserver);
+    }
+
+    if (projectsSection) {
+      const projectsChatObserver = new IntersectionObserver((entries) => {
+        document.body.classList.toggle("projects-in-view", entries.some((entry) => entry.isIntersecting));
+      }, { threshold: 0.18 });
+      projectsChatObserver.observe(projectsSection);
+      observers.push(projectsChatObserver);
+    }
+
+    const onScroll = () => {
+      if (navScrollTicking) return;
+      navScrollTicking = true;
+      requestAnimationFrame(() => {
+        setActiveNav(getCurrentSectionId());
+        navScrollTicking = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    cleanup.push(() => window.removeEventListener("scroll", onScroll));
+
+    if (footer) {
+      const footerObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) currentIndex = snapTargets.indexOf(footer);
+        });
+      }, { threshold: 0.2 });
+      footerObserver.observe(footer);
+      observers.push(footerObserver);
+    }
+
+    requestAnimationFrame(() => {
+      setActiveNav(getCurrentSectionId() || "home");
+      updateNavIndicator();
+    });
+
+    return () => {
+      observers.forEach((observer) => observer.disconnect());
+      cleanup.forEach((dispose) => dispose());
+      document.body.classList.remove("skills-in-view", "projects-in-view");
+    };
+  }, []);
+}
+
 function HomePage() {
+  const shouldPlayIntro = typeof window !== "undefined"
+    && (window.location.pathname === "/" || window.location.pathname.endsWith("/index.html"))
+    && !window.location.hash;
+  const [introVisible, setIntroVisible] = useState(shouldPlayIntro);
+  const [typewriterActive, setTypewriterActive] = useState(!shouldPlayIntro);
+  const startTypewriter = useCallback(() => setTypewriterActive(true), []);
+  const hideIntro = useCallback(() => setIntroVisible(false), []);
+  const age = new Date().getFullYear() - 2007;
+  useLegacyHomeInteractions();
+
   return (
     <div className="portfolio-react">
+      {introVisible ? (
+        <SiteIntro
+          onStartTypewriter={startTypewriter}
+          onHidden={hideIntro}
+        />
+      ) : null}
       <SiteNav active="home" />
       <main>
-        <section id="hero" className="section hero-section d-flex align-items-center">
+        <section id="hero" className="section d-flex align-items-center">
           <div className="container hero-container">
             <div className="row align-items-center gx-5">
-              <div className="col-lg-7">
-                <p className="listing-kicker">Singapore, Singapore</p>
-                <h1 className="display-4 fw-bold">Hi, I&apos;m Ng Yu Hang (Mervin)</h1>
+              <div className="col-md-8 hero-text text-md-start text-center">
+                <h1 className="display-4 fw-bold"><span id="typewriter"><TypewriterText active={typewriterActive} /></span></h1>
                 <p className="lead">Aspiring AI Full-stack Developer</p>
+                <p className="text-muted mb-3" style={{ fontSize: "0.9rem" }}>
+                  <i className="bi bi-geo-alt-fill me-1" aria-hidden="true"></i> Singapore, Singapore
+                </p>
                 <p className="text-muted mb-3 hero-copy">
                   I build AI-backed tools, automation workflows, and practical full-stack apps around documents, data, and agentic systems.
                 </p>
@@ -320,13 +643,17 @@ function HomePage() {
                   <a href="#projects" className="btn btn-primary">My Projects <ArrowDown size={18} /></a>
                   <a href="/Resume.pdf" className="btn btn-outline-dark" download>Download CV <Download size={18} /></a>
                 </div>
-                <div className="social-row">
-                  <a href="https://github.com/fountainnnnn" target="_blank" rel="noreferrer"><ExternalLink size={18} /> GitHub</a>
-                  <a href="https://www.linkedin.com/in/ngyuhang/" target="_blank" rel="noreferrer">LinkedIn <ExternalLink size={16} /></a>
+                <div className="d-flex justify-content-md-start justify-content-center gap-4 mt-4">
+                  <a href="https://github.com/fountainnnnn" target="_blank" rel="noreferrer" aria-label="GitHub">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" style={{ height: 40, width: "auto" }} />
+                  </a>
+                  <a href="https://www.linkedin.com/in/ngyuhang/" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn" style={{ height: 40, width: "auto" }} />
+                  </a>
                 </div>
               </div>
-              <div className="col-lg-5">
-                <img className="hero-portrait" src="/img/myself.png" alt="Ng Yu Hang portrait" />
+              <div className="col-md-4 hero-photo text-center text-md-end mt-4 mt-md-0">
+                <img className="hero-img img-fluid shadow" src="/img/myself.png" alt="Mervin" />
               </div>
             </div>
           </div>
@@ -336,7 +663,7 @@ function HomePage() {
           <div className="container about-container">
             <h2 className="section-title">About Me</h2>
             <p className="text-center">
-              Hello, I&apos;m Yu Hang, though most people know me as Mervin. I&apos;m an 18-year-old Singapore Polytechnic Applied AI & Analytics student building AI tools, full-stack apps, and practical automations.
+              Hello, I&apos;m Yu Hang, though most people know me as Mervin. I&apos;m a {age}-year-old student at Singapore Polytechnic, pursuing a Diploma in Applied AI & Analytics. From a young age, I&apos;ve been fascinated by computers and technology, and this passion has grown into a strong interest in building AI tools and full-stack applications with AI integration. My goal is to one day create a groundbreaking application that impacts millions of people worldwide.
             </p>
           </div>
         </section>
@@ -347,9 +674,7 @@ function HomePage() {
             <div className="projects-grid">
               {featuredProjects.map((item) => <ProjectCard key={item.title} item={item} />)}
             </div>
-            <div className="text-center mt-4">
-              <a className="btn btn-outline-dark" href="/projects">View all projects <ArrowRight size={18} /></a>
-            </div>
+            <a href="/projects" className="view-more-link" id="projectsViewMore">View all projects <i className="bi bi-arrow-right" aria-hidden="true"></i></a>
           </div>
         </section>
 
@@ -363,6 +688,87 @@ function HomePage() {
   );
 }
 
+function SiteIntro({ onStartTypewriter, onHidden }) {
+  const [hiding, setHiding] = useState(false);
+  const finishRef = useRef(null);
+
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const introDuration = prefersReducedMotion ? 1100 : 8400;
+    let isFinishing = false;
+    let hideTimer;
+
+    document.documentElement.classList.add("intro-active");
+    document.body.classList.add("intro-active");
+
+    const finishIntro = () => {
+      if (isFinishing) return;
+      isFinishing = true;
+      setHiding(true);
+      document.documentElement.classList.remove("intro-active");
+      document.body.classList.remove("intro-active");
+      onStartTypewriter();
+      hideTimer = window.setTimeout(onHidden, 180);
+    };
+    finishRef.current = finishIntro;
+
+    const skipWithKeyboard = (event) => {
+      if (["Enter", " ", "Escape"].includes(event.key)) finishIntro();
+    };
+
+    const introTimer = window.setTimeout(finishIntro, introDuration);
+    document.addEventListener("keydown", skipWithKeyboard);
+
+    return () => {
+      window.clearTimeout(introTimer);
+      window.clearTimeout(hideTimer);
+      finishRef.current = null;
+      document.removeEventListener("keydown", skipWithKeyboard);
+      document.documentElement.classList.remove("intro-active");
+      document.body.classList.remove("intro-active");
+    };
+  }, [onHidden, onStartTypewriter]);
+
+  return (
+    <div
+      className={`site-intro is-playing${hiding ? " is-hiding" : ""}`}
+      id="siteIntro"
+      role="status"
+      aria-live="polite"
+      aria-label="Hello. I'm Mervin. An AI Full Stack Enthusiast. Welcome to my website."
+      onClick={() => finishRef.current?.()}
+    >
+      <div className="intro-stage">
+        <p className="intro-line intro-line-hello">Hello! :D</p>
+        <p className="intro-line intro-line-name">
+          I&apos;m Mervin
+          <span>An AI Full Stack Enthusiast :)</span>
+        </p>
+        <p className="intro-line intro-line-welcome">Welcome to my website!</p>
+      </div>
+    </div>
+  );
+}
+
+function TypewriterText({ active }) {
+  const fullText = "Hi, I'm Ng Yu Hang (Mervin)";
+  const [text, setText] = useState(active ? fullText : "");
+
+  useEffect(() => {
+    if (!active) return undefined;
+    setText("");
+    let index = 0;
+    const timer = window.setInterval(() => {
+      index += 1;
+      setText(fullText.slice(0, index));
+      if (index >= fullText.length) window.clearInterval(timer);
+    }, 90);
+    return () => window.clearInterval(timer);
+  }, [active]);
+
+  return text;
+}
+
 function SkillsSection() {
   return (
     <section id="skills" className="section">
@@ -371,7 +777,7 @@ function SkillsSection() {
         <div className="skills-grid skills-grid-wide">
           {skills.map(([name, icon]) => (
             <div className="skill" key={name}>
-              {icon ? <img src={icon} alt="" /> : <Sparkles size={40} />}
+              <SkillIcon name={name} icon={icon} />
               <p>{name}</p>
             </div>
           ))}
@@ -379,6 +785,15 @@ function SkillsSection() {
       </div>
     </section>
   );
+}
+
+function SkillIcon({ name, icon }) {
+  if (icon) {
+    return <img className={skillLogoClassByName[name] || undefined} src={icon} alt="" />;
+  }
+
+  const iconClass = skillFallbackIcons[name] || "bi-code-slash";
+  return <i className={`bi ${iconClass} skill-symbol`} aria-hidden="true"></i>;
 }
 
 function HomeCertifications() {
@@ -402,9 +817,7 @@ function HomeCertifications() {
         <div className="listing-certifications-grid">
           {cards.map((item) => <CertificateCard key={item.title} item={item} onClick={() => setActive(item)} />)}
         </div>
-        <div className="text-center mt-4">
-          <a className="btn btn-outline-dark" href="/certificates">View all certificates <ArrowRight size={18} /></a>
-        </div>
+        <a href="/certificates" className="view-more-link" id="certsViewMore">View all certificates <i className="bi bi-arrow-right" aria-hidden="true"></i></a>
       </div>
       <CertificateModal item={active} onClose={() => setActive(null)} />
     </section>
@@ -479,7 +892,7 @@ function ProjectCard({ item, onArtifact }) {
         <div className="project-card-meta">
           <span className="project-card-label">{item.category}</span>
           <span className={`project-link-badge project-link-badge-${item.kind.toLowerCase() === "github" ? "github" : item.kind.toLowerCase() === "demo" ? "demo" : "artifact"}`}>
-            {item.kind === "GitHub" ? <ExternalLink size={16} /> : item.kind === "Demo" ? <PlayCircle size={16} /> : <LayoutDashboard size={16} />}
+            {item.kind === "GitHub" ? <i className="bi bi-github" aria-hidden="true"></i> : item.kind === "Demo" ? <PlayCircle size={16} /> : <LayoutDashboard size={16} />}
             {item.kind}
           </span>
         </div>
@@ -497,7 +910,7 @@ function StackChip({ name }) {
   const icon = stackLogos[name];
   return (
     <span className="stack-chip">
-      {icon ? <img src={icon} alt="" /> : <Sparkles size={15} />}
+      {icon ? <img src={icon} alt="" /> : <i className="bi bi-code-slash" aria-hidden="true"></i>}
       {name}
     </span>
   );
@@ -531,22 +944,62 @@ function CertificatesPage() {
 }
 
 function CertificateCard({ item, onClick }) {
+  const issuerClass = issuerClassByName[item.issuer] || "";
+  const iconClass = categoryIconClass[item.category] || "bi-stars";
+
   return (
     <a className="cert-card" href={item.href} onClick={onClick ? (event) => { event.preventDefault(); onClick(); } : undefined}>
       <span className="cert-preview"><img src={item.preview} alt={`${item.title} certificate preview`} loading="lazy" /></span>
-      <span className="cert-meta"><span className="cert-issuer">{item.issuer}</span><span className="cert-category"><Sparkles size={14} /> {item.category}</span></span>
+      <span className="cert-meta">
+        <span className={`cert-issuer ${issuerClass}`} title={item.issuer} aria-label={`Issued by ${item.issuer}`}>
+          {issuerShortName[item.issuer] || item.issuer}
+        </span>
+        <span className="cert-category"><i className={`bi ${iconClass}`} aria-hidden="true"></i> {item.category}</span>
+      </span>
       <strong>{item.title}</strong>
     </a>
   );
 }
 
 function CertificateModal({ item, onClose }) {
+  useEffect(() => {
+    if (!item) return undefined;
+    document.body.classList.add("modal-open");
+    document.body.style.overflow = "hidden";
+    const onKey = (event) => event.key === "Escape" && onClose();
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.classList.remove("modal-open");
+      document.body.style.removeProperty("overflow");
+      document.body.style.removeProperty("padding-right");
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [item, onClose]);
+
   if (!item) return null;
   const isPdf = /\.pdf(?:$|[?#])/i.test(item.href);
   return (
-    <ModalShell title={item.title} kicker="Certification Preview" onClose={onClose}>
-      {isPdf ? <iframe className="artifact-frame" src={item.href} title={`${item.title} PDF preview`} /> : <img className="modal-image" src={item.href} alt={`${item.title} certificate`} />}
-    </ModalShell>
+    <>
+      <div className="modal fade show cert-modal" id="certModal" tabIndex="-1" aria-labelledby="certModalLabel" aria-modal="true" role="dialog" style={{ display: "block" }} onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+        <div className="modal-dialog modal-dialog-centered modal-xl" onMouseDown={(event) => event.stopPropagation()}>
+          <div className="modal-content">
+            <div className="modal-header">
+              <div>
+                <p className="cert-modal-kicker">Certification Preview</p>
+                <h5 className="modal-title" id="certModalLabel">{item.title}</h5>
+              </div>
+              <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button>
+            </div>
+            <div className="modal-body">
+              {isPdf
+                ? <iframe id="certModalFrame" title={`${item.title} PDF preview`} src={item.href}></iframe>
+                : <img id="certModalImage" src={item.href} alt={`${item.title} certificate`} />}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="modal-backdrop fade show cert-modal-backdrop"></div>
+    </>
   );
 }
 
@@ -943,9 +1396,30 @@ function ProjectFaq({ items }) {
 
 function PortfolioChat() {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState([{ role: "assistant", text: "Hi, ask me about Mervin's projects, skills, or certificates." }]);
+  const [messages, setMessages] = useState([{ role: "assistant", text: "Hey, I'm Mervin. Ask me about my projects, skills, or what I have been building." }]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("");
+  const inputRef = useRef(null);
+  const messagesRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const timer = window.setTimeout(() => inputRef.current?.focus(), 120);
+    return () => window.clearTimeout(timer);
+  }, [open]);
+
+  useEffect(() => {
+    if (!messagesRef.current) return;
+    messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+  }, [messages, loading]);
+
+  const autosizeInput = (element) => {
+    if (!element) return;
+    element.style.height = "auto";
+    element.style.height = `${Math.min(element.scrollHeight, 118)}px`;
+  };
+
   const send = async (event) => {
     event.preventDefault();
     const text = input.trim();
@@ -953,21 +1427,90 @@ function PortfolioChat() {
     const nextMessages = [...messages, { role: "user", text }];
     setMessages(nextMessages);
     setInput("");
+    setStatus("");
     setLoading(true);
+    requestAnimationFrame(() => autosizeInput(inputRef.current));
     try {
       const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: nextMessages.slice(-10).map((m) => ({ role: m.role, content: m.text })) }) });
-      const data = await res.json();
-      setMessages((items) => [...items, { role: "assistant", text: data.reply || data.error || "Chat is unavailable right now." }]);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.reply) throw new Error(data.error || "Chat is unavailable right now.");
+      setMessages((items) => [...items, { role: "assistant", text: data.reply }]);
     } catch (error) {
-      setMessages((items) => [...items, { role: "assistant", text: "Chat is unavailable right now." }]);
+      setStatus(error.message === "Failed to fetch"
+        ? "Chat server is not reachable. Open this from http://localhost:3000/ or run npm start."
+        : error.message || "Chat is unavailable right now.");
     } finally {
       setLoading(false);
     }
   };
+
   return (
-    <div className="portfolio-chat">
-      <button className="chat-launcher" onClick={() => setOpen(true)} aria-label="Open chat"><MessageCircle size={22} /></button>
-      {open && <section className="chat-panel" aria-label="Ask me"><header className="chat-header"><img className="chat-avatar" src="/img/myself.png" alt="" /><div><p>Portfolio assistant</p><h2>Ask me</h2></div><button className="chat-close" onClick={() => setOpen(false)} aria-label="Close chat"><X size={18} /></button></header><div className="chat-messages">{messages.map((msg, index) => <div className={`chat-message ${msg.role}`} key={index}>{msg.text}</div>)}{loading && <div className="chat-message assistant">Typing...</div>}</div><form className="chat-form" onSubmit={send}><textarea value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask about a project..." /><button type="submit"><Send size={18} /></button></form></section>}
+    <div className={`portfolio-chat${open ? " is-open" : ""}`} id="portfolioChat">
+      <button
+        className="chat-launcher"
+        id="chatToggle"
+        type="button"
+        aria-label="Open chat with Mervin"
+        aria-expanded={open}
+        aria-controls="chatPanel"
+        onClick={() => setOpen(!open)}
+      >
+        <svg className="chat-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
+        </svg>
+      </button>
+      <section className="chat-panel" id="chatPanel" aria-labelledby="chatTitle" aria-hidden={!open}>
+        <header className="chat-header">
+          <img className="chat-avatar" src="/img/myself.png" alt="" aria-hidden="true" />
+          <div>
+            <p className="chat-kicker">Mervin</p>
+            <h2 id="chatTitle">Ask me</h2>
+          </div>
+          <button className="chat-close" id="chatClose" type="button" aria-label="Close chat with Mervin" onClick={() => setOpen(false)}>
+            <i className="bi bi-x-lg" aria-hidden="true"></i>
+          </button>
+        </header>
+        <div className="chat-messages" id="chatMessages" aria-live="polite" ref={messagesRef}>
+          {messages.map((message, index) => (
+            <div className={`chat-row chat-row-${message.role}`} key={`${message.role}-${index}`}>
+              {message.role === "assistant" ? <img className="chat-message-avatar" src="/img/myself.png" alt="" aria-hidden="true" /> : null}
+              <article className={`chat-message chat-message-${message.role}`}>{message.text}</article>
+            </div>
+          ))}
+          {loading ? (
+            <div className="chat-row chat-row-assistant">
+              <img className="chat-message-avatar" src="/img/myself.png" alt="" aria-hidden="true" />
+              <article className="chat-message chat-message-assistant is-thinking">Thinking...</article>
+            </div>
+          ) : null}
+        </div>
+        <form className="chat-form" id="chatForm" onSubmit={send}>
+          <label className="visually-hidden" htmlFor="chatInput">Message Mervin</label>
+          <textarea
+            id="chatInput"
+            ref={inputRef}
+            rows="1"
+            maxLength="500"
+            placeholder="Ask about my work"
+            value={input}
+            disabled={loading}
+            onChange={(event) => {
+              setInput(event.target.value);
+              autosizeInput(event.target);
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                event.currentTarget.form?.requestSubmit();
+              }
+            }}
+          />
+          <button type="submit" aria-label="Send message" disabled={loading}>
+            <i className="bi bi-send" aria-hidden="true"></i>
+          </button>
+        </form>
+        <p className="chat-status" id="chatStatus" aria-live="polite">{status}</p>
+      </section>
     </div>
   );
 }
