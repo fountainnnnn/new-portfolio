@@ -9,6 +9,7 @@ const repoRootDir = path.resolve(rootDir, "../..");
 const repoEnvPath = path.join(repoRootDir, ".env");
 const envPath = path.join(rootDir, ".env");
 const rateLimit = new Map();
+let lastChatDiagnostic = null;
 const blockedStaticFiles = new Set([
   ".env",
   ".gitignore",
@@ -167,6 +168,17 @@ const server = http.createServer(async (request, response) => {
       return;
     }
 
+    if (request.method === "GET" && request.url === "/api/chat/health") {
+      sendJson(response, 200, {
+        ok: true,
+        keyConfigured: Boolean(process.env.OPENAI_API_KEY),
+        model: chatModel,
+        timeoutMs: chatOpenAiTimeoutMs,
+        lastChatDiagnostic,
+      });
+      return;
+    }
+
     if (request.method !== "GET" && request.method !== "HEAD") {
       sendJson(response, 405, { error: "Method not allowed." });
       return;
@@ -293,6 +305,11 @@ async function handleChat(request, response) {
       "Content-Type": "application/json"
     }, chatOpenAiTimeoutMs);
   } catch (error) {
+    const code = classifyChatRequestError(error);
+    lastChatDiagnostic = {
+      code,
+      at: new Date().toISOString(),
+    };
     console.error("Chat OpenAI request error", {
       name: error.name,
       message: error.message,
@@ -300,26 +317,38 @@ async function handleChat(request, response) {
     });
     sendJson(response, 502, {
       error: "Chat is unavailable right now.",
-      code: classifyChatRequestError(error),
+      code,
     });
     return;
   }
 
   if (!apiResponse.ok) {
     const errorSummary = summarizeUpstreamError(apiResponse.body);
+    const code = `chat_upstream_http_${apiResponse.statusCode || "unknown"}`;
+    lastChatDiagnostic = {
+      code,
+      statusCode: apiResponse.statusCode,
+      upstreamType: errorSummary?.type,
+      upstreamCode: errorSummary?.code,
+      at: new Date().toISOString(),
+    };
     console.error("Chat request failed", {
       statusCode: apiResponse.statusCode,
       error: errorSummary,
     });
     sendJson(response, 502, {
       error: "Chat is unavailable right now.",
-      code: `chat_upstream_http_${apiResponse.statusCode || "unknown"}`,
+      code,
     });
     return;
   }
 
   const reply = cleanReply(extractReply(apiResponse.body));
   if (!reply) {
+    lastChatDiagnostic = {
+      code: "chat_empty_reply",
+      at: new Date().toISOString(),
+    };
     console.error("Chat request returned no usable reply", summarizeUpstreamError(apiResponse.body));
     sendJson(response, 502, {
       error: "Chat is unavailable right now.",
@@ -328,6 +357,10 @@ async function handleChat(request, response) {
     return;
   }
 
+  lastChatDiagnostic = {
+    code: "ok",
+    at: new Date().toISOString(),
+  };
   sendJson(response, 200, { reply });
 }
 

@@ -1432,9 +1432,20 @@ function PortfolioChat() {
     requestAnimationFrame(() => autosizeInput(inputRef.current));
     try {
       const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: nextMessages.slice(-10).map((m) => ({ role: m.role, content: m.text })) }) });
-      const data = await res.json().catch(() => ({}));
+      const responseText = await res.text();
+      let data = {};
+      try {
+        data = responseText ? JSON.parse(responseText) : {};
+      } catch {
+        data = {};
+      }
       if (!res.ok || !data.reply) {
-        const suffix = data.code ? ` (${data.code})` : "";
+        const suffix = data.code ? ` (${data.code})` : ` (HTTP ${res.status})`;
+        console.error("Portfolio chat request failed", {
+          status: res.status,
+          data,
+          responsePreview: responseText.slice(0, 240),
+        });
         throw new Error(`${data.error || "Chat is unavailable right now."}${suffix}`);
       }
       setMessages((items) => [...items, { role: "assistant", text: data.reply }]);
