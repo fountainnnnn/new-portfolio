@@ -1,0 +1,390 @@
+{% extends "layout.html" %}
+{% block title %}VeggieAI - Home{% endblock %}
+
+{% block content %}
+<div data-page="home" data-user-authenticated="{{ 1 if current_user else 0 }}">
+<section class="hero hero--top" style="--hero-image: url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=2000&q=80');">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-12 col-lg-6 reveal">
+                <span class="hero-kicker">
+                    <i class="bi bi-cpu"></i>
+                    CNN-powered image classification
+                </span>
+                <h1 class="hero-title">Identify vegetables instantly, with confidence.</h1>
+                <p class="hero-lead">
+                    VeggieAI pairs a polished UI with a production-ready model service. Choose a resolution,
+                    upload a photo, and get a top label plus confidence breakdowns in seconds.
+                </p>
+                <div class="hero-actions">
+                    <a class="btn btn-primary btn-lg btn-glow" href="{{ url_for('predictor') }}">Get Started</a>
+                    <a class="btn btn-ghost btn-lg" href="#capabilities">Learn More</a>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat-pill reveal" data-reveal="fade-up">
+                        <div class="stat-icon"><i class="bi bi-lightning-charge"></i></div>
+                        <div>
+                            <p class="stat-label">Fast path</p>
+                            <p class="stat-value">23x23 model</p>
+                        </div>
+                    </div>
+                    <div class="stat-pill reveal" data-reveal="fade-up">
+                        <div class="stat-icon"><i class="bi bi-bullseye"></i></div>
+                        <div>
+                            <p class="stat-label">Accuracy path</p>
+                            <p class="stat-value">101x101 model</p>
+                        </div>
+                    </div>
+                    <div class="stat-pill reveal" data-reveal="fade-up">
+                        <div class="stat-icon"><i class="bi bi-shield-check"></i></div>
+                        <div>
+                            <p class="stat-label">Designed for</p>
+                            <p class="stat-value">Clear UX</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6 reveal" data-reveal="zoom">
+                <div class="hero-card">
+                    <img
+                        src="https://images.unsplash.com/photo-1543083477-4f785aeafaa9?auto=format&fit=crop&w=1400&q=80"
+                        alt="Fresh produce at a market stall"
+                        loading="lazy"
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section pt-4">
+    <div class="container">
+        <div class="row g-3 g-lg-4 align-items-stretch">
+            <div class="col-12 col-md-6 col-lg-3 reveal" data-reveal="fade-up">
+                <div class="glass feature-card">
+                    <div class="feature-icon"><i class="bi bi-stopwatch"></i></div>
+                    <p class="text-muted mb-1">Typical latency</p>
+                    <div style="font-weight: 900; font-size: 1.8rem;"><span data-countup="420">0</span><span class="text-muted">ms</span></div>
+                    <p class="feature-text mt-2">Designed for a feel-fast UX while the model runs elsewhere.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 reveal" data-reveal="fade-up">
+                <div class="glass feature-card">
+                    <div class="feature-icon"><i class="bi bi-tags"></i></div>
+                    <p class="text-muted mb-1">Classes supported</p>
+                    <div style="font-weight: 900; font-size: 1.8rem;"><span data-countup="11">0</span></div>
+                    <p class="feature-text mt-2">A focused label set for clean, interpretable results.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 reveal" data-reveal="fade-up">
+                <div class="glass feature-card">
+                    <div class="feature-icon"><i class="bi bi-layers"></i></div>
+                    <p class="text-muted mb-1">Two resolutions</p>
+                    <div style="font-weight: 900; font-size: 1.8rem;"><span data-countup="2">0</span></div>
+                    <p class="feature-text mt-2">Compare speed vs accuracy - and learn when models disagree.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 reveal" data-reveal="fade-up">
+                <div class="glass feature-card">
+                    <div class="feature-icon"><i class="bi bi-shield-check"></i></div>
+                    <p class="text-muted mb-1">Confidence-first UI</p>
+                    <div style="font-weight: 900; font-size: 1.8rem;"><span data-countup="100">0</span><span class="text-muted">%</span></div>
+                    <p class="feature-text mt-2">Clear scores, stability checks, and uncertainty gating.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="capabilities" class="section">
+    <div class="container">
+        <div class="text-center mb-4 reveal">
+            <h2 class="section-title">Model capabilities</h2>
+            <p class="section-subtitle mx-auto">
+                A lightweight workflow with thoughtful details: fast iteration, transparent outputs, and clean visuals.
+            </p>
+        </div>
+
+        <div class="row g-3 g-lg-4">
+            <div class="col-12 col-md-4 reveal" data-reveal="fade-left">
+                <div class="glass feature-card">
+                    <div class="feature-icon"><i class="bi bi-graph-up"></i></div>
+                    <h3 class="feature-title">High accuracy</h3>
+                    <p class="feature-text">
+                        Confidence-first outputs so you can see how sure the model is, not just what it picked.
+                    </p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 reveal">
+                <div class="glass feature-card">
+                    <div class="feature-icon"><i class="bi bi-clock-history"></i></div>
+                    <h3 class="feature-title">Instant results</h3>
+                    <p class="feature-text">
+                        Built for speed with a dedicated model-serving service, keeping UI interactions responsive.
+                    </p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 reveal" data-reveal="fade-right">
+                <div class="glass feature-card">
+                    <div class="feature-icon"><i class="bi bi-layers"></i></div>
+                    <h3 class="feature-title">Two resolutions</h3>
+                    <p class="feature-text">
+                        Pick 23x23 for quick feedback or 101x101 when you want the most precise classification.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section scenic" style="--scenic-image: url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=2000&q=80');">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-12 col-lg-6 reveal">
+                <h2 class="section-title">How it works</h2>
+                <p class="section-subtitle">
+                    A streamlined flow that matches how you actually use it: choose a model, upload, review results.
+                </p>
+
+                <div class="mt-4 d-grid gap-3">
+                    <div class="glass feature-card">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="feature-icon mb-0"><i class="bi bi-toggles2"></i></div>
+                            <div>
+                                <h3 class="feature-title mb-1">Select a model</h3>
+                                <p class="feature-text">
+                                    Switch between fast and accurate paths depending on your image and urgency.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass feature-card">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="feature-icon mb-0"><i class="bi bi-cloud-upload"></i></div>
+                            <div>
+                                <h3 class="feature-title mb-1">Upload a photo</h3>
+                                <p class="feature-text">
+                                    Drag and drop or browse. The UI previews your image before you run classification.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass feature-card">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="feature-icon mb-0"><i class="bi bi-stars"></i></div>
+                            <div>
+                                <h3 class="feature-title mb-1">Review the breakdown</h3>
+                                <p class="feature-text">
+                                    Get the top label, confidence score, and a shortlist of alternatives at a glance.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6 reveal" data-reveal="zoom">
+                <div class="callout">
+                    <div class="d-flex flex-column gap-3">
+                        <span class="pill"><i class="bi bi-check2-circle"></i> Clean and readable results</span>
+                        <span class="pill"><i class="bi bi-image"></i> Built for real photos</span>
+                        <span class="pill"><i class="bi bi-speedometer2"></i> Optimized for fast workflows</span>
+                    </div>
+                    <hr class="border border-white border-opacity-10 my-4">
+                    <h3 class="mb-2" style="font-weight: 850;">Try it in under a minute</h3>
+                    <p class="text-muted mb-3">
+                        Jump into the predictor and see the experience end-to-end.
+                    </p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a class="btn btn-primary btn-glow" href="{{ url_for('predictor') }}">Open Predictor</a>
+                        <a class="btn btn-ghost" href="{{ url_for('signup') }}">Create Account</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-12 col-lg-7 reveal">
+                <h2 class="section-title">Why vegetables?</h2>
+                <p class="section-subtitle">
+                    Image classification has practical value: inventory tagging, diet tracking,
+                    nutrition education, and accessibility tools.
+                </p>
+                <div class="row g-3 mt-1">
+                    <div class="col-12 col-md-6 reveal" data-reveal="fade-left">
+                        <div class="glass feature-card">
+                            <div class="feature-icon"><i class="bi bi-heart-pulse"></i></div>
+                            <h3 class="feature-title">Rich in nutrients</h3>
+                            <p class="feature-text">Vitamins, minerals, and fiber - the fundamentals done right.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 reveal" data-reveal="fade-right">
+                        <div class="glass feature-card">
+                            <div class="feature-icon"><i class="bi bi-shield-plus"></i></div>
+                            <h3 class="feature-title">Supports wellbeing</h3>
+                            <p class="feature-text">Healthier habits are easier when food choices are visible.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 reveal" data-reveal="fade-left">
+                        <div class="glass feature-card">
+                            <div class="feature-icon"><i class="bi bi-activity"></i></div>
+                            <h3 class="feature-title">Weight management</h3>
+                            <p class="feature-text">Low-calorie, high-volume meals that feel satisfying.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 reveal" data-reveal="fade-right">
+                        <div class="glass feature-card">
+                            <div class="feature-icon"><i class="bi bi-droplet-half"></i></div>
+                            <h3 class="feature-title">Digestive health</h3>
+                            <p class="feature-text">Fiber supports gut health and steady energy through the day.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-5 reveal" data-reveal="zoom">
+                <div class="hero-card">
+                    <img
+                        src="https://images.unsplash.com/photo-1506806732259-39c2d0268443?auto=format&fit=crop&w=1400&q=80"
+                        alt="Green vegetables arranged on a surface"
+                        loading="lazy"
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section scenic" style="--scenic-image: url('https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=2000&q=80'); --bg-offset: -10px;">
+    <div class="container">
+        <div class="row g-3 g-lg-4 align-items-stretch">
+            <div class="col-12 col-lg-7 reveal" data-reveal="fade-left">
+                <div class="glass dashboard-card p-4 h-100">
+                    <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                        <div>
+                            <h2 class="section-title">Dashboard preview</h2>
+                            <p class="section-subtitle mb-0">
+                                A quick look at your most recent predictions (saved to your account when signed in).
+                            </p>
+                        </div>
+                        <a class="btn btn-ghost btn-sm" href="{{ url_for('profile') }}"><i class="bi bi-grid-1x2 me-1"></i> Open Profile</a>
+                    </div>
+
+                    <div id="homeRecentList" class="d-grid gap-3 mt-3"></div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-5 reveal" data-reveal="fade-right">
+                <div class="glass dashboard-card p-4 h-100">
+                    <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                        <div>
+                            <h3 class="mb-1" style="font-weight: 850;">Next actions</h3>
+                            <p class="text-muted mb-0">Keep the momentum: batch uploads, compare mode, and confidence checks.</p>
+                        </div>
+                        <span class="pill"><i class="bi bi-stars"></i> Futuristic UI</span>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-3">
+                        <a class="btn btn-primary btn-glow" href="{{ url_for('predictor') }}"><i class="bi bi-magic me-1"></i> Run Predictor</a>
+                        <a class="btn btn-ghost" href="{{ url_for('signup') }}"><i class="bi bi-person-plus me-1"></i> Create account</a>
+                        <a class="btn btn-ghost" href="#capabilities"><i class="bi bi-lightbulb me-1"></i> Learn features</a>
+                    </div>
+
+                    <div class="mt-3 d-grid gap-2">
+                        <div class="result-metric is-good">
+                            <span><i class="bi bi-check2-circle me-2"></i> UI readiness</span>
+                            <strong>High</strong>
+                        </div>
+                        <div class="result-metric">
+                            <span><i class="bi bi-cpu me-2"></i> Model paths</span>
+                            <strong>23x23 / 101x101</strong>
+                        </div>
+                        <div class="result-metric">
+                            <span><i class="bi bi-shield-lock me-2"></i> Storage</span>
+                            <strong>SQLite</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section scenic" style="--scenic-image: url('https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=2000&q=80');">
+    <div class="container">
+        <div class="text-center reveal">
+            <h2 class="section-title">Ready to get started?</h2>
+            <p class="section-subtitle mx-auto">Sign up and start classifying with a smooth, modern workflow.</p>
+            <div class="d-flex justify-content-center gap-2 mt-3">
+                <a class="btn btn-primary btn-lg btn-glow" href="{{ url_for('signup') }}">Create Account</a>
+                <a class="btn btn-ghost btn-lg" href="{{ url_for('predictor') }}">Open Predictor</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="text-center mb-4 reveal">
+            <h2 class="section-title">FAQ</h2>
+            <p class="section-subtitle mx-auto">Quick answers before you jump into the predictor.</p>
+        </div>
+
+        <div class="accordion reveal" id="faqAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false" aria-controls="faq1">
+                        Why are there two models?
+                    </button>
+                </h2>
+                <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body text-muted">
+                        23x23 is optimized for speed and quick feedback. 101x101 keeps more detail and tends to perform
+                        better when texture and edges matter (leafy greens, cluttered backgrounds, partial occlusion).
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item mt-2">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">
+                        What does "uncertain" mean?
+                    </button>
+                </h2>
+                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body text-muted">
+                        If the top confidence is below a threshold (or the two models disagree), the UI flags the result
+                        as uncertain. It's a heuristic "is this even a vegetable?" gate to encourage better inputs.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item mt-2">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
+                        Does the app upload my images?
+                    </button>
+                </h2>
+                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body text-muted">
+                        Uploaded images are stored for your account and can be shown again in your history.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/home.js') }}" defer></script>
+{% endblock %}
+<!-- ci-trigger-noop -->

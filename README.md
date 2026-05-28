@@ -51,7 +51,9 @@ This repo is intended to run on a VPS with Docker Compose and a reverse proxy su
 docker compose up -d --build
 ```
 
-Project-specific apps and services will be added after the existing repos are copied in.
+The portfolio server is the public entry point. It serves the static portfolio,
+proxies project APIs under `/api/...`, and proxies Decidr Auto Dashboard under
+`/auto-dashboard`.
 
 ## Local Service Ports
 
@@ -63,3 +65,27 @@ The portfolio app uses same-origin routes and proxies them to local FastAPI serv
 | `/api/mock-paper-generator/*` | `http://127.0.0.1:8012/*` |
 | `/api/file-chat-assistant/*` | `http://127.0.0.1:8013/*` |
 | `/api/coding-quiz/*` | `http://127.0.0.1:8014/*` |
+| `/api/auto-dashboard/*` | `http://127.0.0.1:8021/*` |
+| `/auto-dashboard/*` | `http://127.0.0.1:8020/auto-dashboard/*` |
+
+## Decidr Auto Dashboard
+
+The portfolio project card opens `/auto-dashboard`, which is the existing
+Next.js Decidr frontend. Its browser API calls use `/api/auto-dashboard`, and
+the portfolio server strips that prefix before proxying to the existing FastAPI
+backend.
+
+Local ports:
+
+| Service | Port |
+| --- | --- |
+| Portfolio server | `3000` |
+| Decidr frontend | `8020` |
+| Decidr backend | `8021` |
+
+For VPS deployment, set `SITE_DOMAIN`, `PUBLIC_APP_URL`, and `OPENAI_API_KEY`
+in `.env`, then run:
+
+```bash
+docker compose up -d --build
+```

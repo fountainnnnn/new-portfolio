@@ -1,0 +1,130 @@
+{% extends "layout.html" %}
+
+{% block title %}VeggieAI Chat{% endblock %}
+{% block body_class %}chat-body{% endblock %}
+
+{% block content %}
+<section class="section scenic chat-hero" style="--chat-shell-height: clamp(780px, calc(100vh - 120px), 980px);">
+    <div class="container">
+        <div class="row g-3 g-lg-4 align-items-stretch chat-shell"
+             data-chat-auth="{{ 1 if current_user else 0 }}"
+             data-chat-user-id="{{ current_user.id if current_user else '' }}">
+            <div class="col-12 col-lg-4">
+                <div class="glass p-4 chat-side reveal">
+                    <div class="chat-side-top">
+                        <div class="chat-core" aria-hidden="true">
+                            <div class="chat-orb"></div>
+                            <div class="chat-orb-ring ring-a"></div>
+                            <div class="chat-orb-ring ring-b"></div>
+                            <div class="chat-orb-spark"></div>
+                        </div>
+
+                        <h2 class="section-title mt-4 mb-2">VeggieAI Assistant</h2>
+                        <p class="section-subtitle mt-0">
+                            Ask anything about vegetables, plant care, nutrition, or how to get the best predictions.
+                        </p>
+
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+                            <button class="pill chat-chip" type="button" data-chat-chip="How do I take a good photo for prediction?">
+                                <i class="bi bi-camera me-1"></i> Photo tips
+                            </button>
+                            <button class="pill chat-chip" type="button" data-chat-chip="What does confidence mean in the results?">
+                                <i class="bi bi-graph-up-arrow me-1"></i> Confidence
+                            </button>
+                            <button class="pill chat-chip" type="button" data-chat-chip="Give me 3 easy vegetable recipes for a busy week.">
+                                <i class="bi bi-lightning-charge me-1"></i> Quick recipes
+                            </button>
+                            <button class="pill chat-chip" type="button" data-chat-chip="Suggest a veggie meal plan for 2 days.">
+                                <i class="bi bi-calendar2-week me-1"></i> Meal plan
+                            </button>
+                        </div>
+
+                        <div class="mt-3">
+                            {% if current_user %}
+                                <div class="pill">
+                                    <i class="bi bi-person-check me-1"></i> Signed in as {{ current_user.full_name or current_user.username }}
+                                </div>
+                            {% else %}
+                                <div class="pill">
+                                    <i class="bi bi-person me-1"></i> Guest chat
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <p class="text-muted small mt-3 mb-0">
+                            Tip: Press <span class="kbd">Enter</span> to send, <span class="kbd">Shift</span>+<span class="kbd">Enter</span> for a new line.
+                        </p>
+                    </div>
+
+                    <div class="chat-history mt-4">
+                        <div class="d-flex align-items-center justify-content-between gap-2">
+                            <p class="mb-0" style="font-weight: 850;">Chats</p>
+                            <button class="btn btn-sm btn-ghost" type="button" id="chatNewThreadBtn">
+                                <i class="bi bi-plus-lg me-1"></i> New
+                            </button>
+                        </div>
+                        <p class="text-muted small mt-1 mb-2">
+                            {% if current_user %}Saved to your account.{% else %}Not saved while signed out.{% endif %}
+                        </p>
+                        <div id="chatThreads" class="chat-threads" role="list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-8">
+                <div class="glass chat-panel reveal">
+                    <div class="chat-panel-top">
+                        <div class="d-flex align-items-center gap-2 chat-live-status">
+                            <span class="chat-live-dot" aria-hidden="true"></span>
+                            <div class="chat-live-copy">
+                                <p class="mb-0 chat-live-title">Live assistant</p>
+                                <p class="text-muted small mb-0 chat-live-sub" id="chatStatusText">Ready</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2">
+                            <button class="btn btn-sm btn-ghost" type="button" id="chatResetBtn">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i> New chat
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="chatMessages" class="chat-messages" aria-live="polite" aria-relevant="additions text"></div>
+
+                    <div class="chat-compose">
+                        <input type="hidden" id="chatCsrf" value="{{ csrf_token() }}">
+                        <input type="file" id="chatImageInput" accept="image/*" hidden>
+                        <div class="chat-compose-inner">
+                            <button class="btn btn-ghost chat-attach" type="button" id="chatAttachBtn" aria-label="Attach image">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                            <textarea id="chatInput" class="form-control chat-input" rows="2"
+                                      placeholder="Message the assistant..."></textarea>
+                            <button class="btn btn-primary btn-glow chat-send" type="button" id="chatSendBtn">
+                                <i class="bi bi-send-fill me-1"></i> Send
+                            </button>
+                        </div>
+                        <div class="chat-attachment-preview" id="chatAttachmentPreview" hidden>
+                            <img class="chat-attachment-thumb" id="chatAttachmentThumb" alt="Selected image preview">
+                            <div class="chat-attachment-meta">
+                                <p class="chat-attachment-name mb-0" id="chatAttachmentName"></p>
+                                <p class="text-muted small mb-0">Ready to send</p>
+                            </div>
+                            <button class="btn btn-sm btn-ghost chat-attachment-remove" type="button" id="chatAttachmentRemove" aria-label="Remove image">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                        <div class="text-muted small mt-2">
+                            AI responses may be inaccurate. Do not share passwords, keys, or private data.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/chat.js') }}" defer></script>
+{% endblock %}

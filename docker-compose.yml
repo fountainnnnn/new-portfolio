@@ -1,4 +1,131 @@
 services:
+  portfolio:
+    build:
+      context: ./apps/portfolio-website
+    environment:
+      PORT: 3000
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${PORTFOLIO_OPENAI_MODEL:-gpt-4.1-mini}
+      QUIZ_GENERATOR_API_URL: ${QUIZ_GENERATOR_API_URL:-http://quiz-generator:7860}
+      MOCK_GENERATOR_API_URL: ${MOCK_GENERATOR_API_URL:-http://mock-generator:7860}
+      FILE_CHAT_ASSISTANT_API_URL: ${FILE_CHAT_ASSISTANT_API_URL:-http://file-chat-assistant:7860}
+      CODING_QUIZ_API_URL: ${CODING_QUIZ_API_URL:-http://coding-quiz:7860}
+      AUTO_DASHBOARD_FRONTEND_URL: http://auto-dashboard-frontend:8020
+      AUTO_DASHBOARD_API_URL: http://auto-dashboard-backend:8000
+      SCHOOL_HDB_RESALE_URL: http://school-hdb-resale-ca1:5000
+      SCHOOL_VEGGIE_AI_URL: http://school-veggie-ai-ca2:5000
+    expose:
+      - "3000"
+    depends_on:
+      - quiz-generator
+      - mock-generator
+      - file-chat-assistant
+      - coding-quiz
+      - auto-dashboard-frontend
+      - auto-dashboard-backend
+      - school-hdb-resale-ca1
+      - school-veggie-ai-ca2
+
+  quiz-generator:
+    build:
+      context: ./services/quiz-generator
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      QUIZ_GENERATOR_MODEL: ${QUIZ_GENERATOR_MODEL:-gpt-4.1}
+    expose:
+      - "7860"
+
+  mock-generator:
+    build:
+      context: ./services/mock-generator
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      MOCK_GENERATOR_MODEL: ${MOCK_GENERATOR_MODEL:-gpt-4.1}
+    expose:
+      - "7860"
+
+  file-chat-assistant:
+    build:
+      context: ./services/file-chat-assistant
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      FILE_CHAT_MODEL: ${FILE_CHAT_MODEL:-gpt-5-mini}
+    expose:
+      - "7860"
+
+  coding-quiz:
+    build:
+      context: ./services/coding-quiz
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      CODING_QUIZ_MODEL: ${CODING_QUIZ_MODEL:-gpt-5-mini}
+    expose:
+      - "7860"
+
+  auto-dashboard-frontend:
+    build:
+      context: ./projects/auto-dashboard/frontend
+      args:
+        AUTODASH_BASE_PATH: /auto-dashboard
+        NEXT_PUBLIC_API_BASE_URL: /api/auto-dashboard
+    environment:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: 1
+      AUTODASH_BASE_PATH: /auto-dashboard
+      NEXT_PUBLIC_API_BASE_URL: /api/auto-dashboard
+    expose:
+      - "8020"
+    depends_on:
+      - auto-dashboard-backend
+
+  auto-dashboard-backend:
+    build:
+      context: ./projects/auto-dashboard/backend
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${AUTODASH_OPENAI_MODEL:-gpt-5-mini}
+      OPENAI_PLANNER_MODEL: ${AUTODASH_OPENAI_PLANNER_MODEL:-gpt-5-mini}
+      OPENAI_PATCH_MODEL: ${AUTODASH_OPENAI_PATCH_MODEL:-gpt-5-mini}
+      OPENAI_REASONING_EFFORT: ${OPENAI_REASONING_EFFORT:-low}
+      FRONTEND_ORIGIN: ${PUBLIC_APP_URL:-http://localhost}
+      AUTODASH_RENDER_PLOTLY_JSON: ${AUTODASH_RENDER_PLOTLY_JSON:-false}
+      AUTODASH_PARALLEL_CHARTS: ${AUTODASH_PARALLEL_CHARTS:-true}
+      AUTODASH_MAX_ROWS_FOR_RENDER: ${AUTODASH_MAX_ROWS_FOR_RENDER:-25000}
+      AUTODASH_PBITOOLS_MODE: ${AUTODASH_PBITOOLS_MODE:-auto}
+    expose:
+      - "8000"
+
+  school-hdb-resale-ca1:
+    build:
+      context: ./projects/school-hdb-resale-ca1
+    environment:
+      PORT: 5000
+      APP_BASE_PATH: /school-hdb-resale-ca1
+      SECRET_KEY: ${SCHOOL_HDB_SECRET_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_CHAT_MODEL: ${SCHOOL_HDB_OPENAI_MODEL:-gpt-4.1-mini}
+      FLASK_ENV: production
+    expose:
+      - "5000"
+
+  school-veggie-ai-ca2:
+    build:
+      context: ./projects/school-veggie-ai-ca2
+    environment:
+      PORT: 5000
+      APP_BASE_PATH: /school-veggie-ai-ca2
+      SECRET_KEY: ${SCHOOL_VEGGIE_SECRET_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${SCHOOL_VEGGIE_OPENAI_MODEL:-gpt-4.1-mini}
+      MODEL_INFERENCE_URL: ${SCHOOL_VEGGIE_MODEL_INFERENCE_URL:-}
+      GOOGLE_CLIENT_ID: ${SCHOOL_VEGGIE_GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${SCHOOL_VEGGIE_GOOGLE_CLIENT_SECRET:-}
+      TRUST_PROXY_HEADERS: "true"
+      SESSION_COOKIE_SECURE: ${SESSION_COOKIE_SECURE:-true}
+      FLASK_ENV: production
+    expose:
+      - "5000"
+
   caddy:
     image: caddy:2
     ports:
@@ -8,6 +135,8 @@ services:
       - ./infra/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
+    depends_on:
+      - portfolio
 
 volumes:
   caddy_data:

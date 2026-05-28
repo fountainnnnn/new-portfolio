@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 1080" role="img" aria-label="LUMA YUZU shelf side can">
+  <defs>
+    <linearGradient id="body" x1="120" x2="580" y1="80" y2="1000" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f8fff2"/>
+      <stop offset=".3" stop-color="#b6f5df"/>
+      <stop offset=".62" stop-color="#dfff4d"/>
+      <stop offset="1" stop-color="#7fd9c4"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="120" x2="600" y1="0" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#687167"/>
+      <stop offset=".28" stop-color="#eef4e9"/>
+      <stop offset=".55" stop-color="#a6b0a4"/>
+      <stop offset=".82" stop-color="#f7fbef"/>
+      <stop offset="1" stop-color="#6d766c"/>
+    </linearGradient>
+    <filter id="grain" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="3" seed="27"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="table" tableValues="0 .11"/></feComponentTransfer>
+    </filter>
+    <clipPath id="clip">
+      <path d="M182 96C248 58 548 76 594 122C552 314 548 742 596 950C530 1014 240 1030 170 986C140 740 146 324 182 96Z"/>
+    </clipPath>
+  </defs>
+  <ellipse cx="366" cy="1018" rx="236" ry="48" fill="#0d2218" opacity=".17"/>
+  <g opacity=".55">
+    <rect x="70" y="690" width="188" height="118" rx="8" fill="#e8ff57" opacity=".58"/>
+    <text x="164" y="746" text-anchor="middle" font-family="Bahnschrift, Arial, sans-serif" font-size="22" font-weight="900" fill="#062818">SHELF</text>
+    <text x="164" y="778" text-anchor="middle" font-family="Bahnschrift, Arial, sans-serif" font-size="22" font-weight="900" fill="#062818">READY</text>
+  </g>
+  <g clip-path="url(#clip)">
+    <path d="M182 96C248 58 548 76 594 122C552 314 548 742 596 950C530 1014 240 1030 170 986C140 740 146 324 182 96Z" fill="url(#body)"/>
+    <rect x="118" y="62" width="520" height="990" filter="url(#grain)" opacity=".36"/>
+    <path d="M188 100C238 216 244 830 186 984L266 1002C332 782 332 300 260 82Z" fill="#ffffff" opacity=".28"/>
+    <path d="M470 80C410 286 424 786 514 996L600 946C540 760 538 322 590 124Z" fill="#dfff4d" opacity=".6"/>
+    <rect x="292" y="212" width="210" height="646" fill="#f9fff3" opacity=".18" stroke="#062818" stroke-width="8"/>
+    <text x="396" y="372" text-anchor="middle" font-family="Bahnschrift, Aptos Display, Arial Narrow, Arial, sans-serif" font-size="92" font-weight="900" fill="#062818">LUMA</text>
+    <text x="398" y="474" text-anchor="middle" font-family="Bahnschrift, Aptos Display, Arial Narrow, Arial, sans-serif" font-size="48" font-weight="900" letter-spacing="8" fill="#062818">YUZU</text>
+    <text x="230" y="620" transform="rotate(-90 230 620)" text-anchor="middle" font-family="Bahnschrift, Arial, sans-serif" font-size="54" font-weight="900" letter-spacing="8" fill="#062818">CITRUS TEA</text>
+    <g opacity=".25" stroke="#062818" stroke-width="3">
+      <path d="M166 220H586M160 360H584M158 500H586M162 640H588M170 780H592"/>
+      <path d="M314 92V1002M446 104V990"/>
+    </g>
+    <g fill="#fafff3" opacity=".9">
+      <circle cx="214" cy="240" r="10"/><circle cx="528" cy="320" r="7"/><circle cx="474" cy="772" r="11"/><circle cx="292" cy="714" r="6"/><circle cx="380" cy="178" r="7"/>
+    </g>
+  </g>
+  <ellipse cx="388" cy="102" rx="210" ry="46" fill="url(#metal)" transform="rotate(3 388 102)"/>
+  <ellipse cx="388" cy="102" rx="166" ry="23" fill="#e8eee5" transform="rotate(3 388 102)"/>
+  <ellipse cx="382" cy="976" rx="218" ry="44" fill="url(#metal)" transform="rotate(-2 382 976)"/>
+</svg>

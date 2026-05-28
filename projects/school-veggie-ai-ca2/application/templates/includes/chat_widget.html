@@ -1,0 +1,49 @@
+<div class="chat-widget"
+     id="chatWidget"
+     aria-live="polite"
+     data-chat-auth="{{ 1 if current_user else 0 }}"
+     data-chat-user-id="{{ current_user.id if current_user else '' }}">
+    <button class="chat-widget-fab" id="chatWidgetFab" type="button" aria-label="Open chat">
+        <span class="chat-widget-fab-icon" aria-hidden="true">
+            <i class="bi bi-chat"></i>
+        </span>
+    </button>
+
+    <div class="chat-widget-panel glass" id="chatWidgetPanel" role="dialog" aria-label="VeggieAI chat" aria-modal="false" hidden>
+        <div class="chat-widget-top">
+            <div class="d-flex align-items-center gap-2">
+                <span class="chat-live-dot" aria-hidden="true"></span>
+                <div>
+                    <p class="mb-0" style="font-weight: 850;">VeggieAI Chat</p>
+                    <p class="text-muted small mb-0" id="chatWidgetStatus">Ready</p>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-1">
+                <a class="btn btn-sm btn-ghost" href="{{ url_for('chat') }}" aria-label="Open full chat page">
+                    <i class="bi bi-box-arrow-up-right"></i>
+                </a>
+                <button class="btn btn-sm btn-ghost" type="button" id="chatWidgetClose" aria-label="Close chat">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="chat-widget-messages" id="chatWidgetMessages" aria-live="polite" aria-relevant="additions text"></div>
+
+        <div class="chat-widget-compose">
+            <input type="hidden" id="chatWidgetCsrf" value="{{ csrf_token() }}">
+            <div class="chat-widget-compose-inner">
+                <textarea id="chatWidgetInput" class="form-control chat-widget-input" rows="1" placeholder="Message..."></textarea>
+                <button class="btn btn-primary btn-glow chat-widget-send" type="button" id="chatWidgetSend">
+                    <i class="bi bi-send-fill"></i>
+                </button>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+                <button class="btn btn-sm btn-ghost" type="button" id="chatWidgetReset">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i> New
+                </button>
+                <span class="text-muted small">Open full chat for more.</span>
+            </div>
+        </div>
+    </div>
+</div>

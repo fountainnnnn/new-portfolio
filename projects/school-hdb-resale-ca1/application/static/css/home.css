@@ -1,0 +1,301 @@
+/* FEATURE CARDS */
+.feature-card {
+    border: 1px solid var(--brand-border);
+    border-radius: 1rem;
+    background-color: #fff;
+    padding: 2rem;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.feature-card:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+    transform: translateY(-4px);
+}
+
+/* INSIGHT CARDS */
+.insight-card {
+    background-color: #fff;
+    border: 1px solid var(--brand-border);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+}
+
+.insight-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #888;
+}
+
+/* DATA INSIGHT SECTION */
+.data-insight-section {
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+}
+
+.section-header {
+    text-align: center;
+}
+
+.section-header h2 {
+    font-size: clamp(2rem, 3vw, 2.5rem);
+    color: var(--brand-primary);
+    margin-bottom: 0.5rem;
+}
+
+.section-header p {
+    max-width: 700px;
+    margin: 0.5rem auto 0;
+    color: #6b5b54;
+}
+
+.metrics-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.metrics-row .insight-card {
+    flex: 1 1 30%;
+    transition: transform 0.2s ease;
+}
+
+.metrics-row .insight-card:hover {
+    transform: translateY(-3px);
+}
+
+/* Feature Block */
+.feature-block {
+    padding: 1rem 0rem !important;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.feature-block h3 {
+    font-size: 1.5rem;
+    color: var(--brand-primary);
+    border-left: 4px solid var(--brand-primary);
+    padding-left: 0.75rem;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+/* JOURNEY */
+.journey-section {
+    background: var(--brand-surface);
+}
+
+.timeline {
+    position: relative;
+    border-left: 2px solid var(--brand-border);
+    padding-left: 1.5rem;
+    margin-left: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.timeline li {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    margin: 0px 20px;
+    gap: 1rem;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -1.5rem; /* aligns dot with border */
+    top: 0.45rem;
+    width: 8.5px;
+    height: 8.5px;
+    background-color: var(--brand-primary);
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 3px #fff; /* small white ring for clarity */
+}
+
+.timeline h4 {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--brand-muted);
+}
+
+.timeline p {
+    margin: 0;
+    color: #7a6a63;
+}
+
+
+/* TESTIMONIALS */
+.testimonial-card {
+    border: 1px solid var(--brand-border);
+    border-radius: 1rem;
+    background-color: #fff;
+    padding: 2rem;
+    box-shadow: none;
+}
+
+.testimonial-card blockquote {
+    font-size: 1rem;
+    color: var(--brand-muted);
+    font-style: italic;
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--brand-primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+[data-animate] {
+    opacity: 1;
+    transform: none;
+}
+
+/* Testimonial Section Header */
+.testimonial-section .section-header {
+    text-align: center;
+}
+
+.testimonial-section .section-header h2 {
+    font-size: clamp(2rem, 3vw, 2.5rem);
+    color: var(--brand-primary);
+    margin-bottom: 0.75rem;
+}
+
+.testimonial-section .section-header p {
+    max-width: 700px;
+    margin: 0 auto;
+    color: #6b5b54;
+}
+
+/* Journey Section */
+.journey-section {
+    background: var(--brand-surface);
+}
+
+.journey-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.75rem;
+    width: 100%;
+}
+
+.journey-card {
+    background: #fff;
+    border-radius: 1rem;
+    border: 1px solid var(--brand-border);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.journey-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+}
+
+.journey-card-inner {
+    padding: 2rem;
+}
+
+.journey-card h4 {
+    font-size: 1.15rem;
+    color: var(--brand-primary);
+    margin-bottom: 0.75rem;
+}
+
+.journey-card p {
+    color: #6b5b54;
+    line-height: 1.6;
+}
+
+/* Ensure proper vertical centering within row */
+.journey-section .row {
+    min-height: 100%;
+    align-items: center !important;
+}
+
+/* TESTIMONIALS */
+.testimonial-card {
+    border: 1px solid var(--brand-border);
+    border-radius: 1rem;
+    background-color: #fff;
+    padding: 2rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    cursor: default;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+    border-color: rgba(26, 115, 232, 0.3);
+}
+
+.testimonial-card blockquote {
+    font-size: 1rem;
+    color: var(--brand-muted);
+    font-style: italic;
+    margin-bottom: 1.25rem;
+    transition: color 0.25s ease;
+}
+
+.testimonial-card:hover blockquote {
+    color: var(--brand-primary);
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--brand-primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    transition: background-color 0.25s ease;
+}
+
+.testimonial-card:hover .avatar {
+    background-color: var(--brand-accent);
+}
+
+@media (max-width: 768px) {
+    .hero-single-column,
+    .hero-copy-block {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .hero-section .hero-title {
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-section .d-flex.gap-3 {
+        justify-content: center;
+    }
+}

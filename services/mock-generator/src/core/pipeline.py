@@ -14,7 +14,6 @@ import tempfile
 from .llm_mockgen import generate_mock_papers
 from .mock_upload import papers_to_clean_text
 from .pdf_builder import build_mockpaper_pdf
-from .bootstrap import ensure_easyocr_weights
 
 
 def run_pipeline_end_to_end(
@@ -67,13 +66,6 @@ def run_pipeline_end_to_end(
 
     if not saved_paths:
         raise ValueError("No input files provided for processing.")
-
-    # --- Ensure EasyOCR is ready (forces /tmp cache)
-    reader = ensure_easyocr_weights(lang=language)
-    print(
-        f"[DEBUG] EasyOCR initialized -> model dir={reader.model_storage_directory}, "
-        f"user dir={reader.user_network_directory}"
-    )
 
     # --- Extract reference text
     extract_result = papers_to_clean_text(

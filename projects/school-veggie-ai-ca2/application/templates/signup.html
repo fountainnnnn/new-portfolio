@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+{% block title %}VeggieAI - Sign Up{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+
+{% block content %}
+<section class="auth-wrap scenic" style="--scenic-image: url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=2000&q=80'); --bg-offset: -8px;">
+    <div class="container">
+        <div class="auth-grid">
+            <aside class="auth-panel reveal" data-reveal="fade-left"
+                   style="--auth-image: url('https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?auto=format&fit=crop&w=1800&q=80');">
+                <div class="auth-panel-inner">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="brand-mark" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M16.6 3.2c-3 .3-5.4 1.5-7.1 3.4C7 9.2 6.4 12.8 7 15.8c.6 2.8 2.3 4.8 4.7 5 2.4.2 4.5-1.3 5.7-3.9 1.3-2.9 1.5-6.4.7-9.1-.4-1.3-1-2.5-1.8-3.4Z" fill="currentColor" opacity=".9"/>
+                                <path d="M9.2 6.7c2.5 2.2 6.4 2.2 8.9 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".7"/>
+                            </svg>
+                        </span>
+                        <strong>VeggieAI</strong>
+                    </div>
+                    <h1 class="auth-panel-title">Create your account.</h1>
+                    <p class="text-muted mb-0">
+                        Start classifying vegetable images with a clean interface and confidence-first results.
+                    </p>
+                    <ul class="auth-panel-list">
+                        <li>Save your latest predictions</li>
+                        <li>Track activity over time</li>
+                        <li>Quick access to the predictor</li>
+                    </ul>
+                </div>
+            </aside>
+
+            <div class="glass auth-card reveal" data-reveal="fade-right">
+                <h2 class="mb-1" style="font-weight: 850;">Sign up</h2>
+                <p class="text-muted">A few details and you're ready to go.</p>
+
+                <form method="post" action="{{ url_for('signup') }}" class="mt-4">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    <div class="mb-3">
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'danger' else category }} small mb-2">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+
+                    {% if signup_errors %}
+                    <div class="alert alert-danger small mb-3">
+                        {{ signup_errors | join(', ') }}
+                    </div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label class="form-label" for="fullName">Full name</label>
+                        <input class="form-control" id="fullName" name="full_name" placeholder="Enter your name" autocomplete="name"
+                               value="{{ signup_defaults.full_name if signup_defaults is defined }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="email">Email address</label>
+                        <input class="form-control" id="email" name="email" type="email" placeholder="Enter your email" autocomplete="email"
+                               value="{{ signup_defaults.email if signup_defaults is defined }}">
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label" for="usernameSignup">Username</label>
+                            <input class="form-control" id="usernameSignup" name="username" placeholder="@username" autocomplete="username"
+                                   value="{{ signup_defaults.username if signup_defaults is defined }}">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="passwordSignup">Password</label>
+                            <input class="form-control" id="passwordSignup" name="password" type="password" placeholder="Create a password"
+                                   autocomplete="new-password">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="passwordConfirm">Confirm password</label>
+                            <input class="form-control" id="passwordConfirm" name="confirm_password" type="password"
+                                   placeholder="Confirm password" autocomplete="new-password">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary w-100 btn-glow mt-4" type="submit">Create Account</button>
+
+                    <div class="d-flex align-items-center gap-3 my-3">
+                        <div class="flex-grow-1 border-top border-white border-opacity-10"></div>
+                        <span class="text-muted small">or</span>
+                        <div class="flex-grow-1 border-top border-white border-opacity-10"></div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a class="btn btn-ghost" href="{{ url_for('auth_google') }}">
+                            <i class="bi bi-google"></i> Sign up with Google
+                        </a>
+                    </div>
+
+                    <p class="text-muted text-center mt-3 mb-0">
+                        Already have an account? <a class="text-decoration-underline" href="{{ url_for('login') }}">Sign in</a>
+                    </p>
+
+                    <div class="text-center mt-3">
+                        <a class="text-muted small" href="{{ url_for('home') }}"><i class="bi bi-arrow-left"></i> Back to home</a>
+                    </div>
+
+                    <p class="text-muted small mt-4 mb-0">
+                        Accounts and prediction history are stored in SQLite.
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

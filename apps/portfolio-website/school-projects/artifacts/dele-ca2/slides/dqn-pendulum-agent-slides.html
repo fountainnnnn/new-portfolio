@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DQN Pendulum Agent Slides</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 22px; background: #f6f8fb; font-family: Inter, Segoe UI, Arial, sans-serif; color: #172033; }
+    header { max-width: 1100px; margin: 0 auto 18px; display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+    h1 { margin: 0; font-size: 20px; line-height: 1.2; }
+    p { margin: 0; color: #65728a; font-size: 14px; font-weight: 700; }
+    main { max-width: 1100px; margin: 0 auto; display: grid; gap: 18px; }
+    img { width: 100%; height: auto; display: block; border-radius: 12px; background: white; border: 1px solid #dfe6ef; box-shadow: 0 14px 34px rgba(24, 36, 56, .08); }
+  </style>
+</head>
+<body>
+  <header><h1>DQN Pendulum Agent Slides</h1><p>43 pages</p></header>
+  <main id="slides"></main>
+  <script>
+    const slides = document.getElementById('slides');
+    for (let page = 50; page <= 92; page += 1) {
+      const img = document.createElement('img');
+      const pageId = String(page).padStart(3, '0');
+      img.src = `dele-ca2-part-a-b-pages/page-${pageId}.webp`;
+      img.alt = `DQN Pendulum Agent slide ${page - 49}`;
+      img.loading = 'lazy';
+      slides.appendChild(img);
+    }
+  </script>
+</body>
+</html>

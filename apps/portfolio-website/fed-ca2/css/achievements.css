@@ -1,0 +1,55 @@
+.banner {
+    inset: 17vh 0 0 0;
+    height: 100svh;
+}
+
+.banner video {
+    inset: 0 0 0 0;
+    height: 100%;
+}
+
+.banner #bg {
+    height: 100%;
+    background: #fff url(../images/heart.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 110dvh;
+    mix-blend-mode: screen;
+}
+
+.maincont {
+    margin-top: 120svh;
+}
+
+.hall-of-fame {  
+    padding: 20px; }
+                    
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.student-img {
+    width: 50px;
+    height: auto;
+    border-radius: 20%;
+    margin-right: 10px;
+}
+
+@media (max-width: 768px) {
+    .banner {
+        inset: 12vh 0 0 0;
+        height: 68svh;
+    }
+
+    .banner #bg {
+        background-size: min(95vw, 520px);
+    }
+
+    .maincont {
+        margin-top: 82svh;
+    }
+
+    #search {
+        width: 100% !important;
+    }
+}

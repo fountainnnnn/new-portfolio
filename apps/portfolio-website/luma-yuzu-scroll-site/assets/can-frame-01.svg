@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 1080" role="img" aria-label="LUMA YUZU front can">
+  <defs>
+    <linearGradient id="body" x1="92" x2="628" y1="84" y2="1010" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f4fff4"/>
+      <stop offset=".22" stop-color="#9deed7"/>
+      <stop offset=".54" stop-color="#ceff52"/>
+      <stop offset=".78" stop-color="#8edeca"/>
+      <stop offset="1" stop-color="#efffe5"/>
+    </linearGradient>
+    <linearGradient id="shade" x1="126" x2="594" y1="0" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#042414" stop-opacity=".2"/>
+      <stop offset=".12" stop-color="#ffffff" stop-opacity=".34"/>
+      <stop offset=".45" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset=".78" stop-color="#082414" stop-opacity=".16"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity=".4"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="126" x2="594" y1="0" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#717970"/>
+      <stop offset=".22" stop-color="#e9eee3"/>
+      <stop offset=".52" stop-color="#aeb7aa"/>
+      <stop offset=".78" stop-color="#f7fbf2"/>
+      <stop offset="1" stop-color="#6f786d"/>
+    </linearGradient>
+    <filter id="grain" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="3" seed="18"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 .12"/>
+      </feComponentTransfer>
+    </filter>
+    <clipPath id="clip">
+      <path d="M152 95C212 58 508 58 568 95C590 328 590 752 568 985C508 1023 212 1023 152 985C130 752 130 328 152 95Z"/>
+    </clipPath>
+  </defs>
+  <ellipse cx="360" cy="1018" rx="232" ry="50" fill="#0d2218" opacity=".18"/>
+  <g clip-path="url(#clip)">
+    <path d="M152 95C212 58 508 58 568 95C590 328 590 752 568 985C508 1023 212 1023 152 985C130 752 130 328 152 95Z" fill="url(#body)"/>
+    <rect x="128" y="56" width="468" height="988" fill="url(#shade)"/>
+    <rect x="128" y="56" width="468" height="988" filter="url(#grain)" opacity=".35"/>
+    <path d="M186 118C214 216 220 852 182 964L240 986C288 782 284 294 236 88Z" fill="#ffffff" opacity=".24"/>
+    <path d="M500 84C446 266 454 780 520 1002L588 958C544 752 540 288 586 110Z" fill="#d8ff52" opacity=".56"/>
+    <g opacity=".2" stroke="#062818" stroke-width="3">
+      <path d="M142 216H578M136 354H584M134 492H586M134 630H586M138 768H582M144 904H576"/>
+      <path d="M240 82V1004M360 70V1014M480 82V1004"/>
+    </g>
+    <rect x="206" y="228" width="308" height="522" rx="8" fill="#f7fff4" opacity=".22" stroke="#062818" stroke-width="12"/>
+    <rect x="238" y="266" width="244" height="446" rx="4" fill="none" stroke="#062818" stroke-width="3" opacity=".74"/>
+    <text x="360" y="430" text-anchor="middle" font-family="Bahnschrift, Aptos Display, Arial Narrow, Arial, sans-serif" font-size="122" font-weight="900" fill="#062818">LUMA</text>
+    <text x="360" y="540" text-anchor="middle" font-family="Bahnschrift, Aptos Display, Arial Narrow, Arial, sans-serif" font-size="58" font-weight="900" letter-spacing="9" fill="#062818">YUZU</text>
+    <text x="360" y="628" text-anchor="middle" font-family="Aptos, Segoe UI, Arial, sans-serif" font-size="24" font-weight="900" letter-spacing="4" fill="#062818">SPARKLING YUZU TEA</text>
+    <text x="360" y="688" text-anchor="middle" font-family="Aptos, Segoe UI, Arial, sans-serif" font-size="22" font-weight="900" letter-spacing="4" fill="#062818">12 FL OZ</text>
+    <g fill="#fafff3" opacity=".9">
+      <circle cx="192" cy="250" r="10"/><circle cx="536" cy="332" r="8"/><circle cx="456" cy="770" r="12"/><circle cx="306" cy="720" r="7"/><circle cx="372" cy="170" r="8"/><circle cx="590" cy="620" r="7"/><circle cx="250" cy="870" r="5"/>
+    </g>
+    <g transform="translate(448 806)" fill="#062818" opacity=".86">
+      <rect width="6" height="72"/><rect x="11" width="3" height="72"/><rect x="20" width="8" height="72"/><rect x="36" width="4" height="72"/><rect x="46" width="11" height="72"/>
+    </g>
+  </g>
+  <ellipse cx="360" cy="94" rx="218" ry="45" fill="url(#metal)"/>
+  <ellipse cx="360" cy="94" rx="178" ry="24" fill="#e7eee5"/>
+  <path d="M314 92C330 70 390 70 406 92C392 105 328 105 314 92Z" fill="#9ca79b" opacity=".65"/>
+  <ellipse cx="360" cy="984" rx="218" ry="45" fill="url(#metal)"/>
+</svg>

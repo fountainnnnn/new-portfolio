@@ -1,0 +1,152 @@
+<div class="dashboard-grid prediction-detail-grid">
+  {% if prediction_result %}
+  <div class="dashboard-card span-12 primary-metric">
+    <div class="sparkline">
+      <span class="sparkline-label">Predicted price</span>
+      <span class="sparkline-value">{{ prediction_result.price }}</span>
+    </div>
+    {% if prediction_result.price_per_sqm %}
+    <div class="prediction-metric">
+      <span class="prediction-metric__label">Price per sqm</span>
+      <span class="prediction-metric__value">{{ prediction_result.price_per_sqm }}</span>
+    </div>
+    {% endif %}
+    {% if prediction_result.details %}
+    <ul class="prediction-summary-box__details list-unstyled mb-0">
+      {% for detail in prediction_result.details %}
+      <li>{{ detail }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    <div class="confidence-block mt-4">
+      <header>
+        <p class="eyebrow mb-1">Confidence bands</p>
+        <h4 class="mb-2">Scenario forecasts</h4>
+      </header>
+      <div class="chart-stack">
+        {% for bar in comparison_bars %}
+        <div class="telemetry-bar">
+          <div class="telemetry-bar__label"><span>{{ bar.label }}</span><span>{{ bar.value }}</span></div>
+          <div class="progress" role="progressbar" aria-valuenow="{{ bar.percent | default(0) }}" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar" data-progress="{{ bar.percent | default(0) }}"></div>
+          </div>
+        </div>
+        {% else %}
+        <div class="placeholder-message text-secondary">Scenario comparisons will appear here once a prediction is available.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  {% if prediction_result.demand %}
+  <div class="dashboard-card span-6 demand-card">
+    {% set demand = prediction_result.demand %}
+    <div class="demand-highlight">
+      <div class="demand-highlight__badge demand-highlight__badge--{{ demand.label|lower }}">{{ demand.label }} Demand</div>
+      <div class="demand-highlight__body">
+        <div class="demand-highlight__score">
+          <span class="demand-highlight__value">{{ demand.percentage }}</span>
+          <span class="demand-highlight__caption">Probability of {{ demand.label|lower }} buyer interest</span>
+        </div>
+        <p class="demand-highlight__message mb-0">{{ demand.message }}</p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if prediction_result.exit_outlook %}
+  {% set outlook = prediction_result.exit_outlook %}
+  <div class="dashboard-card span-6 exit-card">
+    <div class="exit-value-card">
+      <div class="exit-value-card__header">
+        <div>
+          <p class="exit-value-card__eyebrow text-uppercase">Exit value outlook</p>
+          <h3 class="exit-value-card__title">Potential {{ 'profit' if outlook.status == 'profit' else 'loss' }} of {{ outlook.profit_display }}</h3>
+        </div>
+        <div class="exit-value-card__chip exit-value-card__chip--{{ 'gain' if outlook.status == 'profit' else 'loss' }}">{{ outlook.gain_window_label }}</div>
+      </div>
+      <div class="exit-value-card__metrics">
+        <div>
+          <p class="exit-value-card__metric-label">Projected exit price</p>
+          <p class="exit-value-card__metric-value">{{ outlook.exit_price_display }}</p>
+          <p class="exit-value-card__metric-subtext">Range {{ outlook.exit_range_display }}</p>
+        </div>
+        <div>
+          <p class="exit-value-card__metric-label">Estimated {{ 'profit' if outlook.status == 'profit' else 'loss' }}</p>
+          <p class="exit-value-card__metric-value">{{ outlook.profit_display }}</p>
+          <p class="exit-value-card__metric-subtext">{{ outlook.pct_gain_display }} vs. purchase</p>
+        </div>
+        <div>
+          <p class="exit-value-card__metric-label">Purchase baseline</p>
+          <p class="exit-value-card__metric-value">{{ outlook.purchase_price_display }}</p>
+          <p class="exit-value-card__metric-subtext">{{ outlook.purchase_month_label }} purchase scenario<br>Demand index reference: {{ outlook.demand_index_display }}</p>
+        </div>
+      </div>
+      <div class="exit-value-card__footer">{{ outlook.summary }}</div>
+    </div>
+  </div>
+  {% endif %}
+  {% endif %}
+
+  {% if shap_image %}
+  <div class="dashboard-card span-6 shap-card compact-card">
+    <header>
+      <p class="eyebrow">Feature impact</p>
+      <h3 class="mb-2">Contribution chart</h3>
+    </header>
+    <div class="shap-chart mt-3">
+      <img src="{{ shap_image }}"
+           class="img-fluid rounded-4 shadow-sm chart-zoomable"
+           alt="SHAP feature impact chart"
+           data-lightbox-src="{{ shap_image }}"
+           data-lightbox-label="Feature impact chart">
+    </div>
+  </div>
+  {% endif %}
+
+  {% if town_price_chart %}
+  <div class="dashboard-card span-6 towns-card compact-card">
+    <header>
+      <p class="eyebrow">Town comparison</p>
+      <h3 class="mb-2">Historical averages</h3>
+    </header>
+    <div class="town-comparison-chart">
+      <img src="{{ town_price_chart }}"
+           class="img-fluid rounded-4 shadow-sm chart-zoomable"
+           alt="Bar chart comparing average town prices"
+           data-lightbox-src="{{ town_price_chart }}"
+           data-lightbox-label="Town comparison chart">
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="dashboard-card span-12 insights-card">
+    <div class="model-insights-card">
+      <div class="model-insights-card__header">
+        <div>
+          <p class="model-insights-card__eyebrow text-uppercase">Model insights</p>
+          <h3 class="model-insights-card__title mb-0">AI-driven commentary</h3>
+        </div>
+        <div class="model-insights-card__chip">Stored insight</div>
+      </div>
+      <div class="model-insights-card__body">
+        {% if model_insights %}
+        <div class="model-insights-card__content">{{ model_insights | safe }}</div>
+        {% else %}
+        <div class="alert alert-warning mb-0" role="alert">{{ model_insights_error }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if errors %}
+  <div class="alert alert-warning mt-3">
+    <strong>Notes:</strong>
+    <ul class="mb-0">
+      {% for error in errors %}
+      <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</div>

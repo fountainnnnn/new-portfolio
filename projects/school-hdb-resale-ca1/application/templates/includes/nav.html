@@ -1,0 +1,39 @@
+{% set default_links = [
+    {"key": "home", "label": "Property Predictor", "endpoint": "index", "brand": True},
+    {"key": "predict", "label": "Predictor", "endpoint": "predict"},
+    {"key": "auth", "label": "Login/Signup", "endpoint": "login"}
+] %}
+{% set links = nav_links if nav_links is defined else default_links %}
+<nav class="navbar navbar-expand-lg navbar-dark main-nav">
+    <div class="container">
+        {% for link in links %}
+            {% set is_active = active_page is defined and active_page == link.key %}
+            {% if link.url is defined %}
+                {% set link_url = link.url %}
+            {% elif link.endpoint is defined %}
+                {% set link_url = url_for(link.endpoint) %}
+            {% else %}
+                {% set link_url = '#' %}
+            {% endif %}
+            {% if link.brand %}
+                <a class="navbar-brand fw-bold{{ ' active' if is_active }}" href="{{ link_url }}">
+                    {{ link.label }}
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link{{ ' active fw-semibold' if is_active }}" href="{{ link_url }}">
+                                {{ link.label }}
+                            </a>
+                        </li>
+            {% endif %}
+        {% endfor %}
+                    </ul>
+                </div>
+    </div>
+</nav>

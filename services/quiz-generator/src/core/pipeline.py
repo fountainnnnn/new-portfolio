@@ -1,5 +1,5 @@
 from typing import Any, Dict, List, Tuple, Optional
-import os, io, json, re
+import os, io, json, re, tempfile
 from pathlib import Path
 from datetime import date
 
@@ -87,7 +87,7 @@ def _get_api_key(explicit: Optional[str]) -> Optional[str]:
 def _openai_generate_qa(
     text: str,
     total: int = 20,
-    model_name: str = "gpt-4o-mini",
+    model_name: str = os.getenv("QUIZ_GENERATOR_MODEL", "gpt-4.1"),
     api_key: Optional[str] = None
 ) -> List[Tuple[str, str]]:
     """
@@ -333,12 +333,13 @@ def run_pipeline_end_to_end(
     prefer_com: bool = False,
     dpi: int = 180,
     openai_api_key: Optional[str] = None,
-    model_name: str = "gpt-4o-mini",
+    model_name: str = os.getenv("QUIZ_GENERATOR_MODEL", "gpt-4.1"),
     total_questions: int = 20,
     mix_mode: str = "balanced",
     mcq_n: int = 0,
     theory_n: int = 0,
     codefill_n: int = 0,
+    fillblank_n: int = 0,
     difficulty: str = "mixed",
     deck_title: str = "Auto Quiz",
     include_thumbs: bool = True   # repurposed: include explanations when True
@@ -346,8 +347,8 @@ def run_pipeline_end_to_end(
     """
     Returns: (pptx_bytes, zip_path, out_dir, msg)
     """
-    # --- Save the upload with the correct extension
-    tmp_dir = Path(os.getenv("TMP", str(Path.cwd() / "tmp")))
+    # --- Save the upload with the correct extension in a request-scoped temp dir
+    tmp_dir = Path(tempfile.mkdtemp(prefix="quizdeck_"))
     tmp_dir.mkdir(parents=True, exist_ok=True)
 
     ext = ""
@@ -384,7 +385,56 @@ def run_pipeline_end_to_end(
     if not lecture_text.strip():
         raise ValueError("No text extracted from the document. Check OCR/inputs.")
 
-    # --- Generate Q/A
+    total_questions = max(1, min(int(total_questions), 50))
+    mix_mode = (mix_mode or "balanced").lower()
+    custom_counts = None
+    if mix_mode == "custom":
+        custom_counts = {
+            "mcq": max(0, int(mcq_n)),
+            "theory": max(0, int(theory_n)),
+            "code_fill": max(0, int(codefill_n)),
+            "fill_blank": max(0, int(fillblank_n)),
+        }
+        if sum(custom_counts.values()) != total_questions:
+            raise ValueError("Custom question counts must add up to total_questions.")
+
+    # --- Generate structured Q/A with question-type mix controls
+    try:
+        from .llm_qg import generate_qa as generate_structured_qa, infer_title as infer_structured_title
+        from .pptx_export import build_qa_deck as build_structured_deck
+
+        md_path = tmp_dir / "source.md"
+        md_path.write_text(f"<!-- SLIDE 1 -->\n{lecture_text}", encoding="utf-8")
+        qa_items = generate_structured_qa(
+            per_slide_md_paths=[str(md_path)],
+            total_questions=total_questions,
+            mix=mix_mode,
+            custom_counts=custom_counts,
+            difficulty=difficulty,
+            model_name=model_name,
+            api_key=openai_api_key,
+        )
+        if not qa_items:
+            raise ValueError("Q/A generation returned empty results.")
+
+        filename_stem = Path(name_hint or tmp_in.name).stem
+        auto_title = infer_structured_title(lecture_text, filename_stem, model_name, openai_api_key)
+        final_title = deck_title if (deck_title and deck_title != "Auto Quiz") else auto_title
+        out_path = tmp_dir / f"{filename_stem}_quizdeck.pptx"
+        build_structured_deck(
+            qa=qa_items,
+            slide_images=[],
+            out_path=str(out_path),
+            deck_title=final_title,
+            include_thumbnails=False,
+            include_explanations=include_thumbs,
+            source_name=filename_stem,
+        )
+        return out_path.read_bytes(), None, str(tmp_dir), "ok"
+    except Exception as structured_error:
+        # Keep a simpler Q/A fallback for older models or schema drift.
+        print(f"[WARN] Structured quiz generation failed; falling back to simple Q/A: {structured_error}")
+
     qa = _openai_generate_qa(lecture_text, total=total_questions, model_name=model_name, api_key=openai_api_key)
     if not qa:
         raise ValueError("Q/A generation returned empty results.")

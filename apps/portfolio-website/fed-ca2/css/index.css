@@ -1,0 +1,113 @@
+.timeline::before {
+    content: '';
+    position: absolute;
+    width: 4px;
+    background: #e9ecef;
+    inset: 0 auto 0 21%;
+    transform: translateX(-50%);
+}
+
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    top: 45.75%;
+    left: 21%;
+    width: 10px;
+    height: 10px;
+    background: #007bff;
+    border-radius: 50%;
+    transform: translateX(-50%);
+}
+
+.timeline-content {
+    background-color: #f8f9fa;
+    width: 80dvh;
+    margin-left: 2.5%;
+}
+
+.image-container .overlay {
+    inset: 0 0 0 0;
+    background: rgba(0, 0, 0, 0.416);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.image-container:hover img {
+    opacity: 0.7;
+}
+
+.image-container:hover .overlay {
+    opacity: 1;
+}
+
+.question, #result, #quiz-form {
+    display: none;
+}
+.question.active, #result.active, #quiz-form.active {
+    display: block;
+}
+
+.options {
+    flex-direction: column;
+}
+
+.trivia {
+    background-image: url(../images/groundwithcampus.png);
+    background-size: cover;
+    background-position: center;
+    height: 300px;
+}
+
+.quiz-btn {
+    width: 150px;
+}
+
+.option-btn {
+    width: 45%;
+    margin: 5px;
+}
+
+.modal-content {
+    padding: 20px;
+}
+
+.btn-close {
+    background: none;
+}
+
+#customModal .modal-title {
+    text-align: center;
+    width: 100%;
+}
+
+
+.modal {
+    z-index: 99999 !important;
+}
+
+@media (max-width: 768px) {
+    .timeline::before {
+        inset: 0 auto 0 1.25rem;
+    }
+
+    .timeline-item::before {
+        left: 1.25rem;
+    }
+
+    .timeline-content {
+        width: calc(100% - 3rem);
+        margin-left: 2.5rem;
+    }
+
+    .option-btn {
+        width: 100%;
+        margin: 0.35rem 0;
+    }
+
+    .trivia {
+        height: auto;
+        min-height: 240px;
+        padding-block: 2rem;
+    }
+}

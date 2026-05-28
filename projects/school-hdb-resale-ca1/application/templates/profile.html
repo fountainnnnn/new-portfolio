@@ -1,0 +1,768 @@
+{% extends "layout.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/predict.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="profile-hero hero-section" data-animate="fade-up">
+    <div class="section-inner">
+        <div class="row g-5 align-items-start profile-hero-grid">
+            <div class="col-lg-5">
+                <div class="profile-hero-copy">
+                    <p class="eyebrow text-uppercase small mb-3">Workspace</p>
+                    <h1 class="display-5 fw-semibold mb-3">Hello, {{ (user.full_name or user.username) if user else '{user}' }}!</h1>
+                    <p class="lead text-secondary mb-4">
+                        Review past predictions, manage saved scenarios, and keep your account details current.
+                    </p>
+
+                    {% if profile_errors %}
+                    <div class="alert alert-danger profile-alert" role="alert">
+                        <ul class="mb-0">
+                            {% for error in profile_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% elif profile_success_message %}
+                    <div class="alert alert-success profile-alert" role="alert">
+                        {{ profile_success_message }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if user %}
+            <div class="col-lg-7">
+                <div class="profile-info-card shadow-lg">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                            <div>
+                                <p class="text-uppercase small text-secondary mb-1">Account overview</p>
+                                <h2 class="h4 fw-semibold mb-0">{{ user.full_name or user.username }}</h2>
+                            </div>
+                            <div class="badge text-bg-light text-uppercase tracking-wide">
+                                Member since {{ user.created_at.strftime('%d %b %Y') if user.created_at else '--' }}
+                            </div>
+                        </div>
+                        <dl class="row mb-0 profile-details">
+                            <dt class="col-sm-4">Username</dt>
+                            <dd class="col-sm-8">{{ user.username }}</dd>
+                            <dt class="col-sm-4">Email</dt>
+                            <dd class="col-sm-8">{{ user.email }}</dd>
+                            <dt class="col-sm-4">Status</dt>
+                            <dd class="col-sm-8">Active member</dd>
+                        </dl>
+                    </div>
+                    <div class="card-footer d-flex flex-wrap gap-3">
+                        <button class="btn btn-profile" type="button" data-bs-toggle="modal" data-bs-target="#profileEditModal">
+                            Edit profile
+                        </button>
+                        <form method="post" action="{{ url_for('logout') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-outline-dark">Log out</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Modal for Editing Profile -->
+<div class="modal fade"
+     id="profileEditModal"
+     tabindex="-1"
+     aria-labelledby="profileEditModalLabel"
+     aria-hidden="true"
+     data-verify-url="{{ url_for('verify_profile_password') }}">
+    <div class="modal-dialog modal-lg modal-dialog-centered profile-edit-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <p class="eyebrow text-uppercase small mb-1">Account controls</p>
+                    <h5 class="modal-title" id="profileEditModalLabel">Edit account details</h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body profile-edit-body">
+                <form method="post" action="{{ url_for('profile') }}" novalidate>
+                    {{ profile_form.csrf_token }}
+                    {{ profile_form.form_type }}
+                    <input type="hidden"
+                           id="profile-password-verified"
+                           name="{{ profile_form.password_verified.name }}"
+                           value="{{ profile_form.password_verified.data or '' }}">
+                    <div class="security-card">
+                        <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+                            <div>
+                                <p class="eyebrow text-uppercase small mb-1">Step 1</p>
+                                <h3 class="h5 mb-1">Verify your identity</h3>
+                                <p class="text-secondary small mb-0">Enter your password to unlock editing.</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 row g-3 align-items-end">
+                            <div class="col-md-8">
+                                <label for="profile-current-password" class="form-label">Account password</label>
+                                <input type="password"
+                                       class="form-control"
+                                       id="profile-current-password"
+                                       name="{{ profile_form.current_password.name }}"
+                                       placeholder="Re-enter your password"
+                                       autocomplete="current-password"
+                                       required>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <button type="button" class="btn btn-outline-dark w-100 profile-verify-btn" id="profile-verify-button">
+                                    Verify password
+                                </button>
+                            </div>
+                        </div>
+                        <div class="profile-verify-status small mt-3" role="status"></div>
+                    </div>
+
+                    <div class="profile-edit-fieldset is-locked" id="profile-edit-fieldset">
+                        <p class="eyebrow text-uppercase small mb-3">Step 2 · Update credentials</p>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="profile-full-name" class="form-label">Full name</label>
+                                <input type="text"
+                                       class="form-control profile-edit-lock-target"
+                                       id="profile-full-name"
+                                       name="{{ profile_form.full_name.name }}"
+                                       value="{{ profile_form.full_name.data or '' }}"
+                                       placeholder="e.g. Tan Mei Ling"
+                                       autocomplete="name"
+                                       readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="profile-email" class="form-label">Email</label>
+                                <input type="email"
+                                       class="form-control profile-edit-lock-target"
+                                       id="profile-email"
+                                       name="{{ profile_form.email.name }}"
+                                       value="{{ profile_form.email.data or '' }}"
+                                       placeholder="name@example.com"
+                                       autocomplete="email"
+                                       required
+                                       readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="profile-username" class="form-label">Username</label>
+                                <input type="text"
+                                       class="form-control profile-edit-lock-target"
+                                       id="profile-username"
+                                       name="{{ profile_form.username.name }}"
+                                       value="{{ profile_form.username.data or '' }}"
+                                       placeholder="Choose a username"
+                                       autocomplete="username"
+                                       required
+                                       readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="profile-new-password" class="form-label">New password</label>
+                                <input type="password"
+                                       class="form-control profile-edit-lock-target"
+                                       id="profile-new-password"
+                                       name="{{ profile_form.new_password.name }}"
+                                       placeholder="Leave blank to keep current password"
+                                       autocomplete="new-password"
+                                       readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="profile-confirm-password" class="form-label">Confirm new password</label>
+                                <input type="password"
+                                       class="form-control profile-edit-lock-target"
+                                       id="profile-confirm-password"
+                                       name="{{ profile_form.confirm_password.name }}"
+                                       placeholder="Re-type your new password"
+                                       autocomplete="new-password"
+                                       readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex justify-content-end">
+                        <button type="submit" class="btn profile-edit-save" id="profile-edit-save" disabled>Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Prediction History Section -->
+<section class="prediction-history-section" id="prediction-history" data-animate="fade-up">
+    {% set total_predictions = prediction_history|length %}
+    {% set latest_record = prediction_history|first if prediction_history else None %}
+    {% set oldest_record = prediction_history|last if prediction_history else None %}
+    {% set latest_date = latest_record.fields[0] if latest_record else 'No entries yet' %}
+    {% set latest_town = latest_record.fields[1] if latest_record and latest_record.fields|length > 1 else '' %}
+    {% set oldest_date = oldest_record.fields[0] if oldest_record else '—' %}
+    <div class="section-inner history-shell">
+        <div class="history-heading">
+            <div>
+                <p class="eyebrow text-uppercase small mb-2">Forecast archive</p>
+                <h2 class="fw-semibold mb-1">Prediction History</h2>
+                <p class="text-secondary mb-0">All submissions are stored securely so you can revisit or clean them up anytime.</p>
+            </div>
+        </div>
+
+        <div class="history-summary">
+            <div class="summary-card" data-animate="left">
+                <p class="text-uppercase small text-secondary mb-1">Predictions logged</p>
+                <p class="summary-value mb-1">{{ total_predictions }}</p>
+                <p class="summary-subtext">Saved runs ready to revisit.</p>
+            </div>
+            <div class="summary-card" data-animate="left">
+                <p class="text-uppercase small text-secondary mb-1">Most recent entry</p>
+                <p class="summary-value mb-1">{{ latest_date }}</p>
+                <p class="summary-subtext">{{ latest_town or 'Add your first town' }}</p>
+            </div>
+            <div class="summary-card" data-animate="right">
+                <p class="text-uppercase small text-secondary mb-1">Archive coverage</p>
+                <p class="summary-value mb-1">{{ history_headings|length }}</p>
+                <p class="summary-subtext">Data points tracked since {{ oldest_date }}.</p>
+            </div>
+            <div class="summary-card summary-card--dark" data-animate="right">
+                <p class="text-uppercase small text-secondary mb-1 text-white-50">Snapshot</p>
+                <ul class="history-bullets list-unstyled mb-0">
+                    <li>
+                        <span class="bullet-label">Latest town</span>
+                        <span class="bullet-value">{{ latest_town or '—' }}</span>
+                    </li>
+                    <li>
+                        <span class="bullet-label">Newest record</span>
+                        <span class="bullet-value">{{ latest_date }}</span>
+                    </li>
+                    <li>
+                        <span class="bullet-label">Oldest record</span>
+                        <span class="bullet-value">{{ oldest_date }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="history-layout">
+
+
+            <div class="history-table-area">
+                <form id="bulk-delete-form" method="post" action="{{ url_for('delete_selected_predictions') }}#prediction-history">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="history-toolbar d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+                        <div class="text-secondary small">
+                            Select one or more entries to remove multiple predictions at once.
+                        </div>
+                        <button type="submit" class="btn btn-danger btn-sm" id="bulk-delete-button" disabled>
+                            Delete selected
+                        </button>
+                    </div>
+                    <div class="table-responsive history-table-card">
+                        <table class="table table-striped align-middle mb-0">
+                            <thead class="table-light">
+                              <tr>
+                                  <th scope="col" class="text-center" style="width: 48px;">
+                                      <input class="form-check-input" type="checkbox" id="select-all-predictions" aria-label="Select all predictions">
+                                  </th>
+                                  {% for heading in history_headings %}
+                                      <th scope="col"{% if loop.last %} class="text-end"{% endif %}>{{ heading }}</th>
+                                {% else %}
+                                    <th scope="col">Predicted On</th>
+                                    <th scope="col">Town</th>
+                                    <th scope="col">Flat Type</th>
+                                    <th scope="col">Flat Model</th>
+                                    <th scope="col">Storey Range</th>
+                                    <th scope="col">Floor Area (sqm)</th>
+                                    <th scope="col">Lease Commence Year</th>
+                                    <th scope="col">Transaction Year</th>
+                                    <th scope="col">Transaction Month</th>
+                                    <th scope="col">Predicted Price</th>
+                                    <th scope="col" class="text-end">Actions</th>
+                                {% endfor %}
+                            </tr>
+                            </thead>
+                            <tbody id="prediction-history-body"
+                                   data-empty-message="No predictions saved yet. The latest predictions will appear here."
+                                   data-column-count="{{ history_headings|length + 1 }}">
+                            {% for record in prediction_history %}
+                                <tr>
+                                    <td class="text-center">
+                                        <input class="form-check-input prediction-select-checkbox" type="checkbox" name="prediction_ids" value="{{ record.id }}" aria-label="Select prediction created {{ record.fields[0] }}">
+                                    </td>
+                                    {% for value in record.fields %}
+                                        <td>{{ value }}</td>
+                                    {% endfor %}
+                            <td class="actions-cell">
+                                <div class="history-actions">
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-light view-prediction-btn"
+                                            data-prediction-id="{{ record.id }}">
+                                        View
+                                    </button>
+                                    {% if record.actions and record.actions.delete_url %}
+                                        <button type="submit"
+                                                class="btn btn-sm btn-danger single-delete-button"
+                                                data-delete-url="{{ record.actions.delete_url }}"
+                                                formaction="{{ record.actions.delete_url }}#prediction-history"
+                                                formmethod="post">
+                                            Delete
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                                </tr>
+                            {% else %}
+                                <tr class="prediction-history-empty-row">
+                                    <td colspan="{{ history_headings|length + 1 }}" class="text-center py-5 text-secondary">
+                                        No predictions saved yet. The latest predictions will appear here.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="predictionDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered prediction-modal">
+        <div class="modal-content prediction-modal__content">
+            <div class="modal-header">
+                <h5 class="modal-title mb-0">Prediction detail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-secondary mb-0">Loading prediction&hellip;</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="profile-chart-lightbox" class="chart-lightbox d-none" role="dialog" aria-modal="true">
+    <div class="chart-lightbox__backdrop"></div>
+    <div class="chart-lightbox__content">
+        <img src="" alt="Expanded chart view" class="chart-lightbox__image">
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const bulkForm = document.getElementById('bulk-delete-form');
+    const selectAll = document.getElementById('select-all-predictions');
+    const bulkDeleteButton = document.getElementById('bulk-delete-button');
+    const historyBody = document.getElementById('prediction-history-body');
+    const csrfField = bulkForm ? bulkForm.querySelector('input[name="csrf_token"]') : null;
+    let checkboxes = Array.from(document.querySelectorAll('.prediction-select-checkbox'));
+
+    const hasHistory = Boolean(bulkForm && selectAll && bulkDeleteButton && historyBody);
+
+    const updateBulkControls = () => {
+        if (!hasHistory) {
+            return;
+        }
+        const checkedCount = checkboxes.filter(cb => cb.checked).length;
+        bulkDeleteButton.disabled = checkedCount === 0;
+        if (checkedCount === checkboxes.length && checkedCount > 0) {
+            selectAll.checked = true;
+            selectAll.indeterminate = false;
+        } else if (checkedCount === 0) {
+            selectAll.checked = false;
+            selectAll.indeterminate = false;
+        } else {
+            selectAll.indeterminate = true;
+        }
+    };
+
+    const ensureEmptyState = () => {
+        if (!historyBody) {
+            return;
+        }
+        const emptyRowClass = 'prediction-history-empty-row';
+        const totalPredictions = document.querySelectorAll('.prediction-select-checkbox').length;
+        const existingEmptyRow = historyBody.querySelector(`.${emptyRowClass}`);
+        if (totalPredictions === 0) {
+            if (!existingEmptyRow) {
+                const emptyRow = document.createElement('tr');
+                emptyRow.classList.add(emptyRowClass);
+                const emptyCell = document.createElement('td');
+                const columnCount = parseInt(historyBody.dataset.columnCount || '1', 10);
+                emptyCell.colSpan = Number.isNaN(columnCount) ? 1 : columnCount;
+                emptyCell.className = 'text-center py-5 text-secondary';
+                emptyCell.textContent = historyBody.dataset.emptyMessage
+                    || 'No predictions saved yet. The latest predictions will appear here.';
+                emptyRow.appendChild(emptyCell);
+                historyBody.appendChild(emptyRow);
+            }
+        } else if (existingEmptyRow) {
+            existingEmptyRow.remove();
+        }
+    };
+
+    if (hasHistory) {
+        selectAll.addEventListener('change', function () {
+            const shouldCheck = selectAll.checked;
+            checkboxes.forEach(cb => {
+                cb.checked = shouldCheck;
+            });
+            selectAll.indeterminate = false;
+            updateBulkControls();
+        });
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', updateBulkControls);
+        });
+
+        updateBulkControls();
+        ensureEmptyState();
+    }
+
+    if (hasHistory && csrfField) {
+        const deleteButtons = document.querySelectorAll('.single-delete-button');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+                if (button.dataset.deleting === '1') {
+                    return;
+                }
+
+                const deleteUrl = button.dataset.deleteUrl || button.getAttribute('formaction');
+                if (!deleteUrl) {
+                    return;
+                }
+
+                const row = button.closest('tr');
+                const rowCheckbox = row ? row.querySelector('.prediction-select-checkbox') : null;
+                const formData = new URLSearchParams();
+                formData.append('csrf_token', csrfField.value);
+                const originalLabel = button.textContent.trim();
+
+                button.dataset.deleting = '1';
+                button.dataset.originalLabel = originalLabel;
+                button.disabled = true;
+                button.textContent = 'Removing...';
+
+                fetch(deleteUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: formData,
+                })
+                    .then(async (response) => {
+                        if (!response.ok) {
+                            let message = 'Unable to delete prediction right now.';
+                            try {
+                                const data = await response.json();
+                                if (data && typeof data.message === 'string') {
+                                    message = data.message;
+                                }
+                            } catch (err) {
+                                console.error(err);
+                            }
+                            throw new Error(message);
+                        }
+                        return response.json();
+                    })
+                    .then((payload) => {
+                        if (!payload || !payload.ok) {
+                            throw new Error((payload && payload.message) || 'Unable to delete prediction right now.');
+                        }
+                        if (row) {
+                            row.classList.add('prediction-row-removing');
+                            setTimeout(() => {
+                                row.remove();
+                                if (rowCheckbox) {
+                                    checkboxes = checkboxes.filter(cb => cb !== rowCheckbox);
+                                }
+                                updateBulkControls();
+                                ensureEmptyState();
+                            }, 150);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        const fallbackForm = document.createElement('form');
+                        fallbackForm.method = 'post';
+                        fallbackForm.action = deleteUrl;
+                        fallbackForm.classList.add('d-none');
+
+                        const csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = 'csrf_token';
+                        csrfInput.value = csrfField.value;
+                        fallbackForm.appendChild(csrfInput);
+
+                        document.body.appendChild(fallbackForm);
+                        fallbackForm.submit();
+                    })
+                    .finally(() => {
+                        if (button.isConnected) {
+                            button.disabled = false;
+                            button.textContent = button.dataset.originalLabel || 'Delete';
+                        }
+                        delete button.dataset.deleting;
+                        delete button.dataset.originalLabel;
+                    });
+            });
+        });
+    }
+
+    const profileEditModalEl = document.getElementById('profileEditModal');
+    if (profileEditModalEl) {
+        const passwordInput = profileEditModalEl.querySelector('#profile-current-password');
+        const lockTargets = profileEditModalEl.querySelectorAll('.profile-edit-lock-target');
+        const fieldset = profileEditModalEl.querySelector('#profile-edit-fieldset');
+        const saveButton = profileEditModalEl.querySelector('#profile-edit-save');
+        const verifyButton = profileEditModalEl.querySelector('#profile-verify-button');
+        const statusEl = profileEditModalEl.querySelector('.profile-verify-status');
+        const verifyUrl = profileEditModalEl.getAttribute('data-verify-url');
+        const verifiedField = profileEditModalEl.querySelector('#profile-password-verified');
+        const csrfField = profileEditModalEl.querySelector('input[name="csrf_token"]');
+
+        const showStatus = (message = '', variant = '') => {
+            if (!statusEl) {
+                return;
+            }
+            statusEl.textContent = message;
+            statusEl.classList.remove('text-success', 'text-danger', 'text-muted');
+            if (!message) {
+                return;
+            }
+            if (variant === 'success') {
+                statusEl.classList.add('text-success');
+            } else if (variant === 'error') {
+                statusEl.classList.add('text-danger');
+            } else {
+                statusEl.classList.add('text-muted');
+            }
+        };
+
+        const setLockState = (unlocked) => {
+            lockTargets.forEach(target => {
+                if (unlocked) {
+                    target.removeAttribute('readonly');
+                    target.classList.remove('is-readonly');
+                } else {
+                    target.setAttribute('readonly', 'readonly');
+                    target.classList.add('is-readonly');
+                }
+            });
+            if (fieldset) {
+                fieldset.classList.toggle('is-locked', !unlocked);
+            }
+            if (saveButton) {
+                saveButton.disabled = !unlocked;
+            }
+        };
+
+        let unlockedViaVerification = false;
+
+        const verifyPassword = () => {
+            if (!verifyUrl || !passwordInput || !csrfField || !verifyButton) {
+                return;
+            }
+            const password = passwordInput.value.trim();
+            if (!password) {
+                showStatus('Please enter your password first.', 'error');
+                unlockedViaVerification = false;
+                if (verifiedField) {
+                    verifiedField.value = '';
+                }
+                setLockState(false);
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('csrf_token', csrfField.value || '');
+            formData.append('password', password);
+
+            const originalLabel = verifyButton.textContent;
+            verifyButton.disabled = true;
+            verifyButton.textContent = 'Verifying…';
+            showStatus('Verifying password…', 'muted');
+
+            fetch(verifyUrl, {
+                method: 'POST',
+                body: formData
+            })
+                .then(async response => {
+                    const payload = await response.json().catch(() => ({}));
+                    if (!response.ok || !payload.ok) {
+                        throw new Error(payload.message || 'Unable to verify password.');
+                    }
+                    if (verifiedField) {
+                        verifiedField.value = '1';
+                    }
+                    unlockedViaVerification = true;
+                    setLockState(true);
+                    showStatus(payload.message || 'Password verified.', 'success');
+                    if (passwordInput) {
+                        passwordInput.value = '';
+                    }
+                })
+                .catch(err => {
+                    unlockedViaVerification = false;
+                    if (verifiedField) {
+                        verifiedField.value = '';
+                    }
+                    setLockState(false);
+                    showStatus(err.message || 'Password verification failed.', 'error');
+                })
+                .finally(() => {
+                    verifyButton.disabled = false;
+                    verifyButton.textContent = originalLabel;
+                });
+        };
+
+        verifyButton?.addEventListener('click', verifyPassword);
+        passwordInput?.addEventListener('input', () => {
+            if (!unlockedViaVerification) {
+                return;
+            }
+            unlockedViaVerification = false;
+            if (verifiedField) {
+                verifiedField.value = '';
+            }
+            setLockState(false);
+            showStatus('');
+        });
+
+        profileEditModalEl.addEventListener('shown.bs.modal', () => {
+            if (passwordInput) {
+                passwordInput.focus();
+            }
+            setLockState(false);
+            showStatus('');
+            unlockedViaVerification = false;
+            if (verifiedField) {
+                verifiedField.value = '';
+            }
+        });
+
+        profileEditModalEl.addEventListener('hidden.bs.modal', () => {
+            if (passwordInput) {
+                passwordInput.value = '';
+            }
+            if (verifiedField) {
+                verifiedField.value = '';
+            }
+            showStatus('');
+            setLockState(false);
+            unlockedViaVerification = false;
+        });
+
+        setLockState(false);
+    }
+
+    const detailModalEl = document.getElementById('predictionDetailModal');
+    const detailModal = new bootstrap.Modal(detailModalEl);
+    const modalTitleEl = detailModalEl.querySelector('.modal-title');
+    const modalBodyEl = detailModalEl.querySelector('.modal-body');
+    const chartLightbox = document.getElementById('profile-chart-lightbox');
+    const chartLightboxImage = chartLightbox ? chartLightbox.querySelector('.chart-lightbox__image') : null;
+
+    const updateProgressBars = scope => {
+        scope.querySelectorAll('.progress-bar[data-progress]').forEach(bar => {
+            const value = parseFloat(bar.getAttribute('data-progress') || '0');
+            bar.style.width = Math.max(0, Math.min(100, value)) + '%';
+        });
+    };
+
+    const closeChartLightbox = () => {
+        if (!chartLightbox) {
+            return;
+        }
+        chartLightbox.classList.add('d-none');
+        if (chartLightboxImage) {
+            chartLightboxImage.removeAttribute('src');
+            chartLightboxImage.removeAttribute('alt');
+        }
+    };
+
+    const initLightbox = (scope = document) => {
+        if (!chartLightbox || !chartLightboxImage) {
+            return;
+        }
+
+        if (!chartLightbox.dataset.bound) {
+            chartLightbox.addEventListener('click', event => {
+                if (event.target === chartLightbox || event.target.classList.contains('chart-lightbox__backdrop')) {
+                    closeChartLightbox();
+                }
+            });
+            document.addEventListener('keydown', event => {
+                if (event.key === 'Escape' && !chartLightbox.classList.contains('d-none')) {
+                    closeChartLightbox();
+                }
+            });
+            chartLightbox.dataset.bound = '1';
+        }
+
+        if (!scope) {
+            return;
+        }
+
+        scope.querySelectorAll('[data-lightbox-src]').forEach(trigger => {
+            if (trigger.dataset.lightboxBound === '1') {
+                return;
+            }
+            trigger.addEventListener('click', () => {
+                const src = trigger.getAttribute('data-lightbox-src');
+                if (!src) {
+                    return;
+                }
+                const label = trigger.getAttribute('data-lightbox-label') || 'Expanded chart';
+                chartLightboxImage.setAttribute('src', src);
+                chartLightboxImage.setAttribute('alt', label);
+                chartLightbox.classList.remove('d-none');
+            });
+            trigger.dataset.lightboxBound = '1';
+        });
+    };
+
+    initLightbox();
+
+    detailModalEl.addEventListener('hidden.bs.modal', () => {
+        closeChartLightbox();
+    });
+
+    document.querySelectorAll('.view-prediction-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const predictionId = button.getAttribute('data-prediction-id');
+            if (!predictionId) { return; }
+            modalTitleEl.textContent = 'Prediction detail';
+            modalBodyEl.innerHTML = '<p class="text-secondary mb-0">Loading prediction&hellip;</p>';
+            detailModal.show();
+            fetch(window.withAppBasePath ? window.withAppBasePath(`/prediction/${predictionId}/detail`) : `/prediction/${predictionId}/detail`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Unable to load prediction detail.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    modalTitleEl.textContent = data.title || 'Prediction detail';
+                    modalBodyEl.innerHTML = data.html;
+                    updateProgressBars(modalBodyEl);
+                    initLightbox(modalBodyEl);
+                })
+                .catch(err => {
+                    modalBodyEl.innerHTML = `<div class="alert alert-warning mb-0">${err.message}</div>`;
+                });
+        });
+    });
+});
+</script>
+{% endblock %}

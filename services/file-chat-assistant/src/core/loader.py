@@ -10,6 +10,8 @@ import os
 import tempfile
 from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader, TextLoader
 
+MAX_TEXT_CHARS = int(os.getenv("FILE_CHAT_MAX_TEXT_CHARS", "180000"))
+
 
 def load_document(filename: str, content: bytes) -> str:
     """
@@ -22,7 +24,9 @@ def load_document(filename: str, content: bytes) -> str:
     Returns:
         str: Extracted text.
     """
-    suffix = os.path.splitext(filename)[-1].lower()
+    suffix = os.path.splitext(filename or "")[-1].lower()
+    if suffix not in {".pdf", ".docx", ".txt"}:
+        raise ValueError(f"Unsupported file type: {suffix or 'unknown'}")
 
     # Write uploaded bytes to a temporary file for the loaders
     with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
@@ -40,8 +44,10 @@ def load_document(filename: str, content: bytes) -> str:
             raise ValueError(f"Unsupported file type: {suffix}")
 
         # Merge all extracted text
-        text = "\n".join([d.page_content for d in docs])
-        return text
+        text = "\n".join([d.page_content for d in docs]).strip()
+        if not text:
+            raise ValueError("No readable text was extracted from the document.")
+        return text[:MAX_TEXT_CHARS]
 
     finally:
         # Always clean up temporary file

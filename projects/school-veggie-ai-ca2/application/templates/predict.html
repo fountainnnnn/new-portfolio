@@ -1,0 +1,622 @@
+{% extends "layout.html" %}
+{% block title %}VeggieAI - Predictor{% endblock %}
+
+{% block content %}
+<div data-page="predictor">
+    <section class="hero hero--top" style="--hero-image: url('https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=2000&q=80');">
+        <div class="container">
+            <div class="text-center reveal">
+                <span class="hero-kicker"><i class="bi bi-image"></i> CNN Classifier</span>
+                <h1 class="hero-title">Upload an image to identify vegetables</h1>
+                <p class="hero-lead mx-auto" style="max-width: 64ch;">
+                    Choose a model resolution, upload a photo, and review the predicted label plus confidence breakdown.
+                    Sign in to save your prediction history to your account.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section pt-4 scenic" style="--scenic-image: url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=2000&q=80'); --bg-offset: -18px;">
+        <div class="container">
+            <div class="glass p-4 p-lg-4 reveal">
+                <div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
+                    <div>
+                        <h2 class="mb-1" style="font-weight: 850;">Select model resolution</h2>
+                        <p class="text-muted mb-0">Pick speed or accuracy before you upload.</p>
+                    </div>
+                    <span class="pill"><i class="bi bi-hdd-network"></i> Model service ready</span>
+                </div>
+
+                <input type="hidden" id="modelResolution" value="101">
+
+                <div class="model-grid mt-3">
+                    <div class="choice-card" role="button" tabindex="0" data-model-choice="23">
+                        <h3 class="choice-title">23x23</h3>
+                        <p class="choice-meta mb-0">Fast processing - great for quick checks</p>
+                        <p class="text-muted mb-0 mt-2">Typical: ~95% accuracy</p>
+                    </div>
+                    <div class="choice-card is-selected" role="button" tabindex="0" data-model-choice="101">
+                        <h3 class="choice-title">101x101</h3>
+                        <p class="choice-meta mb-0">Higher accuracy - better detail</p>
+                        <p class="text-muted mb-0 mt-2">Typical: ~99% accuracy</p>
+                    </div>
+                </div>
+
+                <div class="glass p-3 mt-3 reveal" data-reveal="fade-up">
+                    <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                        <div>
+                            <p class="text-muted mb-1">Auto-model recommendation</p>
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <strong id="recommendationTitle">Upload an image to get a recommendation</strong>
+                                <span id="recommendationBadge" class="status-badge" hidden>
+                                    <span class="status-dot"></span>
+                                    Recommended
+                                </span>
+                            </div>
+                            <p id="recommendationReason" class="text-muted mb-0 mt-1">
+                                We'll analyze texture and edge detail to suggest the best model.
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button id="applyRecommendation" type="button" class="btn btn-ghost btn-sm" disabled>
+                                Apply
+                            </button>
+                            <a class="btn btn-sm btn-ghost" href="#advanced">Explore advanced tools</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 g-lg-4 mt-1">
+                <div class="col-12 col-lg-6 reveal" data-reveal="fade-left">
+                    <div class="glass p-4 h-100">
+                        <div class="d-flex align-items-start justify-content-between gap-2">
+                            <div>
+                                <h2 class="mb-1" style="font-weight: 850;">Upload images (batch-ready)</h2>
+                                <p class="text-muted mb-0">
+                                    Drop one or more files or click to browse. JPG/PNG/WebP up to 10MB each.
+                                </p>
+                            </div>
+                            <i class="bi bi-cloud-arrow-up" style="font-size: 1.6rem; color: rgba(255,255,255,0.65);"></i>
+                        </div>
+
+                        <div class="dropzone mt-3" data-dropzone>
+                            <div class="d-grid gap-2">
+                                <img id="previewImg" class="preview-img mx-auto" alt="Preview" hidden>
+                                <div class="text-center">
+                                    <p class="mb-1" style="font-weight: 750;">Drop images or click to browse</p>
+                                    <p id="fileName" class="text-muted mb-2">No images selected</p>
+                                    <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                        <div class="predict-mode-group" role="group" aria-label="Prediction mode">
+                                            <input class="btn-check" type="radio" name="predictMode" id="predictModeSingle" value="single"
+                                                   autocomplete="off" checked>
+                                            <label class="btn btn-ghost btn-sm predict-mode-btn" for="predictModeSingle">
+                                                <i class="bi bi-image me-1"></i> Single
+                                            </label>
+
+                                            <input class="btn-check" type="radio" name="predictMode" id="predictModeFridge" value="fridge"
+                                                   autocomplete="off">
+                                            <label class="btn btn-ghost btn-sm predict-mode-btn" for="predictModeFridge">
+                                                <i class="bi bi-grid-3x3-gap me-1"></i> Smart Fridge
+                                            </label>
+                                        </div>
+                                        <button id="runDemo" type="button" class="btn btn-primary btn-glow" disabled>
+                                            <i class="bi bi-magic"></i> Classify
+                                        </button>
+                                        <button id="clearImage" type="button" class="btn btn-ghost" hidden>
+                                            Clear
+                                        </button>
+                                    </div>
+                                    <p id="predictModeHint" class="text-muted small mb-0 mt-2">
+                                        Single runs 1 prediction on the active image. Smart Fridge splits into regions and saves each tile separately.
+                                    </p>
+                                </div>
+                            </div>
+                            <input id="imageFile" type="file" class="d-none" accept="image/*" multiple>
+                        </div>
+
+                        <div class="glass p-3 mt-3">
+                            <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                                <div>
+                                    <p class="text-muted mb-1">Batch queue</p>
+                                    <strong id="batchCount">0 images</strong>
+                                    <p class="text-muted small mb-0">
+                                        Click an image to make it active for Compare/Smart Fridge.
+                                    </p>
+                                </div>
+                                <button id="addMoreImages" type="button" class="btn btn-ghost btn-sm">
+                                    <i class="bi bi-plus-circle"></i> Add more
+                                </button>
+                            </div>
+                            <p id="batchQueueEmpty" class="text-muted small mb-0 mt-2">No images in the queue yet.</p>
+                            <div id="batchThumbs" class="batch-grid mt-3" hidden></div>
+                        </div>
+
+                        <div class="mt-3">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <p class="text-muted mb-0">Sensitivity</p>
+                                <span class="pill"><i class="bi bi-aspect-ratio"></i> <span id="sensitivityLabel">100%</span></span>
+                            </div>
+                             <input id="sensitivitySlider" type="range" class="form-range" min="35" max="100" value="100" step="1" disabled>
+                             <p class="text-muted small mb-0">
+                                Adjust image quality to test robustness (lower values downscale then upscale before inference).
+                             </p>
+                         </div>
+
+                        <div class="mt-3 d-flex flex-wrap gap-2">
+                            <span class="pill"><i class="bi bi-eye"></i> Local preview</span>
+                            <span class="pill"><i class="bi bi-shield-lock"></i> Account storage</span>
+                            <span class="pill"><i class="bi bi-sliders2"></i> Toggle models anytime</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6 reveal" data-reveal="fade-right">
+                    <div class="glass result-card h-100">
+                        <div class="d-flex align-items-start justify-content-between gap-2">
+                            <div>
+                                <h2 class="mb-1" style="font-weight: 850;">Prediction results</h2>
+                                <p class="text-muted mb-0">Your label and confidence breakdown appear here.</p>
+                            </div>
+                            <span class="pill"><i class="bi bi-cpu"></i> <span id="resultModel">101x101 (accurate)</span></span>
+                        </div>
+
+                        <div id="resultEmpty" class="result-empty mt-3">
+                            <div>
+                                <div class="feature-icon mx-auto mb-3"><i class="bi bi-image"></i></div>
+                                <p class="mb-1" style="font-weight: 750;">No prediction yet</p>
+                                <p class="text-muted mb-0">Upload one or more images to see results.</p>
+                            </div>
+                        </div>
+
+                        <div id="resultFilled" class="mt-3" hidden>
+                            <ul class="nav nav-pills app-tabs mb-3" id="predictTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="tab-result" data-bs-toggle="pill" data-bs-target="#pane-result"
+                                            type="button" role="tab" aria-controls="pane-result" aria-selected="true">
+                                        Result
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="tab-batch" data-bs-toggle="pill" data-bs-target="#pane-batch"
+                                            type="button" role="tab" aria-controls="pane-batch" aria-selected="false">
+                                        Batch
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="tab-compare" data-bs-toggle="pill" data-bs-target="#pane-compare"
+                                            type="button" role="tab" aria-controls="pane-compare" aria-selected="false">
+                                        Compare
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="tab-fridge" data-bs-toggle="pill" data-bs-target="#pane-fridge"
+                                            type="button" role="tab" aria-controls="pane-fridge" aria-selected="false">
+                                        Smart Fridge
+                                    </button>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="pane-result" role="tabpanel" aria-labelledby="tab-result"
+                                     tabindex="0">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <div class="glass p-3">
+                                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                                    <div>
+                                                        <p class="text-muted mb-1">Top prediction</p>
+                                                        <h3 id="resultLabel" class="mb-0" style="font-weight: 900;">-</h3>
+                                                        <div class="d-flex gap-2 flex-wrap mt-2">
+                                                            <span id="openSetBadge" class="status-badge" hidden>
+                                                                <span class="status-dot"></span> Verified
+                                                            </span>
+                                                            <span id="openSetBadgeWarn" class="status-badge" hidden>
+                                                                <span class="status-dot"></span> Uncertain
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-end">
+                                                        <p class="text-muted mb-1">Confidence</p>
+                                                        <div id="resultConfidence"
+                                                             style="font-weight: 900; font-size: 1.35rem; color: var(--brand-2);">
+                                                            -
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-3">
+                                                    <p class="text-muted mb-2">Quick explanation</p>
+                                                    <p id="whyText" class="text-muted mb-0">
+                                                        We'll surface an "AI literacy" note based on confidence, texture, and model agreement.
+                                                    </p>
+                                                </div>
+                                                <div id="resultFeedbackCard" class="glass p-3 mt-3" hidden>
+                                                    <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                                                        <div>
+                                                            <p class="text-muted mb-1">Prediction feedback</p>
+                                                            <strong>Correct this label if needed</strong>
+                                                        </div>
+                                                        <span id="feedbackCorrectedBadge" class="status-badge status-badge--good" hidden>
+                                                            <span class="status-dot"></span> Corrected
+                                                        </span>
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-2 flex-wrap mt-2">
+                                                        <select id="feedbackLabelSelect" class="form-select form-select-sm feedback-label-select"
+                                                                aria-label="Select corrected vegetable label"></select>
+                                                        <button id="feedbackApplyBtn" type="button" class="btn btn-ghost btn-sm">
+                                                            <i class="bi bi-check2-circle me-1"></i> Apply correction
+                                                        </button>
+                                                    </div>
+                                                    <p id="feedbackStatus" class="text-muted small mb-0 mt-2">
+                                                        Corrections update your saved history record and replace the displayed label.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <p class="text-muted mb-2">Top alternatives</p>
+                                            <ul id="topList" class="list-unstyled d-grid gap-2 mb-0"></ul>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="glass p-4 p-lg-4 result-insights">
+                                                <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap result-insights-head">
+                                                    <div class="result-insights-title-wrap">
+                                                        <p class="text-muted mb-1">Insight charts</p>
+                                                        <strong class="result-insights-title">Why this prediction is likely correct</strong>
+                                                    </div>
+                                                    <span class="pill result-insights-pill"><i class="bi bi-graph-up-arrow"></i> Live from current image</span>
+                                                </div>
+                                                <div class="row g-4 mt-2">
+                                                    <div class="col-12 col-lg-4">
+                                                        <div class="result-insight-card h-100">
+                                                            <p class="text-muted mb-2">Confidence signal</p>
+                                                            <div id="resultConfidenceDonut" class="result-confidence-donut" style="--pct: 0%;">
+                                                                <strong id="resultConfidenceDonutValue">-</strong>
+                                                                <span>confidence</span>
+                                                            </div>
+                                                            <p id="resultConfidenceTier" class="text-muted small mb-0 mt-2">Run prediction to render chart.</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-lg-8">
+                                                        <div class="result-insight-card h-100">
+                                                            <p class="text-muted mb-2">Probability spread (Top-K)</p>
+                                                            <div id="resultProbBars" class="result-prob-bars"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row g-3 mt-3">
+                                                    <div class="col-12 col-md-4">
+                                                        <div class="result-insight-metric">
+                                                            <span class="label">Winner margin</span>
+                                                            <strong id="resultMarginValue">-</strong>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-md-4">
+                                                        <div class="result-insight-metric">
+                                                            <span class="label">Top-3 coverage</span>
+                                                            <strong id="resultTop3Value">-</strong>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-md-4">
+                                                        <div class="result-insight-metric">
+                                                            <span class="label">Uncertainty index</span>
+                                                            <strong id="resultEntropyValue">-</strong>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="pane-batch" role="tabpanel" aria-labelledby="tab-batch" tabindex="0">
+                                    <div class="glass p-3">
+                                        <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                                            <div>
+                                                <h3 class="mb-1" style="font-weight: 850;">Batch results</h3>
+                                                <p class="text-muted mb-0">
+                                                    Each upload gets its own prediction card. Use batch mode to scan multiple items quickly.
+                                                </p>
+                                            </div>
+                                            <span id="batchSummary" class="batch-chip"><i class="bi bi-collection"></i> 0 items</span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <div id="batchResultsEmpty" class="result-empty">
+                                            <div>
+                                                <div class="feature-icon mx-auto mb-3"><i class="bi bi-collection"></i></div>
+                                                <p class="mb-1" style="font-weight: 750;">No batch results yet</p>
+                                                <p class="text-muted mb-0">Add multiple images and click Classify to populate this list.</p>
+                                            </div>
+                                        </div>
+                                        <div id="batchResultsShell" class="batch-results-shell" hidden>
+                                            <div id="batchResults" class="batch-results"></div>
+                                            <div id="batchPagination" class="batch-pagination" hidden></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="pane-compare" role="tabpanel" aria-labelledby="tab-compare" tabindex="0">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <div class="glass p-3">
+                                                <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                                                    <div>
+                                                        <h3 class="mb-1" style="font-weight: 850;">Resolution disagreement analyzer</h3>
+                                                        <p class="text-muted mb-0">
+                                                            We run both models and compare confidence, agreement, and stability.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="row g-3 mt-1">
+                                                    <div class="col-12 col-md-6">
+                                                        <div class="glass p-3 h-100">
+                                                            <p class="text-muted mb-1">23x23 model</p>
+                                                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                                                <strong id="compareLabel23">-</strong>
+                                                                <span id="compareConf23" class="pill">-</span>
+                                                            </div>
+                                                            <p id="compareNote23" class="text-muted small mb-0 mt-2">-</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <div class="glass p-3 h-100">
+                                                            <p class="text-muted mb-1">101x101 model</p>
+                                                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                                                <strong id="compareLabel101">-</strong>
+                                                                <span id="compareConf101" class="pill">-</span>
+                                                            </div>
+                                                            <p id="compareNote101" class="text-muted small mb-0 mt-2">-</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row g-3 mt-1">
+                                                    <div class="col-12 col-lg-6">
+                                                        <div class="glass p-3 h-100">
+                                                            <p class="text-muted mb-1">Agreement</p>
+                                                            <strong id="agreementTitle">-</strong>
+                                                            <p id="agreementDetail" class="text-muted mb-0 mt-2">-</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-lg-6">
+                                                        <div class="glass p-3 h-100">
+                                                            <p class="text-muted mb-1">Confidence stability</p>
+                                                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                                                <strong id="stabilityScore">-</strong>
+                                                                <span id="stabilityBadge" class="status-badge" hidden>
+                                                                    <span class="status-dot"></span> Reliable
+                                                                </span>
+                                                            </div>
+                                                            <p id="stabilityDetail" class="text-muted mb-0 mt-2">-</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="pane-fridge" role="tabpanel" aria-labelledby="tab-fridge" tabindex="0">
+                                    <div class="glass p-3">
+                                            <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                                            <div>
+                                                <h3 class="mb-1" style="font-weight: 850;">Smart Fridge mode</h3>
+                                                <p class="text-muted mb-0">
+                                                    Split your image into tiles and classify each region. Great for crowded fridge photos.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3">
+                                            <div id="fridgeEmpty" class="result-empty">
+                                                <div>
+                                                    <div class="feature-icon mx-auto mb-3"><i class="bi bi-grid-3x3-gap"></i></div>
+                                                    <p class="mb-1" style="font-weight: 750;">No image yet</p>
+                                                    <p class="text-muted mb-0">Upload an image to enable Smart Fridge mode.</p>
+                                                </div>
+                                            </div>
+                                            <div id="fridgeResults" hidden>
+                                                <div class="row g-3">
+                                                    <div class="col-12 col-lg-7">
+                                                        <div class="glass p-3 h-100">
+                                                            <p class="text-muted mb-2">Tile predictions</p>
+                                                            <div id="fridgeTiles" class="tile-grid"></div>
+                                                            <div id="fridgePagination" class="batch-pagination mt-2" hidden></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-lg-5">
+                                                        <div class="glass p-3 h-100">
+                                                            <p class="text-muted mb-2">Summary</p>
+                                                            <ul id="fridgeSummary" class="list-unstyled d-grid gap-2 mb-0"></ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="advanced" class="row g-3 g-lg-4 mt-2">
+                <div class="col-12 col-lg-4 reveal" data-reveal="fade-up">
+                    <div class="glass feature-card">
+                        <div class="feature-icon"><i class="bi bi-brightness-high"></i></div>
+                        <h3 class="feature-title">Better photos = better results</h3>
+                        <p class="feature-text">Use natural lighting and keep the vegetable centered for best accuracy.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-4 reveal" data-reveal="fade-up">
+                    <div class="glass feature-card">
+                        <div class="feature-icon"><i class="bi bi-aspect-ratio"></i></div>
+                        <h3 class="feature-title">Multiple crops supported</h3>
+                        <p class="feature-text">Even if the item isn't perfectly framed, the UI keeps the flow simple.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-4 reveal" data-reveal="fade-up">
+                    <div class="glass feature-card">
+                        <div class="feature-icon"><i class="bi bi-bounding-box"></i></div>
+                        <h3 class="feature-title">Clear confidence breakdown</h3>
+                        <p class="feature-text">Confidence isn't a guarantee - it's context for smarter decisions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section scenic" style="--scenic-image: url('https://images.unsplash.com/photo-1543083477-4f785aeafaa9?auto=format&fit=crop&w=2000&q=80'); --bg-offset: 10px;">
+        <div class="container">
+            <div class="row g-3 g-lg-4 align-items-stretch">
+                <div class="col-12 col-lg-7 reveal" data-reveal="fade-left">
+                    <div class="glass dashboard-card p-4 h-100">
+                        <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                            <div>
+                                <h2 class="section-title">Recent activity</h2>
+                                <p class="section-subtitle mb-0">
+                                    Your latest predictions, ready to review. Open Profile for deeper insights and charts.
+                                </p>
+                            </div>
+                            <a class="btn btn-ghost btn-sm" href="{{ url_for('profile') }}"><i class="bi bi-grid-1x2 me-1"></i> Open Profile</a>
+                        </div>
+                        <div id="predictRecentList" class="d-grid gap-3 mt-3"></div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-5 reveal" data-reveal="fade-right">
+                    <div class="glass dashboard-card p-4 h-100">
+                        <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                            <div>
+                                <h3 class="mb-1" style="font-weight: 850;">Workflow boosters</h3>
+                                <p class="text-muted mb-0">Small UI improvements that make the two-model setup feel powerful.</p>
+                            </div>
+                            <span class="pill"><i class="bi bi-lightning-charge"></i> Pro tips</span>
+                        </div>
+
+                        <div class="mt-3 d-grid gap-2">
+                            <div class="result-metric is-good">
+                                <span><i class="bi bi-collection me-2"></i> Batch mode</span>
+                                <strong>Queue + cards</strong>
+                            </div>
+                            <div class="result-metric">
+                                <span><i class="bi bi-shuffle me-2"></i> Compare mode</span>
+                                <strong>Disagreement clues</strong>
+                            </div>
+                            <div class="result-metric">
+                                <span><i class="bi bi-grid-3x3-gap me-2"></i> Smart Fridge</span>
+                                <strong>Beta</strong>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-3">
+                            <a class="btn btn-primary btn-glow" href="#advanced"><i class="bi bi-tools me-1"></i> Explore advanced tools</a>
+                            <a class="btn btn-ghost" href="{{ url_for('home') }}"><i class="bi bi-house-door me-1"></i> Back to Home</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div class="modal fade" id="fridgeCropModal" tabindex="-1" aria-labelledby="fridgeCropModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable fridge-crop-dialog">
+        <div class="modal-content glass fridge-modal">
+            <div class="modal-header border-0">
+                <div>
+                    <h5 class="modal-title" id="fridgeCropModalLabel" style="font-weight: 900;">Smart Fridge: Select regions</h5>
+                    <p class="text-muted small mb-0">Draw rectangles, move/resize them, or apply a 2x2 / 3x3 preset.</p>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-0">
+                <div class="row g-3">
+                    <div class="col-12 col-lg-8">
+                        <div class="fridge-crop-stage">
+                            <canvas id="fridgeCropCanvas" class="fridge-crop-canvas" aria-label="Crop editor"></canvas>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-2">
+                            <p class="text-muted small mb-0" id="fridgeCropHelp">
+                                Select tool: click a region to select, drag to move/resize. Draw tool (or hold Shift): drag to create regions.
+                            </p>
+                            <span class="pill"><i class="bi bi-bounding-box"></i> <span id="fridgeRegionCount">0</span> regions</span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-4">
+                        <div class="glass p-3">
+                            <p class="text-muted mb-2" style="font-weight: 750;">Tool</p>
+                            <div class="fridge-preset-group" role="group" aria-label="Editor tool">
+                                <input class="btn-check" type="radio" name="fridgeTool" id="fridgeToolSelect" value="select"
+                                       autocomplete="off" checked>
+                                <label class="btn btn-ghost btn-sm" for="fridgeToolSelect">
+                                    <i class="bi bi-cursor me-1"></i> Select
+                                </label>
+
+                                <input class="btn-check" type="radio" name="fridgeTool" id="fridgeToolDraw" value="draw"
+                                       autocomplete="off">
+                                <label class="btn btn-ghost btn-sm" for="fridgeToolDraw">
+                                    <i class="bi bi-pencil-square me-1"></i> Draw
+                                </label>
+                            </div>
+
+                            <hr class="border border-white border-opacity-10 my-3">
+
+                            <p class="text-muted mb-2" style="font-weight: 750;">Presets</p>
+                            <div class="fridge-preset-group" role="group" aria-label="Preset grid">
+                                <input class="btn-check" type="radio" name="fridgeModalPreset" id="fridgeModalPreset2" value="2"
+                                       autocomplete="off" checked>
+                                <label class="btn btn-ghost btn-sm" for="fridgeModalPreset2">2x2</label>
+
+                                <input class="btn-check" type="radio" name="fridgeModalPreset" id="fridgeModalPreset3" value="3"
+                                       autocomplete="off">
+                                <label class="btn btn-ghost btn-sm" for="fridgeModalPreset3">3x3</label>
+                            </div>
+                            <button id="fridgeApplyPreset" class="btn btn-ghost btn-sm w-100 mt-2" type="button">
+                                <i class="bi bi-grid-3x3-gap me-1"></i> Apply preset
+                            </button>
+
+                            <hr class="border border-white border-opacity-10 my-3">
+
+                            <p class="text-muted mb-2" style="font-weight: 750;">Edit</p>
+                            <div class="d-grid gap-2">
+                                <button id="fridgeUndo" class="btn btn-ghost btn-sm" type="button" disabled>
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i> Undo
+                                </button>
+                                <button id="fridgeClearRegions" class="btn btn-ghost btn-sm" type="button" disabled>
+                                    <i class="bi bi-trash3 me-1"></i> Clear
+                                </button>
+                            </div>
+
+                            <div class="mt-3">
+                                <div class="result-metric">
+                                    <span>Tip</span>
+                                    <strong>Draw around items</strong>
+                                </div>
+                                <p class="text-muted small mb-0 mt-2">
+                                    For best results, keep each region tight around a single vegetable.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="glass p-3 mt-3">
+                            <p class="text-muted mb-2" style="font-weight: 750;">Run</p>
+                            <button id="fridgeRunSelected" class="btn btn-primary btn-glow w-100" type="button" disabled>
+                                <i class="bi bi-magic me-1"></i> Run Smart Fridge
+                            </button>
+                            <p id="fridgeRunStatus" class="text-muted small mb-0 mt-2">Ready</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/predictor.js') }}" defer></script>
+{% endblock %}

@@ -42,6 +42,10 @@ dataset/
 # Generated analysis/cache data
 pbitools_cache/
 pbix_probe/
+qa-artifacts/
+.visual-proof/
+*.pbix
+*.db
 *.sqlite
 *.sqlite3
 

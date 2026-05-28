@@ -15,7 +15,7 @@ import type {
   RefineDashboardRequest,
 } from "@/types/api";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api/auto-dashboard";
 
 export class ApiError extends Error {
   constructor(message: string, public status?: number) {
@@ -204,7 +204,7 @@ export async function getDatasetRows(
   datasetId: string,
   limit?: number,
 ): Promise<DatasetRowsResponse> {
-  const url = new URL(`${API_BASE_URL}/dataset/${datasetId}/rows`);
+  const url = new URL(`${API_BASE_URL}/dataset/${datasetId}/rows`, window.location.origin);
   if (typeof limit === "number") url.searchParams.set("limit", String(limit));
   const response = await fetch(url.toString());
   return parseResponse<DatasetRowsResponse>(response);

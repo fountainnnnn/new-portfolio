@@ -1,12 +1,11 @@
 # backend/src/app.py
 
-import os, uuid, logging, json, re
+import os, uuid, logging, json, re, time
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
-from starlette.middleware.base import BaseHTTPMiddleware
 from dotenv import load_dotenv
 
 from src.core.schemas import (
@@ -33,23 +32,67 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Middleware to log requests
-class LogRequestMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        try:
-            body = await request.body()
-            logger.info(
-                f"Incoming {request.method} {request.url.path} body={body.decode('utf-8')}"
-            )
-        except Exception:
-            logger.warning("Could not read request body")
-        return await call_next(request)
-
-app.add_middleware(LogRequestMiddleware)
-
 # In-memory store for answers:
-# { session_id: { qid: {answer, explanation, language, attempts, first_wrong} } }
+# { session_id: {"created_at": float, "questions": { qid: {...} } } }
 SESSION_STORE: dict[str, dict[str, dict]] = {}
+SESSION_TTL_SECONDS = int(os.getenv("CODING_QUIZ_SESSION_TTL_SECONDS", "3600"))
+RATE_BUCKETS: dict[str, list[float]] = {}
+RATE_LIMITS = {
+    ("POST", "/generate_questions"): (
+        int(os.getenv("CODING_QUIZ_GENERATE_RATE_MAX", "6")),
+        int(os.getenv("CODING_QUIZ_GENERATE_RATE_WINDOW_SECONDS", "60")),
+    ),
+    ("POST", "/check_answer"): (
+        int(os.getenv("CODING_QUIZ_ANSWER_RATE_MAX", "120")),
+        int(os.getenv("CODING_QUIZ_ANSWER_RATE_WINDOW_SECONDS", "60")),
+    ),
+}
+
+
+def prune_sessions() -> None:
+    now = time.time()
+    expired = [
+        sid for sid, entry in SESSION_STORE.items()
+        if now - float(entry.get("created_at", now)) > SESSION_TTL_SECONDS
+    ]
+    for sid in expired:
+        del SESSION_STORE[sid]
+
+
+def client_id_from_request(request: Request) -> str:
+    forwarded_for = request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+    return forwarded_for or (request.client.host if request.client else "local")
+
+
+def allow_rate(request: Request) -> tuple[bool, int]:
+    limit = RATE_LIMITS.get((request.method, request.url.path))
+    if not limit:
+        return True, 0
+
+    max_requests, window_seconds = limit
+    now = time.time()
+    bucket_key = f"{request.method}:{request.url.path}:{client_id_from_request(request)}"
+    timestamps = [ts for ts in RATE_BUCKETS.get(bucket_key, []) if now - ts < window_seconds]
+    if len(timestamps) >= max_requests:
+        retry_after = max(1, int(window_seconds - (now - timestamps[0])))
+        RATE_BUCKETS[bucket_key] = timestamps
+        return False, retry_after
+
+    timestamps.append(now)
+    RATE_BUCKETS[bucket_key] = timestamps
+    return True, 0
+
+
+@app.middleware("http")
+async def rate_limit_middleware(request: Request, call_next):
+    allowed, retry_after = allow_rate(request)
+    if not allowed:
+        return JSONResponse(
+            {"status": "error", "message": "Rate limit exceeded. Try again shortly."},
+            status_code=429,
+            headers={"Retry-After": str(retry_after)},
+        )
+    return await call_next(request)
 
 # ------------------------------------------------------------
 # Helpers
@@ -113,6 +156,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 # ------------------------------------------------------------
 @app.post("/generate_questions", response_model=GenerateResponse)
 async def generate_questions_route(req: GenerateRequest):
+    prune_sessions()
     try:
         result = await generate_questions(
             topic=req.topic,
@@ -124,17 +168,17 @@ async def generate_questions_route(req: GenerateRequest):
         logger.error(f"RuntimeError: {e}")
         return JSONResponse(
             {"status": "error", "message": "OpenAI API key is missing."},
-            status_code=500,
+            status_code=503,
         )
     except Exception as e:
         logger.error("Exception during generate_questions", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Generation failed: {e}")
 
     session_id = str(uuid.uuid4())
-    SESSION_STORE[session_id] = {}
+    SESSION_STORE[session_id] = {"created_at": time.time(), "questions": {}}
 
     for item in result["secret"]:
-        SESSION_STORE[session_id][item["question_id"]] = {
+        SESSION_STORE[session_id]["questions"][item["question_id"]] = {
             "answer": item["answer"],
             "explanation": item["explanation"],
             "language": req.language,
@@ -143,14 +187,16 @@ async def generate_questions_route(req: GenerateRequest):
         }
         logger.debug(f"Stored qid={item['question_id']} for session={session_id}")
 
-    logger.debug(f"Session {session_id} has {len(SESSION_STORE[session_id])} questions stored")
+    logger.debug(f"Session {session_id} has {len(SESSION_STORE[session_id]['questions'])} questions stored")
 
     return {"status": "ok", "session_id": session_id, "questions": result["safe"]}
 
 @app.post("/check_answer", response_model=CheckAnswerResponse)
 def check_answer(req: AnswerRequest):
+    prune_sessions()
     session_id = req.session_id
-    record = SESSION_STORE.get(session_id, {}).get(req.question_id)
+    session = SESSION_STORE.get(session_id)
+    record = session.get("questions", {}).get(req.question_id) if session else None
 
     if not record:
         logger.warning(f"Question not found for session={session_id}, qid={req.question_id}")
@@ -182,11 +228,13 @@ def check_answer(req: AnswerRequest):
 
 @app.post("/end_quiz")
 def end_quiz(session_id: str):
+    prune_sessions()
     if session_id not in SESSION_STORE:
         raise HTTPException(status_code=404, detail="Session not found")
 
-    wrong_first_try = sum(1 for q in SESSION_STORE[session_id].values() if q["first_wrong"])
-    total = len(SESSION_STORE[session_id])
+    questions = SESSION_STORE[session_id]["questions"]
+    wrong_first_try = sum(1 for q in questions.values() if q["first_wrong"])
+    total = len(questions)
 
     del SESSION_STORE[session_id]
     logger.info(f"Cleared session={session_id}")

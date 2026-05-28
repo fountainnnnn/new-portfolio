@@ -1,0 +1,410 @@
+{% extends "layout.html" %}
+
+{% block title %}Predict Property Price{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/predict.css') }}">
+{% endblock %}
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/predict.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+{% endblock %}
+
+{% block content %}
+<section class="predict-hero hero-section text-center text-lg-start" data-animate="fade-up">
+  <div class="section-inner">
+      <div class="row g-4 align-items-center">
+        <div class="col-lg-7">
+          <span class="info-pill">
+            <i class="bi bi-activity"></i>
+            Data-backed insights
+          </span>
+          <h1 class="display-5 fw-bold mb-3">Singapore HDB Property Resale Price Predictor</h1>
+          <p class="lead text-secondary">
+            Enter your latest resale flat details to generate estimated price predictions, confidence intervals,
+            and visual comparisons across scenarios.
+          </p>
+        {% if metadata %}
+        <p class="small text-muted">
+          Model trained on transactions ({{ metadata.lease_commence_min }}&ndash;{{ metadata.lease_commence_max }} lease years)
+          with floor areas between {{ metadata.floor_area_min|round(1) }}&ndash;{{ metadata.floor_area_max|round(1) }} sqm.
+        </p>
+        {% endif %}
+      </div>
+        <div class="col-lg-5">
+          <div class="visual-panel">
+          {% if chart_placeholder %}
+            <img src="{{ chart_placeholder }}" class="img-fluid rounded-4 shadow-sm" alt="Prediction chart preview">
+          {% else %}
+            <img src="{{ url_for('static', filename='images/price prediction.png') }}"
+                 class="img-fluid rounded-4 shadow-sm"
+                 alt="Prediction chart preview">
+          {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="predict-section">
+  <div class="dash-grid">
+    <!-- INPUT PANEL -->
+    <div class="dash-panel dash-panel--wide" data-animate="left">
+      <header class="dash-panel__header">
+        <div>
+          <p class="eyebrow">Input Console</p>
+          <h2>Configure Your Scenario</h2>
+        </div>
+        <div class="console-tabs">
+          <button class="console-tab {% if active_tab != 'budget' %}active{% endif %}"
+                  data-bs-toggle="tab"
+                  data-bs-target="#predict-tab-pane"
+                  type="button"
+                  aria-controls="predict-tab-pane">
+            Prediction
+          </button>
+          <button class="console-tab {% if active_tab == 'budget' %}active{% endif %}"
+                  data-bs-toggle="tab"
+                  data-bs-target="#budget-tab-pane"
+                  type="button"
+                  aria-controls="budget-tab-pane">
+            Budget Lab
+          </button>
+        </div>
+      </header>
+
+      <div class="tab-content" id="prediction-input-tabs-content">
+        <div class="tab-pane fade {% if active_tab != 'budget' %}show active{% endif %}" id="predict-tab-pane" role="tabpanel" aria-labelledby="predict-tab">
+          {% if form_errors %}
+          <div class="alert alert-danger" role="alert">
+            <ul class="mb-0">
+              {% for error in form_errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+
+          <form id="prediction-form" method="post" action="{{ (form_action or url_for('predict')) }}#prediction-results">
+            {{ prediction_form.csrf_token }}
+            {{ prediction_form.form_mode(value='predict') }}
+            {{ prediction_form.use_average_floor_area(id='use-average-floor-area-flag', value=('1' if use_average_floor_area else '')) }}
+
+            <div class="console-field-grid">
+              {% for field in prediction_fields %}
+              <div class="console-field">
+                <label for="field-{{ field.id }}" class="form-label">{{ field.label }}</label>
+
+                {% if field.id == 'floor_area_sqm' %}
+                <div class="input-group">
+                  <input class="form-control"
+                         type="{{ field.type or 'text' }}"
+                         id="field-{{ field.id }}"
+                         name="{{ field.name }}"
+                         value="{{ field.value }}"
+                         {% if field.placeholder %}placeholder="{{ field.placeholder }}"{% endif %}
+                         {% if field.min %}min="{{ field.min }}"{% endif %}
+                         {% if field.max %}max="{{ field.max }}"{% endif %}
+                         {% if field.step %}step="{{ field.step }}"{% endif %}>
+                  <button type="button" class="btn btn-outline-secondary" id="use-average-floor-area">
+                    Average
+                  </button>
+                </div>
+                <small class="form-text text-secondary" id="average-floor-area-status">
+                  {% if use_average_floor_area and current_avg_floor_area %}
+                  Using average: {{ "%.1f"|format(current_avg_floor_area) }} sqm
+                  {% elif current_avg_floor_area %}
+                  Average available: {{ "%.1f"|format(current_avg_floor_area) }} sqm
+                  {% else %}
+                  Average floor area not available for this selection.
+                  {% endif %}
+                </small>
+                {% elif field.type == 'select' %}
+                <select class="form-select" id="field-{{ field.id }}" name="{{ field.name }}">
+                  {% for option in field.options %}
+                  <option value="{{ option.value }}" {% if option.selected %}selected{% endif %}>{{ option.label }}</option>
+                  {% endfor %}
+                </select>
+                {% elif field.type == 'textarea' %}
+                <textarea class="form-control"
+                          id="field-{{ field.id }}"
+                          name="{{ field.name }}"
+                          rows="{{ field.rows or 3 }}"
+                          placeholder="{{ field.placeholder }}">{{ field.value }}</textarea>
+                {% else %}
+                <input class="form-control"
+                       type="{{ field.type or 'text' }}"
+                       id="field-{{ field.id }}"
+                       name="{{ field.name }}"
+                       value="{{ field.value }}"
+                       {% if field.placeholder %}placeholder="{{ field.placeholder }}"{% endif %}
+                       {% if field.min %}min="{{ field.min }}"{% endif %}
+                       {% if field.max %}max="{{ field.max }}"{% endif %}
+                       {% if field.step %}step="{{ field.step }}"{% endif %}>
+                {% endif %}
+
+                {% if field.help_text and field.id != 'floor_area_sqm' %}
+                <small class="form-text text-secondary">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in field.errors %}
+                  <div>{{ error }}</div>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+              {% endfor %}
+            </div>
+
+            <div class="console-footer">
+              <button type="submit" class="btn predict btn-lg">Generate prediction</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="tab-pane fade {% if active_tab == 'budget' %}show active{% endif %}" id="budget-tab-pane" role="tabpanel" aria-labelledby="budget-tab">
+          <form id="budget-form" method="post" action="{{ (form_action or url_for('predict')) }}#budget-results">
+            {{ budget_form.csrf_token }}
+            {{ budget_form.form_mode(value='budget') }}
+            <div class="console-field-grid">
+              <div class="console-field">
+                <label for="budget-amount" class="form-label">Budget (S$)</label>
+                <input class="form-control"
+                       type="number"
+                       name="budget"
+                       id="budget-amount"
+                       min="0"
+                       step="1000"
+                       placeholder="Example: 450000"
+                       value="{{ budget_form_values.budget }}">
+                <small class="form-text text-secondary">Matches historical averages at or below your budget.</small>
+                {% if budget_form.budget.errors %}
+                <div class="form-text text-danger small mt-1">
+                  {{ budget_form.budget.errors[0] }}
+                </div>
+                {% endif %}
+              </div>
+              <div class="console-field">
+                <label for="budget-flat-type" class="form-label">Flat type</label>
+                <select class="form-select" name="budget_flat_type" id="budget-flat-type">
+                  {% for flat_type in budget_flat_types %}
+                  <option value="{{ flat_type }}" {% if flat_type == budget_form_values.flat_type %}selected{% endif %}>{{ flat_type }}</option>
+                  {% endfor %}
+                </select>
+                <small class="form-text text-secondary">Suggestions are based on historical averages.</small>
+              </div>
+            </div>
+            <div class="console-footer">
+              <button type="submit" class="btn predict btn-lg">Find towns</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- OUTPUT GRID -->
+    <div class="dash-output-grid prediction-results" id="prediction-results">
+      {% if active_tab != 'budget' and not prediction_result %}
+      <div class="dashboard-placeholder" data-animate="right">
+        <p class="muted mb-0">Prediction output will appear here after submission.</p>
+      </div>
+      {% endif %}
+
+      {% if prediction_result %}
+      <div class="dashboard-grid" data-animate="right">
+        <div class="dashboard-card span-4 primary-metric">
+          <div class="sparkline">
+            <span class="sparkline-label">Predicted price</span>
+            <span class="sparkline-value">{{ prediction_result.price }}</span>
+          </div>
+          {% if prediction_result.price_per_sqm %}
+          <div class="prediction-metric">
+            <span class="prediction-metric__label">Price per sqm</span>
+            <span class="prediction-metric__value">{{ prediction_result.price_per_sqm }}</span>
+          </div>
+          {% endif %}
+          {% if prediction_result.details %}
+          <ul class="prediction-summary-box__details list-unstyled mb-0">
+            {% for detail in prediction_result.details %}
+            <li>{{ detail }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+
+          <div class="confidence-block mt-4">
+            <header>
+              <p class="eyebrow mb-1">Confidence bands</p>
+              <h4 class="mb-2">Scenario forecasts</h4>
+            </header>
+            <div class="chart-stack">
+              {% for bar in comparison_bars %}
+              <div class="telemetry-bar">
+                <div class="telemetry-bar__label"><span>{{ bar.label }}</span><span>{{ bar.value }}</span></div>
+                <div class="progress" role="progressbar" aria-valuenow="{{ bar.percent | default(0) }}" aria-valuemin="0" aria-valuemax="100" aria-label="{{ bar.label }}">
+                  <div class="progress-bar" data-progress="{{ bar.percent | default(0) }}"></div>
+                </div>
+              </div>
+              {% else %}
+              <div class="placeholder-message text-secondary">Scenario comparisons will appear here once a prediction is available.</div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        {% if prediction_result.demand %}
+        {% set demand = prediction_result.demand %}
+        <div class="dashboard-card span-4 demand-card">
+          <div class="demand-highlight">
+            <div class="demand-highlight__badge demand-highlight__badge--{{ demand.label|lower }}">{{ demand.label }} Demand</div>
+            <div class="demand-highlight__body">
+              <div class="demand-highlight__score">
+                <span class="demand-highlight__value">{{ demand.percentage }}</span>
+                <span class="demand-highlight__caption">Probability of {{ demand.label|lower }} buyer interest</span>
+              </div>
+              <p class="demand-highlight__message mb-0">{{ demand.message }}</p>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if prediction_result.exit_outlook %}
+        {% set outlook = prediction_result.exit_outlook %}
+        <div class="dashboard-card span-4 exit-card">
+          <div class="exit-value-card">
+            <div class="exit-value-card__header">
+              <div>
+                <p class="exit-value-card__eyebrow text-uppercase">Exit value outlook</p>
+                <h3 class="exit-value-card__title">Potential {{ 'profit' if outlook.status == 'profit' else 'loss' }} of {{ outlook.profit_display }}</h3>
+              </div>
+              <div class="exit-value-card__chip exit-value-card__chip--{{ 'gain' if outlook.status == 'profit' else 'loss' }}">{{ outlook.gain_window_label }}</div>
+            </div>
+            <div class="exit-value-card__metrics">
+              <div>
+                <p class="exit-value-card__metric-label">Projected exit price</p>
+                <p class="exit-value-card__metric-value">{{ outlook.exit_price_display }}</p>
+                <p class="exit-value-card__metric-subtext">Range {{ outlook.exit_range_display }}</p>
+              </div>
+              <div>
+                <p class="exit-value-card__metric-label">Estimated {{ 'profit' if outlook.status == 'profit' else 'loss' }}</p>
+                <p class="exit-value-card__metric-value">{{ outlook.profit_display }}</p>
+                <p class="exit-value-card__metric-subtext">{{ outlook.pct_gain_display }} vs. purchase</p>
+              </div>
+              <div>
+                <p class="exit-value-card__metric-label">Purchase baseline</p>
+                <p class="exit-value-card__metric-value">{{ outlook.purchase_price_display }}</p>
+                <p class="exit-value-card__metric-subtext">{{ outlook.purchase_month_label }} purchase scenario<br>Demand index reference: {{ outlook.demand_index_display }}</p>
+              </div>
+            </div>
+            <div class="exit-value-card__footer">{{ outlook.summary }}</div>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if shap_image %}
+        <div class="dashboard-card span-6 shap-card compact-card">
+          <header>
+            <p class="eyebrow">Feature impact</p>
+            <h3 class="mb-2">Contribution chart</h3>
+          </header>
+          <div class="shap-chart mt-3">
+            <img src="{{ shap_image }}" class="img-fluid rounded-4 shadow-sm shap-chart__preview chart-zoomable" alt="SHAP feature impact chart" data-lightbox-src="{{ shap_image }}" data-lightbox-label="Feature impact chart">
+          </div>
+        </div>
+        {% endif %}
+
+        {% if town_price_chart %}
+        <div class="dashboard-card span-6 towns-card compact-card">
+          <header>
+            <p class="eyebrow">Town comparison</p>
+            <h3 class="mb-2">Historical averages</h3>
+            <p class="muted">For {{ form_values.flat_type or 'selected flat type' }} / {{ form_values.flat_model or 'selected model' }}.</p>
+          </header>
+          <div class="town-comparison-chart">
+            <img src="{{ town_price_chart }}" class="img-fluid rounded-4 shadow-sm chart-zoomable" alt="Bar chart comparing average town prices" data-lightbox-src="{{ town_price_chart }}" data-lightbox-label="Town comparison chart">
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="dashboard-card span-12 insights-card">
+          <div class="model-insights-card">
+            <div class="model-insights-card__header">
+              <div>
+                <p class="model-insights-card__eyebrow text-uppercase">Model insights</p>
+                <h3 class="model-insights-card__title mb-0">AI-driven commentary</h3>
+              </div>
+              <div class="model-insights-card__chip">Custom AI Analyzer</div>
+            </div>
+            <div class="model-insights-card__body">
+              {% if model_insights %}
+              <div class="model-insights-card__content">{{ model_insights | safe }}</div>
+              {% elif model_insights_error %}
+              <div class="alert alert-warning mb-0" role="alert">{{ model_insights_error }}</div>
+              {% else %}
+              <div class="placeholder-message text-secondary mb-0">Insights will appear here once the assistant analyses your latest prediction.</div>
+              {% endif %}
+            </div>
+            <p class="model-insights-card__footnote text-muted mb-0">Generated with the same secure AI stack that powers the HDB Resale Chatbot.</p>
+          </div>
+        </div>
+
+      </div>
+      {% endif %}
+
+      {% if budget_suggestions %}
+      <div class="dashboard-card span-6 budget-card" id="budget-results">
+        <header>
+          <p class="eyebrow">Budget explorer</p>
+          <h3 class="mb-2">Budget-suitable towns</h3>
+          <p class="muted">Based on historical resale data for {{ budget_form_values.flat_type }}.</p>
+        </header>
+        <div class="table-responsive">
+          <table class="table table-sm align-middle budget-suggestions__table">
+            <thead class="text-uppercase small text-secondary">
+              <tr><th scope="col">Town</th><th scope="col">Avg. resale price</th><th scope="col">Budget headroom</th></tr>
+            </thead>
+            <tbody>
+              {% for suggestion in budget_suggestions %}
+              <tr>
+                <td class="fw-semibold">{{ suggestion.town }}</td>
+                <td>S${{ '{:,.0f}'.format(suggestion.average_price) }}</td>
+                <td class="{% if suggestion.buffer < 10000 %}text-warning{% else %}text-success{% endif %}">S${{ '{:,.0f}'.format(suggestion.buffer) }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <p class="small text-muted mb-0">Based on historical resale transactions; actual listings may vary with current market conditions.</p>
+      </div>
+      {% elif active_tab == 'budget' and not budget_errors %}
+      <div class="dashboard-placeholder" id="budget-results">
+        <p class="muted mb-0">Enter a budget to receive town suggestions that historically fit your range.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<script id="floor-area-lookup-data" type="application/json">
+  {{ floor_area_lookup | tojson }}
+</script>
+
+
+<!-- ===== LOADER OVERLAY ===== -->
+<div id="prediction-loader" class="prediction-loader d-none" aria-live="assertive">
+  <div class="prediction-loader__backdrop"></div>
+  <div class="prediction-loader__content text-center">
+    <div class="spinner-border text-light" role="status" aria-hidden="true"></div>
+    <p class="mt-3 mb-0 text-white fw-semibold">Model is predicting…</p>
+  </div>
+</div>
+
+<!-- ===== SHAP LIGHTBOX ===== -->
+<div id="shap-lightbox" class="shap-lightbox d-none" role="dialog" aria-modal="true">
+  <div class="shap-lightbox__backdrop"></div>
+  <div class="shap-lightbox__content">
+    <img src="" alt="Expanded chart view" class="shap-lightbox__image">
+  </div>
+</div>
+
+{% endblock %}

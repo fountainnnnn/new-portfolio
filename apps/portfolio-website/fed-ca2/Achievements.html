@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SP70 | Achievements</title>
+    <link rel="icon" href="images/SPIcon.png" type="image/icon">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script defer src="js/main.js"></script>
+    <script src="js/Achievements.js" defer></script>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/achievements.css">
+</head>
+<body >
+    <header class="sticky-top shadow">
+        <nav class="navbar navbar-expand-md navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" href="https://www.sp.edu.sg/sp70">
+                    <img src="images/sp70.png" alt="SP70" id="SP70">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end d-none d-md-flex" id="navbarNav">
+                    <ul class="navbar-nav ">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="Achievements.html">Goals & Achievements</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="feedback.html">Feedback</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="toast-container position-fixed">
+                    <div id="quote-toast" class="toast" aria-live="assertive" >
+                      <div class="toast-header">
+                        <img src="images/SPIcon.png" class="rounded me-2" alt="..." width="30">
+                        <strong class="me-auto">Quote of the Day</strong>
+                        <small class="text-body-secondary">Just now</small>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                      </div>
+                      <div class="toast-body">
+                        Loading...
+                      </div>
+                    </div>
+                  </div>
+                <div class="offcanvas offcanvas-end d-md-none" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" style="width: 80%;">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+                        <button type="button" class="btn-close btn-close-black" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav fs-4">
+                            <li class="nav-item">
+                                <a class="nav-link " aria-current="page" href="index.html">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="Achievements.html">Goals & Achievements</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="feedback.html">Feedback</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <button type="button" id="backToTop" class="btn btn-light rounded shadow position-fixed">Back to top <i class="bi bi-arrow-up"></i></button>
+    <h2 id="title"></h2>
+    
+    <div class="banner overflow-hidden position-fixed w-100">
+        <video class="position-absolute w-100 object-fit-cover" autoplay muted loop>
+            <source src="videos/2.mp4" type="video/mp4">
+        </video>
+        <div class="position-absolute w-100" id="bg"></div>
+    </div>
+    <section class="maincont py-3 position-relative w-100 overflow-hidden">
+        <div class="container  mt-4 p-1 p-md-4 shadow bg-light rounded-3">
+            <div class="card p-4">
+                <p class="h1 fw-bolder text-center revealTop"><span class="sp70">SP</span>'s 60-30 vision </p>
+                <p class="pt-3 text-center revealTop">
+                    <cite>SP’s 60-30 Vision is to reduce our greenhouse gas emissions by 60% by 2030, from the baseline year of 2022.</cite>
+                </p>
+                <div class="container mb-3">
+                    <div class="card mx-0 mx-md-5 revealTop">
+                        <div class="row g-0">
+                            <div class="col-md-3">
+                              <img src="https://charlesrudd.com/wp-content/uploads/2023/05/PCEO-Soh-Wai-Wah-533x800.jpg" class="img-fluid rounded-start" alt="">
+                            </div>
+                            <div class="col-md-8">
+                              <div class="card-body ms-3">
+                                <h5 class="card-title"><u>Principal's message: <span class="sp70">SP</span>'s 60-30 vision</u></h5>
+                                <p class="card-text">&nbsp; &nbsp; &nbsp; &nbsp;<b class="fs-5">“</b>Singapore is committed to reaching net-zero GHG
+                                  emissions by 2050, with public agencies targeted to
+                                  do so around 2045.<br>
+                                  &nbsp; &nbsp; &nbsp; &nbsp;As an educational institution, particularly one
+                                  responsible for about 10% of the country’s birth cohort,
+                                  SP should do more and reach net-zero emissions
+                                  even earlier. We will set an example with our 60-30
+                                  Vision—our goal is to reduce our GHG emissions by
+                                  <em class="text-danger fw-bolder">60% by 2030</em>, taking 2022 as the baseline year.<b class="fs-5">”</b></p>
+                                <p class="card-text"><small class="text-body-secondary">- <b>Soh Wai Wah</b><br>Principal & CEO of SP</small></p>
+                              </div>
+                            </div>
+                          </div>
+                    </div>
+                  </div>
+                  <div class="container mb-3">
+                    <div class="card mx-0 mx-md-5 revealTop">
+                        <div class="row g-0">
+                            
+                            <div class="col-md-7 order-2 order-md-1">
+                              <div class="card-body ms-3 p-3">
+                                <h5 class="card-title"><u><span class="sp70">SP</span>'s 60-30 vision</u></h5>
+                                <p class="card-text pt-2">
+                                    &nbsp; &nbsp; &nbsp; &nbsp;In FY2022, our Scope 1 and 2 greenhouse gas (GHG) emissions totaled 13,096.18 
+                                    tCO2e. Approximately 60% of these emissions stemmed from electricity used for 
+                                    air-conditioning, with an additional 10% resulting from refrigerant gases in 
+                                    air-conditioning units.<br><br>
+                                  &nbsp; &nbsp; &nbsp; &nbsp;<b class="text-success">We have set a goal to reduce our emissions by 60% by FY2030.</b> To achieve this,
+                                   we plan to make significant changes to our campus infrastructure, particularly focusing on cooling and
+                                    lighting systems. These upgrades will be integrated with other necessary renovation projects to maintain 
+                                    our facilities' suitability for learning and their intended purposes.</p>
+                                <p class="card-text"><small class="text-body-secondary">- <span class="sp70">SP</span> Environmental Sustainability Disclosure FY2022</small></p>
+                              </div>
+                            </div>
+                            <div class="col-md-5 my-auto order-1 order-md-2">
+                                <img src="images/6030goal.png" class="img-fluid rounded-start" alt="">
+                              </div>
+                          </div>
+                    </div>
+                  </div>
+                  <div class="container mb-3">
+                    <div class="card mx-0 mx-md-5 revealTop">
+                            <div class="container mt-5">
+                                <div class="row">
+                                  <div class="col-12">
+                                    <h2 class="text-center fw-bolder"><u>Our Progression: FY2022 Disclosures</u></h2>
+                                  </div>
+                                </div>
+                                <div class="row mt-4 mb-3">
+                                  <div class="col-md-3 mb-3 revealLeft">
+                                    <div class="h4 fw-bolder section-title">SCOPE 1 AND 2 GHG EMISSIONS</div>
+                                    <div class="circle-container">
+                                      <img class="w-100" src="images/circle.png" width="600" alt="Circle">
+                                    </div>
+                                    <div class="mt-2">
+                                      <div>Scope 1: <b class="text-success">1,673.73 tCO<sub>2</sub>e</b></div>
+                                      <div>Scope 2: <b>11,422.45 tCO<sub>2</sub>e</b></div>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-3 mb-3 revealTop">
+                                    <div class="h4 section-title fw-bolder">ENERGY</div>
+                                    <div>Energy Utilisation Index: <b class="text-success">103.3 kWh/m<sup>2</sup></b></div>
+                                    <div class="mt-4">
+                                      <div>GreenGov Baseline <br> <b>(FY2018-FY2020)</b></div>
+                                      <div class="progress mb-2" role="progressbar" aria-label="Success striped" aria-valuenow="118" aria-valuemin="0" aria-valuemax="120">
+                                        <div class="progress-bar progress-bar-striped bg-secondary" style="width: 98.3%">98.3%</div>
+                                      </div>
+                                      <div><b>FY2021</b></div>
+                                      <div class="progress mb-2" role="progressbar" aria-label="Success striped " aria-valuenow="100.3" aria-valuemin="0" aria-valuemax="120">
+                                        <div class="progress-bar progress-bar-striped bg-secondary" style="width: 83.6%">83.6%</div>
+                                      </div>
+                                      <div><b>FY2022</b></div>
+                                      <div class="progress" role="progressbar" aria-label="Success striped" aria-valuenow="103.3" aria-valuemin="0" aria-valuemax="120">
+                                        <div class="progress-bar progress-bar-striped bg-success" style="width: 86.1%">86.1%</div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-3 mb-3 revealTop">
+                                    <div class="h4 section-title fw-bolder">WATER</div>
+                                    <div>Water Efficiency Index: <b class="text-success">49.7 L/p/d</b></div>
+                                    <div class="mt-4">
+                                      <div>GreenGov Baseline<br> <b>(FY2018-FY2020)</b></div>
+                                      <div class="progress mb-2" role="progressbar" aria-label="Success striped " aria-valuenow="40.8" aria-valuemin="0" aria-valuemax="50">
+                                        <div class="progress-bar progress-bar-striped bg-secondary" style="width: 81.6%">81.6%</div>
+                                      </div>
+                                      <div><b>FY2021</b></div>
+                                      <div class="progress mb-2" role="progressbar" aria-label="Success striped " aria-valuenow="42.2" aria-valuemin="0" aria-valuemax="50">
+                                        <div class="progress-bar progress-bar-striped bg-secondary" style="width: 84.4%">84.4%</div>
+                                      </div>
+                                      <div><b>FY2022</b></div>
+                                      <div class="progress" role="progressbar" aria-label="Success striped " aria-valuenow="49.7" aria-valuemin="0" aria-valuemax="50">
+                                        <div class="progress-bar progress-bar-striped bg-success" style="width: 99.4%">99.4%</div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-3 mb-3 revealRight">
+                                    <div class="h4 section-title fw-bolder">GREEN BUILDINGS</div>
+                                    <div class="d-flex justify-content-between">
+                                      <div class="circle-container">
+                                        <img class="position-relative w-100 pe-3" src="images/circle2.png" alt="Circle">
+                                      </div>
+                                      <div>Green Mark-certified buildings: 23 out of 53</div>
+                                    </div>
+                                    <div class="d-flex justify-content-between mt-2">
+                                      <div class="circle-container">
+                                        <img class="position-relative w-100 pe-3" src="images/circle3.png" alt="Circle">
+                                      </div>
+                                      <div>Green Mark Platinum Super Low Energy (SLE) buildings: <b>1</b> out of <b>53</b></div>
+                                    </div>
+                                    <div class="h4 section-title mt-3 fw-bolderww">WASTE</div>
+                                    <div>Waste Disposal Index: <b class="text-success">0.075 kg/p/d</b></div>
+                                    <div class="mt-2">Proportion of waste generated that is diverted or recycled: <b>15.9%</b></div>
+                                  </div>
+                                </div>
+                              </div>
+                          </div>
+                    </div>
+                  </div>
+            </div>
+        <div class="container mt-4 p-md-5 p-1 shadow bg-light rounded-3">
+            <div class="card">
+                <p class="h1 fw-bolder pt-4 text-center revealTop"><span class="sp70">SP</span>'s Academic Achievers</p>
+                <div class="hall-of-fame">
+                    <div class="mt-1">
+                        <h2 class="text-center">Singapore Polytechnic's Top Academic Achievers</h2>
+                        <div class="mb-3">
+                            <div class="col-12 d-flex justify-content-end pt-3">
+                                <input id="search" class="form-control w-25" type="text" placeholder="Search by diploma">
+                            </div>
+                        </div>
+                        <div class="table-responsive revealTop">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Diploma</th>
+                                        <th>Awards</th>
+                                        <th class="d-none d-md-table-cell">More Info</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="achieversTable">
+                                    <tr>
+                                        <td>
+                                            <img src="images/SPIcon.png" alt="Singapore Polytechnic icon" class="student-img object-fit-cover">
+                                            <span>Mohamed Najulah</span>
+                                        </td>
+                                        <td>DBIT</td>
+                                        <td>Chua Chor Teck Gold Medal<br>
+                                            IMDA Gold Medal</td>
+                                        <td class="d-none d-md-table-cell"><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal1">Learn More</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <img src="images/SPIcon.png" alt="Singapore Polytechnic icon" class="student-img object-fit-cover">
+                                            <span>Chong Han Lyn</span>
+                                        </td>
+                                        <td>DMC</td>
+                                        <td>Low Guan Onn Gold Medal<br>
+                                            Asia Fund Space Gold Medal</td>
+                                        <td class="d-none d-md-table-cell"><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal2">Learn More</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <img src="images/SPIcon.png" alt="Singapore Polytechnic icon" class="student-img object-fit-cover">
+                                            <span>Kwek Ai Ling</span>
+                                        </td>
+                                        <td>DXPD</td>
+                                        <td>Toh Chin Chye Gold Medal<br>
+                                            DBS Bank Gold Medal<br>
+                                            Norton Prize</td>
+                                        <td class="d-none d-md-table-cell"><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal3">Learn More</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <img src="images/SPIcon.png" alt="Singapore Polytechnic icon" class="student-img object-fit-cover">
+                                            <span>Pavan Singh Gill</span>
+                                        </td>
+                                        <td>DEEE</td>
+                                        <td>Lee Kuan Yew Award<br>
+                                            SMRT Gold Medal<br>
+                                            OCBC Prize<br>
+                                            The Institution of Engineers Gold Medal Award</td>
+                                        <td class="d-none d-md-table-cell"><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal4">Learn More</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <img src="images/SPIcon.png" alt="Singapore Polytechnic icon" class="student-img object-fit-cover">
+                                            <span>Amanda Chia Siew Hui</span>
+                                        </td>
+                                        <td>DNHW</td>
+                                        <td>Singapore Food Manufacturers' Association Gold Medal<br>
+                                            Temasek Education Foundation Sunburst Scholarship<br>
+                                            Toh Chin Chye Gold Medal</td>
+                                        <td class="d-none d-md-table-cell"><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal5">Learn More</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="modal fade" id="modal1" tabindex="-1" aria-labelledby="modal1Label" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal1Label">Mohamed Najulah</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p> <b class="text-secondary">Who Am I</b><br>
+                                        In secondary school, I struggled because of my dyslexia. I became unmotivated. However, dyslexia became a gift in SP. Dyslexics tend to think in pictures, so this visual thinking helped me in my 3D modelling classes! Being in SP, and learning from friends and incredible lecturers, has changed me, my self- confidence and my self-belief completely.
+                                        <br><br>
+                                        <b class="text-secondary">What Have I Achieved</b><br>
+                                        Friendly faces convinced me to join SP, when I interacted with SP students during the Open House and was impressed by their passion. I’ve also learnt much beyond the classroom. In the SP Students’ Union, I was a Corporate Coordinator, interacting with real-life entrepreneurs, business owners and sponsors. I became the President of the Student Entrepreneurship club. I’ve chaired a committee for the Youth Model ASEAN conference, a regional gathering of youths from all 10 ASEAN states! These experiences will definitely aid my future dream to be a technopreneur.
+                                        <br><br>
+                                        <b class="text-secondary">My Next Step</b><br>
+                                        I have secured a place with the National University of Singapore (NUS) under the NUS Merit Scholarship to pursue Electrical Engineering.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="modal fade" id="modal2" tabindex="-1" aria-labelledby="modal2Label" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal2Label">Chong Han Lyn</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><b  class="text-secondary">Who Am I</b><br>
+                                        Enrolling in SP’s Diploma in Media and Communication course was never part of my plan. Initially, I took up a diploma course in the field of life sciences at another polytechnic. Months into the diploma, I realised that a career in science was not for me. I decided to then pursue my interest in Communication.
+                                        <br>
+                                        I visited SP during the Open House and was impressed by the facilities, as well as the warm lecturers and seniors from the School of Communication, Arts and Social Sciences. Spurred on by the idea of expressing my ideas through an integrated approach, I decided to pursue the Diploma in Media and Communication.
+                                        <br><br>
+                                        <b class="text-secondary">What Have I Achieved</b> <br>
+
+                                        My time in SP saw me working on several memorable projects including “Chance”, a short film for the Temasek 20/20 Short Film Project, as well as a one-month social media campaign in partnership with Migrant Workers’ Centre. The campaign video to raise awareness of migrant workers went viral and was picked up by local and online media outlets.
+                                        <br>
+                                        I also had the chance to intern at one of the leading media agencies, Starcom, where I developed consumer insights and recommend media strategies to clients. My abilities were recognised by the company and I was offered a full-time position even before completing my internship.
+                                        <br> <br>
+                                        <b class="text-secondary">My Next Step</b><br>
+                                        I accepted Starcom’s offer for the role of media executive and hopes to build a successful brand persona for myself. I also aspire to create a well-known platform to share my thoughts and ideas for the greater good.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="modal fade" id="modal3" tabindex="-1" aria-labelledby="modal3Label" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal3Label">Kwek Ai Ling</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><b  class="text-secondary">Who Am I</b><br>
+                                        Before SP, I was a part-time student at NAFA, studying Fashion Jewellery Design. Before
+                                        that I was in JC, where I had scored mediocre results.
+                                        <br>
+                                        When I attended the SP Open House, the product displays for the Diploma in Experience and Product Design (DXPD) course were so beautiful, and the aspect of user experience so well- thought-out, that I decided to join SP, with the support of my family and friends. (I’ve made it on the Director’s Honours List three years in a row!)
+                                        <br><br>
+                                        <b class="text-secondary">What Have I Achieved</b> <br>
+                                        During my second year, my class had to design a two-seater bench. My classmates and I would spend hours making benches in a studio; the ‘hardworking’ atmosphere of constant sawing and knocking, and the camaraderie shared is a priceless memory to me! I also enjoyed my internship at local design studio, Hans Tan Studio, and had the chance to act as the Organising Chairman for the DXPD section of the SP Design School Graduation Showcase, an exhibition of final-year design projects.
+                                        <br>
+                                        Eventually, I even gained the confidence to enter competitions on top of my schoolwork. I really enjoyed the Singaplural 48 Hours Challenge during the Singapore Design Week, where my teammates and I designed a makeover for a showroom owned by Castilla, an Italian furniture retailer.
+                                        <br> <br>
+                                        <b class="text-secondary">My Next Step</b><br>
+                                        I was awarded the NUS Global Merit Scholarship and am pursuing my dream course in industrial design at the National University of Singapore.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="modal fade" id="modal4" tabindex="-1" aria-labelledby="modal4Label" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal4Label">Pavan Singh Gill</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><b class="text-secondary">Who Am I</b><br>
+                                        In secondary school, I struggled because of my dyslexia. I became unmotivated. However, dyslexia became a gift in SP. Dyslexics tend to think in pictures, so this visual thinking helped me in my 3D modelling classes! Being in SP, and learning from friends and incredible lecturers, has changed me, my self- confidence and my self-belief completely.
+                                        
+                                        <br><br>
+                                        <b class="text-secondary">What Have I Achieved</b> <br>
+                                        Friendly faces convinced me to join SP, when I interacted with SP students during the Open House and was impressed by their passion. I’ve also learnt much beyond the classroom. In the SP Students’ Union, I was a Corporate Coordinator, interacting with real-life entrepreneurs, business owners and sponsors. I became the President of the Student Entrepreneurship club. I’ve chaired a committee for the Youth Model ASEAN conference, a regional gathering of youths from all 10 ASEAN states! These experiences will definitely aid my future dream to be a technopreneur.
+                                        
+                                        <br> <br>
+                                        <b class="text-secondary">My Next Step</b><br>
+                                        I have secured a place with the National University of Singapore (NUS) under the NUS Merit Scholarship to pursue Electrical Engineering.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="modal fade" id="modal5" tabindex="-1" aria-labelledby="modal5Label" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modal5Label">Amanda Chia Siew Hui</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><b class="text-secondary">Who Am I</b><br>
+                                        I believe in making changes for the better. In SP, I founded the SP Sign Language Club, and though it took many sleepless nights of work, today more than 100 members are learning to communicate with the physically handicapped using sign language. I’ve also faced personal challenges to change my own life. In secondary school, I was overweight, but I took up sports, abstained from junk food, and started building a healthier life!
+                                        <br><br>
+                                        <b class="text-secondary">What Have I Achieved</b><br>
+                                        My passion for fitness and health helped me to excel in my studies and receive the Temasek Education Foundation Sunburst Scholarship. I also took part in health screening and mapping exercises for the elderly, as well as blood donation drives. Besides my knowledge in nutrition, health, and sign language, I picked up other skills as well during my internship with an organic food company, where I learnt to market health food products and even conduct baking classes!
+                                        <br> <br>
+                                        <b class="text-secondary">My Next Step</b><br>
+                                        I’ve been accepted to study in the National University of Singapore's Yong Loo Lin School of Medicine.
+                                        
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+                <p></p>
+            </div>
+        </div>
+    </section>
+    <footer class="text-white text-center text-lg-start pt-2 bg-black position-relative">
+        <div class="py-3">
+            <div class="container d-flex justify-content-between align-items-start border-top py-3">
+                <div>
+                    <img src="images/SPFullLogo.png" alt="" style="max-width: 300px;">
+                    <figcaption class="figcaption pt-4">Singapore Polytechnic <br>
+                        500 Dover Road Singapore 139651</figcaption>
+                </div>
+                <ul class="nav list-unstyled d-flex align-items-start">
+                    <li class="ms-3">
+                        <a class="text-light-emphasis" href="https://x.com/singaporepoly" target="_blank"><i class="bi bi-twitter"
+                                style="font-size: 1.2rem"></i></a>
+                    </li>
+                    <li class="ms-3">
+                        <a class="text-light-emphasis" href="https://www.instagram.com/singaporepoly/?hl=en" target="_blank"><i class="bi bi-instagram"
+                                style="font-size: 1.2rem"></i></a>
+                    </li>
+                    <li class="ms-3">
+                        <a class="text-light-emphasis" href="https://www.facebook.com/singaporepolytechnic/" target="_blank"><i class="bi bi-facebook"
+                                style="font-size: 1.2rem"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
+
+<!-- Every image is taken from:
+- https://www.sp.edu.sg/
+- https://www.nas.gov.sg/archivesonline/photographs/
+- https://www.youtube.com/@singaporepolytechnic  -->

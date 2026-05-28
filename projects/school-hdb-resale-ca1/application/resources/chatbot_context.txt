@@ -1,0 +1,14 @@
+### HDB Resale Timeline
+Typical resale timelines range from 12 to 20 weeks depending on option and completion milestones. Buyers usually secure an Option to Purchase (OTP), pay the option fee (up to S$5,000), exercise within 21 days, submit resale application, and attend completion at HDB Hub. Highlight CPF and HDB housing grant paperwork, valuation appointments, and potential extension of stay clauses.
+
+### Price Drivers
+Primary drivers for resale prices include town-level amenity score (MRT interchanges, malls, schools), flat type demand (4-room makes up ~45% of transactions), floor area, storey range, lease remaining, and transaction seasonality (Jan/Feb dips, Q3 peaks). Premium towns include Queenstown, Bukit Merah, Bishan, Toa Payoh, and Central. Larger floor areas above 110 sqm attract scarcity premiums, while flats with less than 60 years of lease left often face larger bank valuation haircuts.
+
+### Grants and Eligibility Notes
+CPF Housing Grants for first-time buyers include the Enhanced Housing Grant (up to S$80k based on income), Family Grant (S$30k for 4-room or smaller, S$20k for 5-room/exec), and Proximity Housing Grant (up to S$30k). Income ceilings: S$14k for families, S$7k for singles (living near parents). Buyers must have completed MOP and pass Ethnic Integration Policy (EIP) and SPR quota checks before transacting.
+
+### Price Forecasting Model Summary
+The web application bundles two models: the resale price predictor (random forest & gradient boosted ensemble) estimating current fair value, and a profitability multiplier model projecting exit value using national price index, town demand index, lease decay, and new domain-aware features (flat_type_price_anchor, size validity, town appreciation factor). Confidence bands are derived from validation sigma (~S$45k).
+
+### Practical Strategy Tips
+Advise users to compare predicted price per sqm with recent caveats, evaluate renovation buffers (typically S$30k–S$80k), and plan for Buyer’s Stamp Duty (BSD) plus legal fees (approx. 3–4% total). Remind them to review HDB’s financial planning tools, consider bank rate lock-ins vs. HDB loans, and consult licensed property agents or valuers for commitments.

@@ -9,6 +9,7 @@ LangChain QA chain builder (safe for large docs).
 """
 
 import logging
+import os
 from typing import Dict, List
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -20,6 +21,7 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.prompts import ChatPromptTemplate
 
 logger = logging.getLogger(__name__)
+DEFAULT_CHAT_MODEL = os.getenv("FILE_CHAT_MODEL", "gpt-5-mini")
 
 
 class SafeOpenAIEmbeddings(OpenAIEmbeddings):
@@ -46,8 +48,8 @@ def get_qa_chain(text: str):
     try:
         # 1. Split into safe chunks
         splitter = RecursiveCharacterTextSplitter(
-            chunk_size=800,    # smaller chunks = safer
-            chunk_overlap=100
+            chunk_size=1200,
+            chunk_overlap=160
         )
         docs = splitter.split_documents([Document(page_content=text)])
         texts = [d.page_content for d in docs]
@@ -57,13 +59,18 @@ def get_qa_chain(text: str):
 
         # 3. Build FAISS vectorstore
         db = FAISS.from_texts(texts, embeddings, metadatas=[d.metadata for d in docs])
-        retriever = db.as_retriever(search_kwargs={"k": 3})
+        retriever = db.as_retriever(search_kwargs={"k": 4})
 
         # 4. LLM + Prompt
-        llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+        chat_kwargs = {"model": DEFAULT_CHAT_MODEL}
+        if DEFAULT_CHAT_MODEL.lower().startswith(("gpt-5", "o")):
+            chat_kwargs["temperature"] = 1
+        else:
+            chat_kwargs["temperature"] = 0
+        llm = ChatOpenAI(**chat_kwargs)
         prompt = ChatPromptTemplate.from_messages([
-            ("system", "You are a helpful assistant. Use only the provided context to answer."),
-            ("human", "Question: {input}\n\nContext: {context}")
+            ("system", "You answer from the uploaded document only. If the answer is not in the context, say that the document does not contain enough information. Keep answers concise and include the most relevant supporting detail."),
+            ("human", "Question: {input}\n\nDocument context:\n{context}")
         ])
         doc_chain = create_stuff_documents_chain(llm, prompt)
         chain = create_retrieval_chain(retriever, doc_chain)

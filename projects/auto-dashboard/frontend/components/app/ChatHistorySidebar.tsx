@@ -34,14 +34,16 @@ export function ChatHistorySidebar({
   return (
     <aside
       className={cn(
-        "flex h-screen w-full shrink-0 flex-col border-r px-3 py-4 sm:w-72",
+        "flex h-[calc(100vh-80px)] w-full shrink-0 flex-col border-r px-3 py-4 sm:w-72",
         isDark ? "border-white/10 bg-[#070b14] text-[#e8eef9]" : "border-[#dde4ef] bg-white text-[#141414]",
       )}
     >
       <div className="flex items-center gap-3 px-1">
         <BrandMark className="shrink-0" size={32} />
         <div className="min-w-0">
-          <div className="truncate text-sm font-semibold">Decidr</div>
+          <div className="truncate text-sm font-semibold flex items-center gap-1.5">
+            Decidr <span className={cn("text-[9px] font-normal px-1.5 py-0.25 rounded select-none", isDark ? "bg-white/10 text-white" : "bg-[#e7edff] text-[#275efe]")}>by Mervin</span>
+          </div>
           <div className={cn("text-xs", isDark ? "text-[#9aa8bf]" : "text-[#667085]")}>Chat history</div>
         </div>
       </div>

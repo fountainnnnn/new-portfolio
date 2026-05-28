@@ -22,12 +22,13 @@ import json
 import os
 import re
 import unicodedata
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, Dict, List, Optional, Tuple
 
 from openai import OpenAI
 from pydantic import BaseModel, Field, RootModel, field_validator
 
-OPENAI_DEFAULT_MODEL = "gpt-4o-mini"
+OPENAI_DEFAULT_MODEL = os.getenv("MOCK_GENERATOR_MODEL", "gpt-4.1")
 
 
 # ============================================================
@@ -207,7 +208,7 @@ def _difficulty_guidance(difficulty: str) -> str:
     return f"Adjust difficulty: {difficulty}."
 
 
-def build_structured_prompt(paper_text: str, difficulty: str, num_mocks: int) -> str:
+def build_structured_prompt(paper_text: str, difficulty: str, num_mocks: int, variant_guidance: str = "") -> str:
     """
     Structured JSON spec.
     - Preserve whether a question is free-response or MCQ.
@@ -284,6 +285,9 @@ Hard requirements:
 
 Difficulty:
 {_difficulty_guidance(difficulty)}
+
+Variant guidance:
+{variant_guidance or "Create fresh numbers, contexts, and ordering while preserving the source coverage."}
 
 Reference exam (<=60k chars; trimmed if longer):
 {paper_text[:60000]}
@@ -395,11 +399,12 @@ def generate_mock_specs(
     num_mocks: int = 1,
     model_name: str = OPENAI_DEFAULT_MODEL,
     api_key: Optional[str] = None,
+    variant_guidance: str = "",
 ) -> List[Dict[str, Any]]:
     # Cap to 3 like before (unchanged behavior)
     num_mocks = max(1, min(num_mocks, 3))
     client = configure_openai(api_key)
-    prompt = build_structured_prompt(paper_text, difficulty, num_mocks)
+    prompt = build_structured_prompt(paper_text, difficulty, num_mocks, variant_guidance)
 
     resp = client.chat_completions.create(  # type: ignore[attr-defined]
         model=model_name,
@@ -537,14 +542,46 @@ def generate_mock_papers(
     improved pairing logic to avoid question splitting across mocks.
     """
     try:
-        specs = generate_mock_specs(
-            paper_text=paper_text,
-            difficulty=difficulty,
-            num_mocks=num_mocks,
-            model_name=model_name,
-            api_key=api_key,
-        )
-        return [_render_spec_to_text(spec) for spec in specs]
+        target_mocks = max(1, min(num_mocks, 3))
+        if target_mocks == 1:
+            specs = generate_mock_specs(
+                paper_text=paper_text,
+                difficulty=difficulty,
+                num_mocks=1,
+                model_name=model_name,
+                api_key=api_key,
+            )
+            return [_render_spec_to_text(spec) for spec in specs[:1]]
+
+        max_workers = max(1, min(int(os.getenv("MOCK_GENERATOR_MAX_PARALLEL_CALLS", "3")), target_mocks))
+        outputs: List[Tuple[int, Tuple[str, str]]] = []
+        variant_guidance = [
+            "Variant A: keep the same syllabus coverage, use new values and a clean conventional exam style.",
+            "Variant B: emphasize application and multi-step reasoning while preserving the source marks and types.",
+            "Variant C: emphasize edge cases and conceptual traps while staying fair and source-grounded.",
+        ]
+        with ThreadPoolExecutor(max_workers=max_workers) as pool:
+            futures = {
+                pool.submit(
+                    generate_mock_specs,
+                    paper_text,
+                    difficulty,
+                    1,
+                    model_name,
+                    api_key,
+                    variant_guidance[idx % len(variant_guidance)],
+                ): idx
+                for idx in range(target_mocks)
+            }
+            for future in as_completed(futures):
+                idx = futures[future]
+                specs = future.result()
+                if specs:
+                    outputs.append((idx, _render_spec_to_text(specs[0])))
+        outputs.sort(key=lambda item: item[0])
+        if outputs:
+            return [item[1] for item in outputs[:target_mocks]]
+        raise ValueError("Structured mock generation returned no results.")
     except Exception:
         # Legacy fallback (text parsing)
         client = configure_openai(api_key)

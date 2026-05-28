@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { BuilderChatPage } from "@/components/app/BuilderChatPage";
 import { AgentActivityToast } from "@/components/app/AgentActivityToast";
@@ -75,6 +75,11 @@ export function AppShell() {
   const selectedTheme = resolveDashboardTheme(selectedThemeId);
   const historyItems = sessions.map(toHistoryItem);
 
+  // Tracks whether the user has already started interacting (uploading a file,
+  // etc.) so that the async `loadPersistedSessions` does NOT overwrite their
+  // in-progress state when it resolves after the upload completes.
+  const hasInteracted = useRef(false);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -93,7 +98,13 @@ export function AppShell() {
         const restored = persisted.map(fromPersistedSession);
         const blank = createBlankSession();
         setSessions(restored.length ? [blank, ...restored] : [blank]);
-        activateSession(blank);
+
+        // Only activate the blank session if the user hasn't already started
+        // uploading a file. If they have, activating "blank" would reset their
+        // dataset back to null and clear the profile card.
+        if (!hasInteracted.current) {
+          activateSession(blank);
+        }
         // Deliberately do NOT persist the blank session here - it would clutter
         // the sidebar with an empty chat on every refresh. It will be persisted
         // as soon as the user actually does something in it (upload / prompt).
@@ -142,6 +153,10 @@ export function AppShell() {
   }
 
   async function handleUpload(file: File) {
+    // Mark as interacted immediately so loadPersistedSessions won't overwrite
+    // our state when it resolves after this async upload completes.
+    hasInteracted.current = true;
+
     if (!file.name.toLowerCase().endsWith(".csv")) {
       setError("Please choose a CSV file.");
       return;
@@ -175,6 +190,7 @@ export function AppShell() {
       setIsUploading(false);
     }
   }
+
 
   async function handleGenerate() {
     if (!dataset) {
@@ -351,7 +367,7 @@ export function AppShell() {
 
   if (dashboard) {
     return (
-      <div className="flex h-screen overflow-hidden">
+      <div className="flex h-[calc(100vh-80px)] overflow-hidden">
         <AgentActivityToast isVisible={isRefining} mode="refine" />
         <ChatHistorySidebar
           activeSessionId={activeSessionId}
@@ -392,7 +408,7 @@ export function AppShell() {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-[calc(100vh-80px)] overflow-hidden">
       <AgentActivityToast isVisible={isGenerating} mode="generate" />
       <ChatHistorySidebar
         activeSessionId={activeSessionId}
@@ -484,7 +500,7 @@ function errorMessage(caught: unknown, fallback: string): string {
     return caught.message;
   }
   if (caught instanceof TypeError) {
-    return "Could not reach the FastAPI backend. Make sure it is running on http://localhost:8000.";
+    return "Could not reach the Decidr backend. Make sure the Auto Dashboard API service is running.";
   }
   if (caught instanceof Error) {
     return caught.message;

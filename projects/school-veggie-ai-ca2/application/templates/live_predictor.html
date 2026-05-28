@@ -1,0 +1,124 @@
+{% extends "layout.html" %}
+{% block title %}VeggieAI - Live Camera Predictor{% endblock %}
+
+{% block content %}
+<div data-page="live-predictor">
+    <section class="hero hero--top" style="--hero-image: url('https://images.unsplash.com/photo-1518843875459-f738682238a6?auto=format&fit=crop&w=2000&q=80');">
+        <div class="container">
+            <div class="text-center reveal">
+                <span class="hero-kicker"><i class="bi bi-camera-video"></i> Real-time CNN inference</span>
+                <h1 class="hero-title">Live vegetable classification with your camera</h1>
+                <p class="hero-lead mx-auto" style="max-width: 66ch;">
+                    Position a vegetable inside the center guide. VeggieAI captures a tight center crop and sends optimized frames
+                    to your deployed model for fast, continuous predictions.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section pt-4 scenic" style="--scenic-image: url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=2000&q=80'); --bg-offset: -12px;">
+        <div class="container">
+            <div class="glass p-4 p-lg-4 reveal live-shell">
+                <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                    <div>
+                        <h2 class="mb-1" style="font-weight: 850;">Camera preview + live predictions</h2>
+                        <p class="text-muted mb-0">Center your target, then start camera. Predictions update continuously.</p>
+                    </div>
+                    <span id="liveServiceBadge" class="status-badge status-badge--good">
+                        <span class="status-dot"></span>
+                        Ready
+                    </span>
+                </div>
+
+                <div class="row g-3 g-lg-4 mt-1">
+                    <div class="col-12 col-lg-8 reveal" data-reveal="fade-left">
+                        <div class="glass p-3 live-stage-wrap">
+                            <div class="live-result-banner mb-3" id="liveResultBanner">
+                                <div class="live-result-title" id="liveResultLabel">Camera idle</div>
+                                <div class="live-result-meta" id="liveResultMeta">Press Start camera to begin live inference</div>
+                            </div>
+                            <div class="live-stage" id="liveStage">
+                                <video id="liveVideo" class="live-video" autoplay muted playsinline></video>
+                                <div class="live-overlay">
+                                    <div class="live-center-guide" aria-hidden="true">
+                                        <span class="live-center-ring"></span>
+                                        <span class="live-center-dot"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <canvas id="liveCaptureCanvas" class="d-none" aria-hidden="true"></canvas>
+
+                            <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap mt-3">
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button id="liveStartBtn" type="button" class="btn btn-primary btn-glow">
+                                        <i class="bi bi-camera-video-fill me-1"></i> Start camera
+                                    </button>
+                                    <button id="liveStopBtn" type="button" class="btn btn-ghost" disabled>
+                                        <i class="bi bi-stop-circle me-1"></i> Stop
+                                    </button>
+                                    <button id="liveFlipBtn" type="button" class="btn btn-ghost" disabled>
+                                        <i class="bi bi-arrow-repeat me-1"></i> Flip camera
+                                    </button>
+                                </div>
+                                <span class="pill"><i class="bi bi-bounding-box"></i> Keep object inside center ring</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-4 reveal" data-reveal="fade-right">
+                        <div class="glass p-3 h-100 d-grid gap-3">
+                            <div>
+                                <p class="text-muted mb-2">Model resolution</p>
+                                <input type="hidden" id="liveModel" value="23">
+                                <div class="model-grid">
+                                    <div class="choice-card is-selected" role="button" tabindex="0" data-live-model="23">
+                                        <h3 class="choice-title">23x23</h3>
+                                        <p class="choice-meta mb-0">Fast live mode</p>
+                                    </div>
+                                    <div class="choice-card" role="button" tabindex="0" data-live-model="101">
+                                        <h3 class="choice-title">101x101</h3>
+                                        <p class="choice-meta mb-0">Higher detail</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="glass p-3">
+                                <p class="text-muted mb-2">Live metrics</p>
+                                <div class="d-grid gap-2">
+                                    <div class="result-metric">
+                                        <span><i class="bi bi-camera-reels me-2"></i> Camera FPS</span>
+                                        <strong id="liveMetricCameraFps">-</strong>
+                                    </div>
+                                    <div class="result-metric">
+                                        <span><i class="bi bi-lightning-charge me-2"></i> Inference rate</span>
+                                        <strong id="liveMetricInferRate">-</strong>
+                                    </div>
+                                    <div class="result-metric">
+                                        <span><i class="bi bi-speedometer2 me-2"></i> Avg latency</span>
+                                        <strong id="liveMetricLatency">-</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="glass p-3">
+                                <p class="text-muted mb-2">Top alternatives</p>
+                                <ul id="liveTopList" class="list-unstyled d-grid gap-2 mb-0">
+                                    <li class="text-muted small">Run live inference to populate the top-k list.</li>
+                                </ul>
+                            </div>
+
+                            <p id="liveStatusText" class="text-muted small mb-0">
+                                On supported devices, this page keeps camera preview smooth and uses one in-flight request at a time to avoid request backlogs.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/live_predictor.js') }}" defer></script>
+{% endblock %}

@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+env/
+venv/
+.venv/
+.vscode/
+.idea/
+
+# SQLite database (like CA1)
+*.db
+*.sqlite3
+

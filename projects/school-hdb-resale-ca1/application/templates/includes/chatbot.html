@@ -1,0 +1,52 @@
+<div class="chatbot-widget" data-chatbot="{{ 'enabled' if chatbot_enabled else 'disabled' }}" style="z-index: 1020;">
+  <button class="chatbot-toggle btn shadow"
+          type="button"
+          aria-expanded="false"
+          aria-controls="chatbot-panel"
+          title="Chat with {{ chatbot_title }}">
+    <span class="chatbot-toggle__icon"><i class="bi bi-chat-text"></i></span>
+    <span class="chatbot-toggle__label">Need help?</span>
+  </button>
+
+  <div class="chatbot-panel glass-card shadow-xl" id="chatbot-panel" aria-live="polite">
+    <div class="chatbot-panel__header">
+      <div class="chatbot-panel__identity">
+        <div class="chatbot-avatar">
+          <i class="bi bi-stars"></i>
+        </div>
+        <div>
+          <p class="chatbot-panel__subtitle mb-1 text-uppercase">Singapore HDB Concierge</p>
+          <h6 class="chatbot-panel__title mb-1">{{ chatbot_title }}</h6>
+          <span class="chatbot-status-pill">
+            <span class="dot"></span>
+            Online now
+          </span>
+        </div>
+      </div>
+      <button class="btn btn-sm btn-outline-light chatbot-close" type="button" aria-label="Close chatbot">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="chatbot-messages">
+      <div class="chatbot-message chatbot-message--bot">
+        👋 Need help understanding resale prices, grants, or demand? Ask me anything and I'll fetch insights from the latest dataset.
+      </div>
+      <div class="chatbot-quick-actions">
+        <button type="button" class="chatbot-chip" data-suggest="What is the predicted resale value for a 4-room in Bishan?">Resale value</button>
+        <button type="button" class="chatbot-chip" data-suggest="Explain the current demand outlook for Tampines.">Demand outlook</button>
+        <button type="button" class="chatbot-chip" data-suggest="How do I qualify for grants?">HDB grants</button>
+      </div>
+    </div>
+
+    <form class="chatbot-form">
+      <div class="chatbot-form__composer">
+        <input type="text" class="form-control chatbot-input" placeholder="Ask about your HDB plan..." autocomplete="off">
+        <button class="btn chatbot-send" type="submit">
+          <span class="send-label">Send</span>
+          <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

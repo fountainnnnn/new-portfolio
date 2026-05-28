@@ -1,0 +1,528 @@
+{% extends "layout.html" %}
+{% block title %}VeggieAI - Profile{% endblock %}
+
+{% block content %}
+<div data-page="profile" class="profile-page">
+    <section class="section profile-hero scenic" style="--scenic-image: url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=2200&q=80'); --bg-offset: -18px;">
+        <div class="container">
+            <div class="glass profile-card profile-card--hero reveal">
+                <div class="profile-cover" aria-hidden="true" style="--cover-image: url('https://images.unsplash.com/photo-1540927954563-01023203620f?auto=format&fit=crop&w=2200&q=80');"></div>
+
+                <div class="profile-hero-inner">
+                    <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="avatar avatar--glow">{{ (user.full_name or user.username or 'U')[:2] | upper }}</div>
+                            <div>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <h1 class="mb-0 profile-name">{{ user.full_name or user.username }}</h1>
+                                    <span class="status-badge status-badge--good"><span class="status-dot"></span> Signed in</span>
+                                    {% if user.oauth_provider == 'google' %}
+                                    <span class="status-badge"><i class="bi bi-google"></i> Google linked</span>
+                                    {% endif %}
+                                    <span id="profileErrorHunterBadge"
+                                          class="profile-badge-hunter"
+                                          title="Error Hunter badge"
+                                          aria-label="Error Hunter badge"
+                                          hidden>
+                                        <i class="bi bi-crosshair2" aria-hidden="true"></i>
+                                    </span>
+                                    <span id="profileActivePredictorBadge"
+                                          class="profile-badge-active"
+                                          title="Active Predictor badge"
+                                          aria-label="Active Predictor badge"
+                                          hidden>
+                                        <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <p class="text-muted mb-0">
+                                    {{ user.email }}{% if user.location %} - {{ user.location }}{% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-primary btn-glow" type="button" data-bs-toggle="modal" data-bs-target="#profileEditModal">
+                                <i class="bi bi-pencil-square me-1"></i> Edit Profile
+                            </button>
+                            <a class="btn btn-ghost" href="{{ url_for('predictor') }}"><i class="bi bi-magic me-1"></i> Go to Predictor</a>
+                        </div>
+                    </div>
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    <div class="mt-3">
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'danger' else category }} mb-2">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+
+                    <div class="row g-3 mt-3">
+                        <div class="col-12 col-lg-4 reveal" data-reveal="fade-up">
+                            <div class="glass dashboard-tile p-3 h-100">
+                                <div class="tile-icon"><i class="bi bi-layers"></i></div>
+                                <p class="text-muted mb-1">Today's focus</p>
+                                <p class="mb-0" style="font-weight: 850;">Batch classification</p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-4 reveal" data-reveal="fade-up">
+                            <div class="glass dashboard-tile p-3 h-100">
+                                <div class="tile-icon"><i class="bi bi-cpu"></i></div>
+                                <p class="text-muted mb-1">Preferred path</p>
+                                <p class="mb-0" style="font-weight: 850;">
+                                    {{ '23x23 (speed)' if user.preferred_model == '23' else '101x101 (accuracy)' }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-4 reveal" data-reveal="fade-up">
+                            <div class="glass dashboard-tile p-3 h-100">
+                                <div class="tile-icon"><i class="bi bi-cloud-check"></i></div>
+                                <p class="text-muted mb-1">Status</p>
+                                <p class="mb-0" style="font-weight: 850;">All systems nominal</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-2">
+                        <div class="col-12 col-md-4 reveal" data-reveal="fade-up">
+                            <div class="glass p-3 h-100">
+                                <p class="text-muted mb-1">Phone</p>
+                                <p class="mb-0" style="font-weight: 800;">{{ user.phone or '-' }}</p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 reveal" data-reveal="fade-up">
+                            <div class="glass p-3 h-100">
+                                <p class="text-muted mb-1">Member since</p>
+                                <p class="mb-0" style="font-weight: 800;">
+                                    {{ user.created_at.strftime('%B %Y') if user.created_at else '-' }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 reveal" data-reveal="fade-up">
+                            <div class="glass p-3 h-100">
+                                <p class="text-muted mb-1">Plan</p>
+                                <p class="mb-0" style="font-weight: 800;">Standard</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section profile-dashboard">
+        <div class="container">
+                <div class="d-flex align-items-end justify-content-between gap-2 flex-wrap reveal">
+                <div>
+                    <h2 class="section-title">Dashboard</h2>
+                    <p class="section-subtitle">A futuristic snapshot of your recent predictions (stored in SQLite).</p>
+                </div>
+                <div class="d-flex gap-2 flex-wrap align-items-center">
+                    <span class="pill"><i class="bi bi-activity"></i> Live</span>
+                    <a class="btn btn-ghost btn-sm" href="{{ url_for('predictor') }}"><i class="bi bi-play-circle me-1"></i> Run a prediction</a>
+                </div>
+            </div>
+
+            <div class="row g-3 g-lg-4 mt-1">
+                <div class="col-12 col-md-6 col-lg-3 reveal" data-reveal="fade-up">
+                    <div class="glass stat-card stat-card--neon">
+                        <div class="feature-icon"><i class="bi bi-hash"></i></div>
+                        <p class="text-muted mb-1">Total predictions</p>
+                        <div id="profileStatsTotal" class="kpi-value">-</div>
+                        <p class="text-muted mb-0 small">Account history</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3 reveal" data-reveal="fade-up">
+                    <div class="glass stat-card stat-card--neon">
+                        <div class="feature-icon"><i class="bi bi-award"></i></div>
+                        <p class="text-muted mb-1">Avg confidence</p>
+                        <div id="profileStatsAvg" class="kpi-value">-</div>
+                        <p class="text-muted mb-0 small">Across latest runs</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3 reveal" data-reveal="fade-up">
+                    <div class="glass stat-card stat-card--neon">
+                        <div class="feature-icon"><i class="bi bi-star"></i></div>
+                        <p class="text-muted mb-1">Favorite veggie</p>
+                        <div id="profileStatsFav" class="kpi-value kpi-value--sm">-</div>
+                        <p class="text-muted mb-0 small">Most frequent label</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3 reveal" data-reveal="fade-up">
+                    <div class="glass stat-card stat-card--neon">
+                        <div class="feature-icon"><i class="bi bi-clock"></i></div>
+                        <p class="text-muted mb-1">Last active</p>
+                        <div id="profileStatsLast" class="kpi-value kpi-value--sm">-</div>
+                        <p class="text-muted mb-0 small">Keep the streak going</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 g-lg-4 mt-4">
+                <div class="col-12 col-lg-8">
+                    <div class="glass dashboard-card p-4 reveal" data-reveal="fade-left">
+                        <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                            <div>
+                                <h3 class="mb-1" style="font-weight: 850;">Confidence distribution</h3>
+                                <p class="text-muted mb-0">A clean breakdown of confidence bands across your latest runs.</p>
+                            </div>
+                            <span class="pill"><i class="bi bi-bar-chart"></i> Last 30 runs</span>
+                        </div>
+                        <div id="profileConfDist" class="mt-3"></div>
+                        <p id="profileConfDistHint" class="text-muted small mt-3 mb-0">
+                            Run a few predictions in the Predictor to populate this chart.
+                        </p>
+                    </div>
+
+                    <div class="glass dashboard-card p-4 mt-4 reveal" data-reveal="fade-left">
+                        <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                            <div>
+                                <h3 class="mb-1" style="font-weight: 850;">Prediction history</h3>
+                                <p class="text-muted mb-0">Recent results with model path, confidence tier, and quick actions.</p>
+                            </div>
+                            <div class="d-flex gap-2 flex-wrap align-items-center">
+                                <button id="profileExportHistory" class="btn btn-ghost btn-sm" type="button">
+                                    <i class="bi bi-download me-1"></i> Export JSON
+                                </button>
+                                <button id="profileDeleteSelected" class="btn btn-ghost btn-sm" type="button" disabled>
+                                    <i class="bi bi-trash me-1"></i> Delete selected
+                                </button>
+                                <button id="profileClearHistory" class="btn btn-ghost btn-sm" type="button">
+                                    <i class="bi bi-trash3 me-1"></i> Clear
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="profileHistoryList" class="d-grid gap-3 mt-3"></div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-4">
+                    <div class="glass dashboard-card p-4 reveal" data-reveal="fade-right">
+                        <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                            <div>
+                                <h3 class="mb-1" style="font-weight: 850;">Action center</h3>
+                                <p class="text-muted mb-0">Quick controls and placeholder features to feel more product-like.</p>
+                            </div>
+                            <span class="pill"><i class="bi bi-lightning-charge"></i> Shortcuts</span>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-3">
+                            <a class="btn btn-primary btn-glow" href="{{ url_for('predictor') }}"><i class="bi bi-magic me-1"></i> Open Predictor</a>
+                            <a class="btn btn-ghost" href="{{ url_for('profile_report_pdf') }}" target="_blank" rel="noopener">
+                                <i class="bi bi-file-earmark-text me-1"></i> Generate report
+                            </a>
+                        </div>
+
+                        <div class="mt-3 d-grid gap-2">
+                            <div class="result-metric is-good">
+                                <span><i class="bi bi-check2-circle me-2"></i> Model service</span>
+                                <strong>Online</strong>
+                            </div>
+                            <div class="result-metric">
+                                <span><i class="bi bi-speedometer2 me-2"></i> UI latency</span>
+                                <strong>~ 420ms</strong>
+                            </div>
+                            <div class="result-metric">
+                                <span><i class="bi bi-shield-lock me-2"></i> Data storage</span>
+                                <strong>SQLite</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass dashboard-card scenic p-4 mt-4 reveal" data-reveal="fade-right" style="--scenic-image: url('https://images.unsplash.com/photo-1543362906-acfc16c67564?auto=format&fit=crop&w=1600&q=80'); --bg-offset: 10px;">
+                        <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                            <div>
+                                <h3 class="mb-1" style="font-weight: 850;">Future modules</h3>
+                                <p class="text-muted mb-0">Placeholders that match your two-model workflow.</p>
+                            </div>
+                            <span class="pill"><i class="bi bi-stars"></i> Coming next</span>
+                        </div>
+                        <div class="d-grid gap-2 mt-3">
+                            <div class="result-metric">
+                                <span><i class="bi bi-columns-gap me-2"></i> Batch compare</span>
+                                <strong>Queued</strong>
+                            </div>
+                            <div class="result-metric">
+                                <span><i class="bi bi-thermometer-sun me-2"></i> Stress tests</span>
+                                <strong>Noise / Blur</strong>
+                            </div>
+                            <div class="result-metric">
+                                <span><i class="bi bi-bounding-box me-2"></i> Crop assist</span>
+                                <strong>Planned</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass dashboard-card p-4 mt-4 reveal" data-reveal="fade-right">
+                        <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                            <div>
+                                <h3 class="mb-1" style="font-weight: 850;">Common confusions</h3>
+                                <p class="text-muted mb-0">Pairs that show up when confidence is unstable.</p>
+                            </div>
+                            <span class="pill"><i class="bi bi-shuffle"></i> Compare mode</span>
+                        </div>
+                        <ul id="profileConfusions" class="list-unstyled d-grid gap-2 mt-3 mb-0"></ul>
+                        <p id="profileConfusionsHint" class="text-muted small mt-3 mb-0">
+                            Use the Predictor Compare tab to generate disagreements.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div class="modal fade" id="profileHistoryPreviewModal" tabindex="-1" aria-labelledby="profileHistoryPreviewModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content glass history-preview-modal">
+            <div class="modal-header border-0">
+                <div>
+                    <h5 class="modal-title" id="profileHistoryPreviewModalLabel">Prediction preview</h5>
+                    <p id="historyPreviewMeta" class="text-muted small mb-0">Detailed inference summary</p>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-0">
+                <div class="row g-3 g-lg-4">
+                    <div class="col-12 col-lg-5">
+                        <div class="glass p-3 h-100">
+                            <div id="historyPreviewImageWrap" class="history-preview-image-wrap">
+                                <img id="historyPreviewImage" class="history-preview-image" alt="Prediction preview image" hidden>
+                                <div id="historyPreviewImageEmpty" class="history-preview-image-empty">
+                                    <i class="bi bi-image"></i>
+                                    <span>No image stored for this record.</span>
+                                </div>
+                            </div>
+                            <div class="mt-3 d-flex gap-2 flex-wrap align-items-center">
+                                <span id="historyPreviewModelChip" class="chip chip--model"><i class="bi bi-cpu"></i> 101x101</span>
+                                <span id="historyPreviewConfidenceChip" class="chip chip--good"><i class="bi bi-patch-check"></i> Confidence</span>
+                                <span id="historyPreviewCorrectedChip" class="chip chip--good" hidden>
+                                    <i class="bi bi-wrench-adjustable-circle"></i> Corrected
+                                </span>
+                            </div>
+                            <div class="mt-3">
+                                <h6 id="historyPreviewLabel" class="mb-1" style="font-weight: 900;">-</h6>
+                                <p id="historyPreviewDescription" class="text-muted mb-2">
+                                    Vegetable summary appears here.
+                                </p>
+                                <p class="mb-2" style="font-weight: 750;">Health benefits</p>
+                                <ul id="historyPreviewBenefits" class="list-unstyled d-grid gap-2 mb-0"></ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-7">
+                        <div class="glass p-3">
+                            <div class="d-flex align-items-center gap-3 flex-wrap">
+                                <div id="historyPreviewDonut" class="history-preview-donut" style="--pct: 0;">
+                                    <strong id="historyPreviewDonutValue">0%</strong>
+                                </div>
+                                <div>
+                                    <p class="text-muted mb-1">Prediction confidence</p>
+                                    <h6 id="historyPreviewConfidenceLabel" class="mb-0" style="font-weight: 850;">-</h6>
+                                    <p class="text-muted small mb-0">Derived from the selected model output.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass p-3 mt-3">
+                            <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                                <p class="mb-0" style="font-weight: 850;">Class probability chart</p>
+                                <span class="pill"><i class="bi bi-bar-chart-line"></i> Top classes</span>
+                            </div>
+                            <div id="historyPreviewTopk" class="history-preview-topk mt-3"></div>
+                        </div>
+
+                        <div id="historyPreviewCompareCard" class="glass p-3 mt-3" hidden>
+                            <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                                <p class="mb-0" style="font-weight: 850;">Model comparison</p>
+                                <span id="historyPreviewCompareBadge" class="chip chip--warn"><i class="bi bi-shuffle"></i> Compare</span>
+                            </div>
+                            <div class="history-preview-compare mt-3">
+                                <div class="history-preview-compare-row">
+                                    <span>23x23</span>
+                                    <div class="history-preview-bar-track">
+                                        <div id="historyPreviewCompare23" class="history-preview-bar-fill"></div>
+                                    </div>
+                                    <strong id="historyPreviewCompare23Label">-</strong>
+                                </div>
+                                <div class="history-preview-compare-row">
+                                    <span>101x101</span>
+                                    <div class="history-preview-bar-track">
+                                        <div id="historyPreviewCompare101" class="history-preview-bar-fill"></div>
+                                    </div>
+                                    <strong id="historyPreviewCompare101Label">-</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="profileEditModal" tabindex="-1" aria-labelledby="profileEditModalLabel" aria-hidden="true"
+     data-verify-url="{{ url_for('verify_profile_password') }}"
+     data-google-account="{{ 'true' if user.oauth_provider == 'google' else 'false' }}"
+     data-password-set="{{ 'true' if user.password_set else 'false' }}">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content glass">
+            <div class="modal-header border-0">
+                <div>
+                    <h5 class="modal-title" id="profileEditModalLabel">Update account details</h5>
+                    <p class="text-muted mb-0 small" id="profileEditSubtitle">Verify your password before making changes.</p>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+                <div class="modal-body">
+                    <div class="glass p-3 mb-3" id="profileVerifyCard">
+                        <form id="profileVerifyForm" class="d-flex gap-2 flex-wrap align-items-end">
+                            <input type="hidden" id="profileVerifyCsrf" value="{{ csrf_token() }}">
+                            <div class="flex-grow-1" style="min-width: 220px;">
+                                <label class="form-label mb-1" for="profileVerifyPassword">Password</label>
+                                <input class="form-control" id="profileVerifyPassword" type="password" autocomplete="current-password"
+                                       placeholder="Enter your password to unlock">
+                            </div>
+                            <button id="profileVerifyBtn" class="btn btn-primary btn-glow" type="submit">
+                                <i class="bi bi-shield-check me-1"></i> Verify
+                            </button>
+                            <div id="profileVerifyStatus" class="text-muted small mt-2" style="width: 100%;"></div>
+                        </form>
+                    </div>
+
+                    <div id="profileSetPasswordCard" class="glass p-3 mb-3" hidden>
+                        <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
+                            <div>
+                                <p class="mb-1" style="font-weight: 850;">Set an account password</p>
+                                <p class="text-muted small mb-0">
+                                    You're signed in with Google. Set a password to enable profile updates.
+                                </p>
+                            </div>
+                            <span class="pill"><i class="bi bi-lock"></i> Required</span>
+                        </div>
+                        <form id="profileSetPasswordForm" class="mt-3">
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label" for="profileSetPassword">New password</label>
+                                    <input class="form-control" id="profileSetPassword" type="password" autocomplete="new-password" minlength="8">
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label" for="profileSetPasswordConfirm">Confirm</label>
+                                    <input class="form-control" id="profileSetPasswordConfirm" type="password" autocomplete="new-password" minlength="8">
+                                </div>
+                            </div>
+                            <button id="profileSetPasswordBtn" class="btn btn-ghost mt-3" type="submit">
+                                Set password
+                            </button>
+                            <div id="profileSetPasswordStatus" class="text-muted small mt-2"></div>
+                        </form>
+                    </div>
+
+                    <div class="row g-3 g-lg-4">
+                    <div class="col-12 col-lg-7">
+                        <div class="glass p-4 h-100 lock-card is-locked" data-lock-card>
+                            <h6 class="mb-1" style="font-weight: 850;">Profile</h6>
+                            <p class="text-muted small mb-3">Full name, email, and optional contact info.</p>
+
+                            <form method="post" action="{{ url_for('update_profile') }}" id="profileUpdateForm">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="verify_nonce" value="" data-verify-nonce>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="editFullName">Full name</label>
+                                    <input class="form-control" id="editFullName" name="full_name" value="{{ user.full_name or '' }}"
+                                           required data-lockable disabled>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="editEmail">Email</label>
+                                    <input class="form-control" id="editEmail" name="email" type="email" value="{{ user.email or '' }}"
+                                           required data-lockable disabled>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="editPhoneLocal">Phone (optional)</label>
+                                    <div class="row g-2">
+                                        <div class="col-12 col-md-5">
+                                            <select class="form-select" id="editPhoneRegion" name="phone_region"
+                                                    aria-label="Phone region code" data-lockable disabled>
+                                                <option value="">Select region code</option>
+                                                {% for item in phone_regions %}
+                                                <option value="{{ item.dial }}"
+                                                        data-min="{{ item.min_digits }}"
+                                                        data-max="{{ item.max_digits }}"
+                                                        {% if selected_phone_region == item.dial %}selected{% endif %}>
+                                                    {{ item.label }}
+                                                </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-md-7">
+                                            <input class="form-control" id="editPhoneLocal" name="phone_local" type="tel"
+                                                   inputmode="numeric" autocomplete="tel-national" maxlength="15"
+                                                   pattern="[0-9]{6,15}" placeholder="Digits only"
+                                                   title="Enter digits only. Length depends on the selected region."
+                                                   value="{{ selected_phone_local or '' }}"
+                                                   data-lockable disabled>
+                                        </div>
+                                    </div>
+                                    <div id="editPhoneHelp" class="form-text">
+                                        Choose a region code, then enter digits only for the local number.
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="editLocation">Location (optional)</label>
+                                    <input class="form-control" id="editLocation" name="location" value="{{ user.location or '' }}"
+                                           data-lockable disabled>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label" for="editPreferredModel">Preferred model</label>
+                                    <select class="form-select" id="editPreferredModel" name="preferred_model" data-lockable disabled>
+                                        <option value="" {% if not user.preferred_model %}selected{% endif %}>Auto</option>
+                                        <option value="23" {% if user.preferred_model == '23' %}selected{% endif %}>23x23 (speed)</option>
+                                        <option value="101" {% if user.preferred_model == '101' %}selected{% endif %}>101x101 (accuracy)</option>
+                                    </select>
+                                </div>
+
+                                <button class="btn btn-primary btn-glow" type="submit" data-lockable disabled>Save changes</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-5">
+                        <div class="glass p-4 h-100 lock-card is-locked" data-lock-card>
+                            <h6 class="mb-1" style="font-weight: 850;">Password</h6>
+                            <p class="text-muted small mb-3">Set a new password for your account.</p>
+
+                            <form method="post" action="{{ url_for('update_password') }}" id="profilePasswordForm">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="verify_nonce" value="" data-verify-nonce>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="editNewPassword">New password</label>
+                                    <input class="form-control" id="editNewPassword" name="new_password" type="password"
+                                           autocomplete="new-password" minlength="8" data-lockable disabled>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label" for="editConfirmPassword">Confirm new password</label>
+                                    <input class="form-control" id="editConfirmPassword" name="confirm_password" type="password"
+                                           autocomplete="new-password" minlength="8" data-lockable disabled>
+                                </div>
+
+                                <button class="btn btn-ghost" type="submit" data-lockable disabled>Update password</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/profile.js') }}" defer></script>
+{% endblock %}

@@ -1,0 +1,429 @@
+﻿{
+    "created_at_local":  "2026-05-27T17:09:07",
+    "artifact_root":  "school-projects/artifacts",
+    "file_count":  100,
+    "summary_by_extension":  {
+                                 ".png":  {
+                                              "count":  88,
+                                              "bytes":  40076849
+                                          },
+                                 ".pdf":  {
+                                              "count":  5,
+                                              "bytes":  12911631
+                                          },
+                                 ".html":  {
+                                               "count":  4,
+                                               "bytes":  11613199
+                                           },
+                                 ".gif":  {
+                                              "count":  1,
+                                              "bytes":  2172646
+                                          },
+                                 ".json":  {
+                                               "count":  2,
+                                               "bytes":  26574
+                                           }
+                             },
+    "files":  [
+                  {
+                      "path":  "aiml-ca1/notebooks/aiml-ca1-part-a.html",
+                      "bytes":  2320417
+                  },
+                  {
+                      "path":  "aiml-ca1/notebooks/aiml-ca1-part-b.html",
+                      "bytes":  1705657
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a.pdf",
+                      "bytes":  4251128
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-01.png",
+                      "bytes":  2108265
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-02.png",
+                      "bytes":  1117329
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-03.png",
+                      "bytes":  453114
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-04.png",
+                      "bytes":  744612
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-05.png",
+                      "bytes":  681022
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-06.png",
+                      "bytes":  533767
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-07.png",
+                      "bytes":  736311
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-08.png",
+                      "bytes":  504853
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-09.png",
+                      "bytes":  461134
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-10.png",
+                      "bytes":  714166
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-11.png",
+                      "bytes":  690454
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-12.png",
+                      "bytes":  522124
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-13.png",
+                      "bytes":  726802
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-14.png",
+                      "bytes":  813234
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-15.png",
+                      "bytes":  509354
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-16.png",
+                      "bytes":  604007
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-17.png",
+                      "bytes":  362557
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-18.png",
+                      "bytes":  755349
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-19.png",
+                      "bytes":  698433
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-a-png/aiml-ca1-part-a-slide-20.png",
+                      "bytes":  372855
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b.pdf",
+                      "bytes":  3110612
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-01.png",
+                      "bytes":  330688
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-02.png",
+                      "bytes":  634342
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-03.png",
+                      "bytes":  408134
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-04.png",
+                      "bytes":  517638
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-05.png",
+                      "bytes":  351350
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-06.png",
+                      "bytes":  481483
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-07.png",
+                      "bytes":  539274
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-08.png",
+                      "bytes":  473596
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-09.png",
+                      "bytes":  491843
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-10.png",
+                      "bytes":  594688
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-11.png",
+                      "bytes":  715393
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-12.png",
+                      "bytes":  603244
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-13.png",
+                      "bytes":  656274
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-14.png",
+                      "bytes":  412443
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-15.png",
+                      "bytes":  493802
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-16.png",
+                      "bytes":  452409
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-17.png",
+                      "bytes":  538379
+                  },
+                  {
+                      "path":  "aiml-ca1/slides/aiml-ca1-part-b-png/aiml-ca1-part-b-slide-18.png",
+                      "bytes":  446038
+                  },
+                  {
+                      "path":  "aiml-ca2/notebooks/aiml-ca2-part-a.html",
+                      "bytes":  4652544
+                  },
+                  {
+                      "path":  "aiml-ca2/notebooks/aiml-ca2-part-b.html",
+                      "bytes":  2934581
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a.pdf",
+                      "bytes":  1984567
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-01.png",
+                      "bytes":  929371
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-02.png",
+                      "bytes":  42536
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-03.png",
+                      "bytes":  70741
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-04.png",
+                      "bytes":  348614
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-05.png",
+                      "bytes":  398888
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-06.png",
+                      "bytes":  449422
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-07.png",
+                      "bytes":  153914
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-08.png",
+                      "bytes":  185704
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-09.png",
+                      "bytes":  271508
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-10.png",
+                      "bytes":  399882
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-11.png",
+                      "bytes":  305348
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-12.png",
+                      "bytes":  377143
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-13.png",
+                      "bytes":  70612
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-14.png",
+                      "bytes":  471878
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-15.png",
+                      "bytes":  309319
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-16.png",
+                      "bytes":  268560
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-17.png",
+                      "bytes":  366231
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-18.png",
+                      "bytes":  488570
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-a-png/aiml-ca2-part-a-slide-19.png",
+                      "bytes":  51746
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b.pdf",
+                      "bytes":  2377258
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-01.png",
+                      "bytes":  337196
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-02.png",
+                      "bytes":  49050
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-03.png",
+                      "bytes":  49484
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-04.png",
+                      "bytes":  491108
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-05.png",
+                      "bytes":  292817
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-06.png",
+                      "bytes":  365105
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-07.png",
+                      "bytes":  214510
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-08.png",
+                      "bytes":  171894
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-09.png",
+                      "bytes":  356376
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-10.png",
+                      "bytes":  335156
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-11.png",
+                      "bytes":  370103
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-12.png",
+                      "bytes":  253930
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-13.png",
+                      "bytes":  235744
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-14.png",
+                      "bytes":  400740
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-15.png",
+                      "bytes":  371974
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-16.png",
+                      "bytes":  110865
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-17.png",
+                      "bytes":  246008
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-18.png",
+                      "bytes":  581721
+                  },
+                  {
+                      "path":  "aiml-ca2/slides/aiml-ca2-part-b-png/aiml-ca2-part-b-slide-19.png",
+                      "bytes":  45528
+                  },
+                  {
+                      "path":  "artifact-manifest.json",
+                      "bytes":  19506
+                  },
+                  {
+                      "path":  "data-fundamentals-ca2/powerbi/data-fundamentals-ca2-pbix-metadata.json",
+                      "bytes":  7068
+                  },
+                  {
+                      "path":  "data-fundamentals-ca2/powerbi/data-fundamentals-ca2-report-page.png",
+                      "bytes":  437021
+                  },
+                  {
+                      "path":  "data-fundamentals-ca2/powerbi/resources/report-resource-01.gif",
+                      "bytes":  2172646
+                  },
+                  {
+                      "path":  "data-visualization-ca1/slides/data-visualization-ca1-slides.pdf",
+                      "bytes":  1188066
+                  },
+                  {
+                      "path":  "data-visualization-ca1/slides/data-visualization-ca1-slides-png/data-visualization-ca1-slides-slide-01.png",
+                      "bytes":  868924
+                  },
+                  {
+                      "path":  "data-visualization-ca1/slides/data-visualization-ca1-slides-png/data-visualization-ca1-slides-slide-02.png",
+                      "bytes":  650280
+                  },
+                  {
+                      "path":  "data-visualization-ca1/slides/data-visualization-ca1-slides-png/data-visualization-ca1-slides-slide-03.png",
+                      "bytes":  118676
+                  },
+                  {
+                      "path":  "data-visualization-ca1/slides/data-visualization-ca1-slides-png/data-visualization-ca1-slides-slide-04.png",
+                      "bytes":  98094
+                  },
+                  {
+                      "path":  "data-visualization-ca1/slides/data-visualization-ca1-slides-png/data-visualization-ca1-slides-slide-05.png",
+                      "bytes":  1139853
+                  },
+                  {
+                      "path":  "data-visualization-ca1/slides/data-visualization-ca1-slides-png/data-visualization-ca1-slides-slide-06.png",
+                      "bytes":  602425
+                  },
+                  {
+                      "path":  "data-visualization-ca1/slides/data-visualization-ca1-slides-png/data-visualization-ca1-slides-slide-07.png",
+                      "bytes":  283094
+                  },
+                  {
+                      "path":  "data-visualization-ca1/slides/data-visualization-ca1-slides-png/data-visualization-ca1-slides-slide-08.png",
+                      "bytes":  311796
+                  },
+                  {
+                      "path":  "data-visualization-ca1/slides/data-visualization-ca1-slides-png/data-visualization-ca1-slides-slide-09.png",
+                      "bytes":  565054
+                  },
+                  {
+                      "path":  "data-visualization-ca1/slides/data-visualization-ca1-slides-png/data-visualization-ca1-slides-slide-10.png",
+                      "bytes":  392376
+                  },
+                  {
+                      "path":  "data-visualization-ca1/slides/data-visualization-ca1-slides-png/data-visualization-ca1-slides-slide-11.png",
+                      "bytes":  119200
+                  }
+              ]
+}

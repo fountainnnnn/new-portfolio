@@ -25,10 +25,13 @@ async function waitForBuilderPage(page: Page) {
 
 /** Upload a CSV file on the builder page. */
 async function uploadCSV(page: Page) {
+  // Wait for the file input to be attached and the component to be fully mounted
   const fileInput = page.locator('input[type="file"]');
+  await fileInput.waitFor({ state: "attached", timeout: 10_000 });
   await fileInput.setInputFiles(CSV_PATH);
   // Wait for the profile card to appear, confirming upload succeeded.
-  await expect(page.locator("text=Dataset profile")).toBeVisible({ timeout: 20_000 });
+  // Allow extra time for the gateway proxy + API profiling + React re-render.
+  await expect(page.locator("text=Detected types").first()).toBeVisible({ timeout: 30_000 });
 }
 
 /** Generate a dashboard from the builder page. */
@@ -44,25 +47,25 @@ async function generateDashboard(page: Page, prompt = "Build an executive sales 
 
 test.describe("Builder Chat Page", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/auto-dashboard");
     await waitForBuilderPage(page);
   });
 
   test("shows the landing page with brand and upload area", async ({ page }) => {
-    await expect(page.locator("text=Decidr")).toBeVisible();
-    await expect(page.locator("text=Upload a CSV")).toBeVisible();
+    await expect(page.locator("text=Decidr").first()).toBeVisible();
+    await expect(page.locator("text=Upload a CSV").first()).toBeVisible();
   });
 
   test("CSV upload shows dataset profile card", async ({ page }) => {
     await uploadCSV(page);
     // The profile card should show column count and row count.
-    await expect(page.locator("text=columns")).toBeVisible();
+    await expect(page.getByText("Columns", { exact: true }).first()).toBeVisible();
   });
 });
 
 test.describe("Dashboard Studio", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/auto-dashboard");
     await waitForBuilderPage(page);
     await uploadCSV(page);
     await generateDashboard(page);
@@ -138,7 +141,7 @@ test.describe("Error auto-dismiss", () => {
   test("error banner disappears after ~6 seconds", async ({ page }) => {
     // This is hard to trigger without a backend failure, so we verify the
     // dismiss button works instead.
-    await page.goto("/");
+    await page.goto("/auto-dashboard");
     await waitForBuilderPage(page);
 
     // We can't easily inject an error, but we verify the component renders

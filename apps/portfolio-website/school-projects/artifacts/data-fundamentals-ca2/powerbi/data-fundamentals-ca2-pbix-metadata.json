@@ -1,0 +1,135 @@
+﻿{
+    "source_file":  "DF CA2 original Power BI report",
+    "export_status":  {
+                          "render_export_created":  true,
+                          "reason":  "Static report image is available at data-fundamentals-ca2-report-page.png for the public portfolio viewer."
+                      },
+    "package":  {
+                    "entry_count":  11,
+                    "entries":  [
+                                    {
+                                        "name":  "Version",
+                                        "size":  8
+                                    },
+                                    {
+                                        "name":  "[Content_Types].xml",
+                                        "size":  659
+                                    },
+                                    {
+                                        "name":  "DiagramLayout",
+                                        "size":  1864
+                                    },
+                                    {
+                                        "name":  "Report/Layout",
+                                        "size":  190636
+                                    },
+                                    {
+                                        "name":  "Settings",
+                                        "size":  276
+                                    },
+                                    {
+                                        "name":  "Metadata",
+                                        "size":  192
+                                    },
+                                    {
+                                        "name":  "Report/LinguisticSchema",
+                                        "size":  858
+                                    },
+                                    {
+                                        "name":  "Report/StaticResources/SharedResources/BaseThemes/CY23SU11.json",
+                                        "size":  5663
+                                    },
+                                    {
+                                        "name":  "SecurityBindings",
+                                        "size":  358
+                                    },
+                                    {
+                                        "name":  "DataModel",
+                                        "size":  110528
+                                    },
+                                    {
+                                        "name":  "Report/StaticResources/RegisteredResources/aesthetic-background-498-x-27803462796573140503.gif",
+                                        "size":  2172646
+                                    }
+                                ]
+                },
+    "version":  1.28,
+    "metadata":  {
+                     "Version":  5,
+                     "AutoCreatedRelationships":  [
+
+                                                  ],
+                     "CreatedFrom":  "Cloud",
+                     "CreatedFromRelease":  "2024.11"
+                 },
+    "settings":  {
+                     "Version":  4,
+                     "ReportSettings":  {
+
+                                        },
+                     "QueriesSettings":  {
+                                             "TypeDetectionEnabled":  true,
+                                             "RelationshipImportEnabled":  true,
+                                             "Version":  "2.124.126.0"
+                                         }
+                 },
+    "model_tables_from_diagram":  [
+                                      "Prestige Mall",
+                                      "Energy Use Intensity",
+                                      "Water Consumption",
+                                      "Sheet1"
+                                  ],
+    "linguistic_entities":  [
+                                "Ng_Yu_Hang_Individual"
+                            ],
+    "report":  {
+                   "page_count":  1,
+                   "pages":  [
+                                 {
+                                     "index":  1,
+                                     "name":  "ReportSection",
+                                     "display_name":  "Ng Yu Hang_Individual",
+                                     "visual_count":  18,
+                                     "visual_types":  [
+                                                          "areaChart",
+                                                          "barChart",
+                                                          "card",
+                                                          "columnChart",
+                                                          "donutChart",
+                                                          "lineChart",
+                                                          "multiRowCard",
+                                                          "pieChart",
+                                                          "slicer",
+                                                          "textbox"
+                                                      ]
+                                 }
+                             ],
+                   "visual_type_counts":  {
+                                              "areaChart":  1,
+                                              "barChart":  1,
+                                              "card":  6,
+                                              "columnChart":  1,
+                                              "donutChart":  1,
+                                              "lineChart":  1,
+                                              "multiRowCard":  1,
+                                              "pieChart":  1,
+                                              "slicer":  1,
+                                              "textbox":  4
+                                          },
+                   "resources":  [
+                                     {
+                                         "package":  "SharedResources",
+                                         "type":  202,
+                                         "path":  "BaseThemes/CY23SU11.json",
+                                         "name":  "CY23SU11"
+                                     },
+                                     {
+                                         "package":  "RegisteredResources",
+                                         "type":  100,
+                                         "path":  "aesthetic-background-498-x-27803462796573140503.gif",
+                                         "name":  "aesthetic-background-498-x-27803462796573140503.gif",
+                                         "extracted_to":  "data-fundamentals-ca2/powerbi/resources/report-resource-01.gif"
+                                     }
+                                 ]
+               }
+}

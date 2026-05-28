@@ -9,8 +9,8 @@
   <link rel="apple-touch-icon" href="../img/logo.png">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="../mock-paper-generator/styles.css?v=20250926">
-  <link rel="stylesheet" href="../project-theme.css?v=20260514">
+  <link rel="stylesheet" href="../mock-paper-generator/styles.css?v=20260527">
+  <link rel="stylesheet" href="../project-theme.css?v=20260527">
 </head>
 <body class="project-app project-mock-paper">
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" aria-label="Primary navigation">
@@ -67,8 +67,16 @@
           <p>Choose the file, number of papers, and difficulty target. The backend returns a ZIP of generated PDFs.</p>
         </div>
 
+        <div class="project-generator-grid">
         <div class="card pastel-card project-form-card">
           <div class="card-body">
+            <div class="tool-card-heading">
+              <div>
+                <p class="project-kicker">Paper builder</p>
+                <h3 class="fw-semibold mb-0 text-accent">Generation controls</h3>
+              </div>
+              <span class="tool-status-pill"><i class="bi bi-file-earmark-zip"></i> ZIP output</span>
+            </div>
             <form id="gen-form" class="gy-3">
               <div class="mb-3">
                 <label class="form-label">Upload exam paper (.pdf / .docx)</label>
@@ -110,6 +118,14 @@
               </div>
             </form>
           </div>
+        </div>
+        <aside class="project-insight-panel" aria-label="Mock paper workflow">
+          <p class="project-kicker">Workflow</p>
+          <h3>From source to pack.</h3>
+          <div class="insight-step"><span>1</span><p>Extract questions from the uploaded paper with text/OCR fallback.</p></div>
+          <div class="insight-step"><span>2</span><p>Generate fresh variants against the selected difficulty target.</p></div>
+          <div class="insight-step"><span>3</span><p>Package mock papers and answer keys into one download.</p></div>
+        </aside>
         </div>
       </div>
     </section>
@@ -157,6 +173,10 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
-  <script src="../mock-paper-generator/app.js?v=20250916" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+  <script src="https://unpkg.com/lenis@1.3.4/dist/lenis.min.js" defer></script>
+  <script src="../motion.js" defer></script>
+  <script src="../mock-paper-generator/app.js?v=20260527" defer></script>
 </body>
 </html>

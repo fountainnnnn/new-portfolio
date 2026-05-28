@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+{% block title %}VeggieAI - Login{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+
+{% block content %}
+<section class="auth-wrap scenic" style="--scenic-image: url('https://images.unsplash.com/photo-1543362906-acfc16c67564?auto=format&fit=crop&w=2000&q=80'); --bg-offset: 12px;">
+    <div class="container">
+        <div class="auth-grid">
+            <aside class="auth-panel reveal" data-reveal="fade-left"
+                   style="--auth-image: url('https://images.unsplash.com/photo-1518843875459-f738682238a6?auto=format&fit=crop&w=1800&q=80');">
+                <div class="auth-panel-inner">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="brand-mark" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M16.6 3.2c-3 .3-5.4 1.5-7.1 3.4C7 9.2 6.4 12.8 7 15.8c.6 2.8 2.3 4.8 4.7 5 2.4.2 4.5-1.3 5.7-3.9 1.3-2.9 1.5-6.4.7-9.1-.4-1.3-1-2.5-1.8-3.4Z" fill="currentColor" opacity=".9"/>
+                                <path d="M9.2 6.7c2.5 2.2 6.4 2.2 8.9 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".7"/>
+                            </svg>
+                        </span>
+                        <strong>VeggieAI</strong>
+                    </div>
+                    <h1 class="auth-panel-title">Welcome back.</h1>
+                    <p class="text-muted mb-0">
+                        Sign in to continue your classification workflow and keep everything in one place.
+                    </p>
+                    <ul class="auth-panel-list">
+                        <li>Access recent predictions</li>
+                        <li>Switch model resolutions anytime</li>
+                        <li>Review confidence breakdowns</li>
+                    </ul>
+                </div>
+            </aside>
+
+            <div class="glass auth-card reveal" data-reveal="fade-right">
+                <h2 class="mb-1" style="font-weight: 850;">Sign in</h2>
+                <p class="text-muted">Enter your credentials to continue.</p>
+
+                <form method="post" action="{{ url_for('login') }}" class="mt-4">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    {% if next_url %}
+                    <input type="hidden" name="next" value="{{ next_url }}">
+                    {% endif %}
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    <div class="mb-3">
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'danger' else category }} small mb-2">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+
+                    {% if login_errors %}
+                    <div class="alert alert-danger small mb-3">
+                        {{ login_errors | join(', ') }}
+                    </div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label class="form-label" for="username">Username</label>
+                        <input class="form-control" id="username" name="username" placeholder="@username" autocomplete="username"
+                               value="{{ login_defaults.username if login_defaults is defined }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="password">Password</label>
+                        <input class="form-control" id="password" name="password" type="password" placeholder="Password"
+                               autocomplete="current-password">
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="remember">
+                            <label class="form-check-label text-muted" for="remember">Remember me</label>
+                        </div>
+                        <a class="text-muted" href="#" role="link">Forgot password?</a>
+                    </div>
+
+                    <button class="btn btn-primary w-100 btn-glow" type="submit">Login</button>
+
+                    <div class="d-flex align-items-center gap-3 my-3">
+                        <div class="flex-grow-1 border-top border-white border-opacity-10"></div>
+                        <span class="text-muted small">or</span>
+                        <div class="flex-grow-1 border-top border-white border-opacity-10"></div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a class="btn btn-ghost" href="{{ url_for('auth_google', next=next_url) }}">
+                            <i class="bi bi-google"></i> Continue with Google
+                        </a>
+                    </div>
+
+                    <p class="text-muted text-center mt-3 mb-0">
+                        Don't have an account? <a class="text-decoration-underline" href="{{ url_for('signup') }}">Sign up</a>
+                    </p>
+
+                    <div class="text-center mt-3">
+                        <a class="text-muted small" href="{{ url_for('home') }}"><i class="bi bi-arrow-left"></i> Back to home</a>
+                    </div>
+
+                    <div class="glass p-3 mt-4">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="feature-icon mb-0"><i class="bi bi-shield-lock"></i></div>
+                            <div>
+                                <p class="mb-1" style="font-weight: 850;">Privacy-first</p>
+                                <p class="text-muted mb-0">
+                                    Credentials and images are saved locally in your CA2 SQLite database.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
+const basePath = process.env.AUTODASH_BASE_PATH || "";
+
 const nextConfig: NextConfig = {
+  basePath,
   // Hide the Next.js dev indicator (the little "N" badge in the bottom-left
   // during `next dev`). Production builds never show it; this just keeps the
   // local dev canvas clean so our own brand mark is the only logo visible.

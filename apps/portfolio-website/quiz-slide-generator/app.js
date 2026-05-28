@@ -45,6 +45,9 @@ function updateCustomSum() {
   const total = +qTotalNum.value || 0;
   customSum.textContent = `Sum: ${mcq + th + cf + fb} / ${total}`;
 }
+customBox.querySelectorAll("input").forEach((input) => {
+  input.addEventListener("input", updateCustomSum);
+});
 
 // progress bar
 let timer = null;
@@ -99,8 +102,16 @@ form.addEventListener("submit", async (e) => {
   fd.append("mix_mode", form.mix_mode.value);
   fd.append("difficulty", form.querySelector('input[name="difficulty"]:checked').value);
   fd.append("include_explanations", form.include_explanations.checked ? "true" : "false");
+  fd.append("include_thumbs", form.include_explanations.checked ? "true" : "false");
 
   if (form.mix_mode.value === "custom") {
+    const customTotal = (+form.mcq_n.value || 0) + (+form.theory_n.value || 0) + (+form.codefill_n.value || 0) + (+form.fillblank_n.value || 0);
+    if (customTotal !== (+qTotalNum.value || 0)) {
+      finishProgress(false);
+      showStatus("Custom question counts must add up to the total.", "warning");
+      submitBtn.disabled = false;
+      return;
+    }
     fd.append("mcq_n", form.mcq_n.value || "0");
     fd.append("theory_n", form.theory_n.value || "0");
     fd.append("codefill_n", form.codefill_n.value || "0");

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SP70 | Home</title>
+    <link rel="icon" href="images/SPIcon.png" type="image/icon">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="js/index.js" defer></script>
+    <script src="js/main.js" defer></script>
+
+
+</head>
+
+<body>
+    <header class="sticky-top shadow">
+        <nav class="navbar navbar-expand-md navbar-light bg-light">
+            <div class="toast-container position-fixed">
+                <div id="quote-toast" class="toast" aria-live="assertive" >
+                  <div class="toast-header">
+                    <img src="images/SPIcon.png" class="rounded me-2" alt="..." width="30">
+                    <strong class="me-auto">Quote of the Day</strong>
+                    <small class="text-body-secondary">Just now</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                  </div>
+                  <div class="toast-body">
+                    Loading...
+                  </div>
+                </div>
+              </div>
+            <div class="container">
+                <a class="navbar-brand" href="https://www.sp.edu.sg/sp70">
+                    <img src="images/sp70.png" alt="SP70" id="SP70">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end d-none d-md-flex" id="navbarNav">
+                    <ul class="navbar-nav ">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Achievements.html">Goals & Achievements</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="feedback.html">Feedback</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="offcanvas offcanvas-end d-md-none" tabindex="-1" id="offcanvasNavbar"
+                    aria-labelledby="offcanvasNavbarLabel" style="width: 80%;">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+                        <button type="button" class="btn-close btn-close-black" data-bs-dismiss="offcanvas"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav fs-4">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="Achievements.html">Goals & Achievements</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="feedback.html">Feedback</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="modal modal-lg fade" id="startpopup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" id="customModal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Welcome to SP70's celebration website!</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <img class="img-fluid" src="images/official/sp-about-hero.jpg" alt="Singapore Polytechnic campus">
+              <div class="welcome-text pt-3 fw-bolder">
+                <p>We are delighted to welcome you to the SP70 celebration website. Join us in commemorating this special occasion with events, stories, and memories that span seven decades. Thank you for being part of our journey!</p>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+    <button type="button" id="backToTop" class="btn btn-light rounded shadow position-fixed">Back to top <i class="bi bi-arrow-up"></i></button>
+    <section class="parallax2 position-relative justify-content-center align-items-center">
+        <img class="z-2" src="images/groundwithcampus.png" id="ground" style="width: 140%;" alt="">
+        <img class="z-3" src="images/humans.png" id="humans" alt="">
+        <img class="z-1" src="images/SP70FullLogo.png" id="SP70FullLogo" alt="">
+    </section>
+    <section>
+        <div class="container overflow-hidden py-5">
+            <div class="row text-end mb-5 gap-5 justify-content-center">
+                <div class="card col-11 col-sm-5 my-auto justify-content-center p-0 revealLeft ">
+                    <img src="images/oldsp.jpg" alt="oldsp" class="card-img-top">
+                    <p class="card-text py-2 text-center text-secondary"><b>The old Singapore Polytechnic campus</b></p>
+                </div>
+                <div class="card col-11 col-sm-6 rounded border-2 shadow bg-light p-2 revealTop">
+                    <div class="card-body">
+                        <div class="row justify-content-end text-end ">
+                            <h1 class="card-title fw-bolder">What is <span class="sp70">SP70</span>?</h1>
+                            <!-- image of SP -->
+                            <p class="card-text pt-4"> <span class="sp70 fs-4"><b>SP70</b></span> refers to the 70th
+                                anniversary celebration of Singapore Polytechnic (SP).
+                                In 2024, Singapore Polytechnic will mark its 70th year
+                                since its establishment, started as a modest five-storey
+                                building on Prince Edward Road has expanded into Singapore's
+                                largest polytechnic—a vast campus covering 38 hectares of lush
+                                greenery and home to over 230,000 distinguished alumni.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="bg-danger">
+        <div class="container">
+            <div class="row mx-auto gap-5 justify-content-center py-5 overflow-hidden">
+                <div class="card col-11 col-sm-6 rounded border-2 shadow bg-light revealTop order-sm-1 order-2">
+                    <div class="card-body">
+                        <div class="row">
+                            <h1 class="card-title fw-bolder"><cite>For All Ages</cite></h1>
+                            <p class="card-text pt-4">As a way to commemorate and celebrate
+                                Singapore Polytechnic's <span class="sp70 fw-bolder">70th</span> anniversary, they have launched a book
+                                titled '<cite>For All Ages, Singapore Polytechnic At Seventy</cite>', recognizing
+                                some of the remarkable individuals and moments that made the current SP.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-11 col-sm-5 justify-content-center p-0 revealRight order-1 order-sm-2 position-relative image-container">
+                    <img src="images/SP70Book.png" alt="SP70Book" class="img-fluid">
+                    <div class="overlay position-absolute d-flex justify-content-center align-items-center">
+                        <a href="https://www.sp.edu.sg/docs/default-source/sp70/for-all-ages_sp-at-seventy.pdf" target="_blank"><button class="btn btn-danger mx-2">Get the PDF</button></a>
+                        <a href="https://www.sp.edu.sg/docs/default-source/sp70/for-all-ages_sp-at-seventy056cf8399357416ea21ba00b2146352d.epub?sfvrsn=363bb97a_2&download=true" target="_blank"><button class="btn btn-secondary mx-2">Get the EPUB</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-4">
+        <div class="container card shadow">
+            <div class="row py-5">
+                <p class="h1 fw-bolder text-center revealTop">For All Ages | <span class="sp70">SP</span> Core: Future Ready</p>
+            </div>
+            <div class="row gap-5 justify-content-center pb-5 revealTop">
+                <div class="hover card col-sm-3 col-11 p-0 shadow">
+                    <img src="images/official/sp-uapp.jpg"
+                        class="card-img-top" alt="Singapore Polytechnic students">
+                    <div class="card-body">
+                        <h5 class="card-title">Personal/Work Life</h5>
+                        <p class="card-text">Personal and professional lives 
+                            are experiencing significant transformations. A crucial
+                             element of SP's "future-ready" identity is maintaining
+                              global connectivity. This involves cultivating a curiosity 
+                              about the diverse aspects of the world.</p>
+                        <div class="more-content">
+                            <p>
+                                This global perspective also fosters empathy towards people 
+                                from different cultures, which is essential in many professions. 
+                                Additionally, it enhances the ability to comprehend the needs of 
+                                users, consumers, markets, and audiences.
+                            </p>
+                        </div>
+                        <a class="toggleLink text-danger" style="cursor:pointer;">Read more...</a>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-danger"><a class="text-decoration-none text-light"
+                               target="_blank" href="https://www.sp.edu.sg/sp70#Main_C015_Col00">Learn More</a></button>
+                    </div>
+                </div>
+                <div class=" hover card col-sm-3 col-11 p-0 shadow">
+                    <img src="images/official/sp-innovation-vehicle.webp"
+                        class="card-img-top" alt="Students troubleshooting an electric vehicle">
+                    <div class="card-body">
+                        <h5 class="card-title">Industry Disruptions</h5>
+                        <p class="card-text">The entire industrial landscape has become significantly more disruptive 
+                            due to groundbreaking advancements in fields like artificial intelligence (AI), machine
+                             learning, the Internet of Things (IoT), and robotics.
+                        </p>
+                        <div class="more-content">
+                            <p>
+                                To be prepared for the future, SP must embrace and adapt to changes in the industry, whether 
+                                these come from technological advancements or other workplace shifts. Foreseeing future developments 
+                                is the only way to protect against the most severe disruptions and displacements.
+                            </p>
+                        </div>
+                        <a class="toggleLink text-danger" style="cursor:pointer;">Read more...</a>
+
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-danger"><a class="text-decoration-none text-light"
+                            target="_blank"    href="https://www.sp.edu.sg/sp70#Main_C015_Col00">Learn More</a></button>
+                    </div>
+                </div>
+                <div class="hover card col-sm-3 col-11 p-0 shadow">
+                    <img src="images/official/sp-gallery-card.webp"
+                        class="card-img-top" alt="Singapore Polytechnic student gallery">
+                    <div class="card-body">
+                        <h5 class="card-title">Global Shifts</h5>
+                        <p class="card-text">Among all the global challenges, climate change is considered the most
+                             critical by many people. At Singapore Polytechnic, this issue is also of great importance. 
+                             Efforts to prepare students for the future emphasize addressing sustainability, always
+                              considering a comprehensive, big-picture approach.</p>
+                        <div class="more-content">
+                            <p>
+                                This commitment is most evident in the Polytechnic's Sustainable Innovation Project (SIP), one
+                                 of the 10 modules in the Common Core Curriculum. This module provides a learning experience that
+                                  culminates in a capstone project, which students undertake in their second year of study.
+                            </p>
+                        </div>
+                        <a class="toggleLink text-danger " style="cursor:pointer;">Read more...</a>
+
+                    </div>
+
+                    <div class="card-body">
+                        <button class="btn btn-danger"><a class="text-decoration-none text-light"
+                           target="_blank"     href="https://www.sp.edu.sg/sp70#Main_C015_Col00">Learn More</a></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-4">
+        <div class="card container overflow-hidden">
+            <div class="row pt-4 pb-3">
+                <p class="h1 fw-bolder text-center revealTop">Schools of <span class="sp70">SP</span> </p>
+            </div>
+            <div class="card-body row px-4  ">
+                <div class="col-sm-6 col-11">
+                    <div class="card hover revealLeft">
+                        <a class="text-decoration-none text-dark" href="https://www.sp.edu.sg/abe" target="_blank">
+                            <img src="images/official/school-abe.jpg" class="card-img-top" alt="School of Architecture and the Built Environment">
+                            <div class="card-body py-1">
+                              <p class="card-text text-center fw-bolder">School of Architecture & the Build Environment</p>
+                            </div>
+                        </a>
+                      </div>
+                      <div class="card hover my-4 revealLeft">
+                        <a class="text-decoration-none text-dark" href="https://www.sp.edu.sg/cls" target="_blank">
+                            <img src="images/official/school-cls.jpg" class="card-img-top" alt="School of Chemical and Life Sciences">
+                            <div class="card-body py-1">
+                                <p class="card-text text-center fw-bolder">School of Chemical & Life Sciences</p>
+                            </div>
+                        </a>
+                      </div>
+                      <div class="card hover my-4 revealLeft">
+                        <a class="text-decoration-none text-dark" href="https://www.sp.edu.sg/eee" target="_blank">
+                            <img src="images/official/school-eee.jpg" class="card-img-top" alt="School of Electrical and Electronic Engineering">
+                            <div class="card-body py-1">
+                              <p class="card-text text-center fw-bolder">School of Electrical & Electronic Engineering (EEE)</p>
+                            </div>
+                        </a>
+                      </div>
+                      <div class="card hover my-4 revealLeft">
+                        <a class="text-decoration-none text-dark" href="https://www.sp.edu.sg/mad" target="_blank">
+                            <img src="images/official/school-mad.jpg" class="card-img-top" alt="Media Arts and Design School">
+                            <div class="card-body py-1">
+                              <p class="card-text text-center fw-bolder">School of Media, Arts & Design (MAD)</p>
+                            </div>
+                        </a>
+                      </div>
+                      <div class="card hover my-4 revealLeft">
+                        <a class="text-decoration-none text-dark" href="https://www.sp.edu.sg/ms" target="_blank">
+                            <img src="images/official/school-ms.jpg" class="card-img-top" alt="School of Mathematical Sciences and Analytics">
+                            <div class="card-body py-1">
+                              <p class="card-text text-center fw-bolder">School of Mathematics & Science (MS)</p>
+                            </div>
+                        </a>
+                      </div>
+                </div>
+                <div class="col-sm-6 col-11">
+                    <div class="card hover revealRight">
+                        <a class="text-decoration-none text-dark" href="https://www.sp.edu.sg/sb" target="_blank">
+                            <img src="images/official/school-sb.jpg" class="card-img-top" alt="School of Business">
+                            <div class="card-body py-1">
+                              <p class="card-text text-center fw-bolder">School of Business (SB)</p>
+                            </div>
+                        </a>
+                      </div>
+                      <div class="card hover my-4 revealRight">
+                        <a class="text-decoration-none text-dark" href="https://www.sp.edu.sg/soc" target="_blank">
+                            <img src="images/official/school-soc.jpg" class="card-img-top" alt="School of Computing">
+                            <div class="card-body py-1">
+                              <p class="card-text text-center fw-bolder">School of Computing (SoC)</p>
+                            </div>
+                        </a>
+                      </div>
+                      <div class="card hover my-4 revealRight">
+                        <a class="text-decoration-none text-dark" href="https://www.sp.edu.sg/lsc" target="_blank">
+                            <img src="images/official/school-lsc.jpg" class="card-img-top" alt="School of Life Skills and Communication">
+                            <div class="card-body py-1">
+                              <p class="card-text text-center fw-bolder">School of Life Skills & Communication (LSC)</p>
+                            </div>
+                        </a>
+                      </div>
+                      <div class="card hover my-4 revealRight">
+                        <a class="text-decoration-none text-dark" href="https://www.sp.edu.sg/mae" target="_blank">
+                            <img src="images/official/school-mae.jpg" class="card-img-top" alt="School of Mechanical and Aeronautical Engineering">
+                            <div class="card-body py-1">
+                              <p class="card-text text-center fw-bolder">School of Mechanical & Aeronautical Engineering (MAE)</p>
+                            </div>
+                        </a>
+                      </div>
+                      <div class="card hover my-4 revealRight">
+                        <a class="text-decoration-none text-dark" href="https://www.sp.edu.sg/sma" target="_blank">
+                            <img src="images/official/school-sma.webp" class="card-img-top" alt="Singapore Maritime Academy">
+                            <div class="card-body py-1">
+                              <p class="card-text text-center fw-bolder">School of Singapore Maritime Academy (SMA)</p>
+                            </div>
+                        </a>
+                      </div>  
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-4">
+        <div class=" shadow overflow-hidden container card pb-4">
+            <div class="row pt-5 pb-2">
+                <p class="h1 fw-bolder text-center revealTop"><span class="sp70">SP</span> Timeline</p>
+            </div>
+            <div class="card-body revealRight p-md-3 p-0 align-items-center">
+                <div class="timeline position-relative list-unstyled justify-content-center">
+                    <div class="timeline-item position-relative d-flex justify-content-center align-items-center my-3">
+                        <div class="timeline-content shadow position-relative p-3 left card hover revealLeft">
+                              <div class="card-body p-0 p-md-3">
+                                <h5 class="card-title fw-bolder text-danger">1951</h5>
+                                <p class="card-text">Local businessmen met at Adelphi Hotel's roof garden to discuss idea of a polytechnic</p>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item position-relative d-flex justify-content-center  align-items-center my-3">
+                        <div class="timeline-content shadow position-relative p-3  right card hover text-start revealRight">
+                            <div class="card-body p-0 p-md-3">
+                                <h5 class="card-title fw-bolder text-danger">1958</h5>
+                                <img class="w-100" src="images/official/sp-prince-edward-road.png" alt="Singapore Polytechnic at Prince Edward Road">
+                                <p class="card-text pt-0 pt-md-3">Completion of Prince Edward Road campus with an enrolment of 2,800 students registered for 58 courses to prepare them for external examinations</p>
+                                
+                              </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item position-relative d-flex justify-content-center text-start align-items-center my-3">
+                        <div class="timeline-content shadow position-relative p-3  left card hover revealLeft">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bolder text-danger">1959</h5>
+                                <img class="img-fluid w-100" src="images/official/sp-about-hero.jpg" alt="Singapore Polytechnic Dover campus">
+                                <p class="card-text pt-0 pt-md-3">Official opening of Singapore Polytechnic at Prince Edward Road by Prince Philip, the Duke of Edinburgh on 24 February 1959.</p>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item position-relative d-flex justify-content-center  align-items-center my-3">
+                        <div class="timeline-content shadow position-relative p-3  right card hover text-start revealRight">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bolder text-danger">1965</h5>
+                                <p class="card-text">Professional diploma courses gradually replaced by degree courses
+                                </p>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item position-relative d-flex justify-content-center  align-items-center my-3">
+                        <div class="timeline-content shadow position-relative p-3  left card hover revealLeft">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bolder text-danger">1979</h5>
+                                <img class="img-fluid w-100" src="images/official/sp-mission-vision.jpeg" alt="Singapore Polytechnic mission and vision">
+                                <p class="card-text pt-0 pt-md-3">Dover Road campus officially opened by Prime Minister Lee Kuan Yew on 7 July. The ceremony was held at the Quadrangle between the Admin Building and the Library.</p>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item position-relative d-flex justify-content-center  align-items-center my-3">
+                        <div class="timeline-content shadow position-relative p-3  right card hover text-start revealRight">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bolder text-danger">1994</h5>
+                                <img class="img-fluid w-100" src="images/official/sp-prince-edward-road.png" alt="Singapore Polytechnic heritage">
+                                <p class="card-text pt-0 pt-md-3">SP became the first poly to introduce the Diploma in Optometry.<br>
+
+                                    Official opening of Fourth Phase campus development project by Minister for Education Lee Yock Suan.</p>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item position-relative d-flex justify-content-center  align-items-center my-3">
+                        <div class="timeline-content shadow position-relative p-3  left card hover revealLeft">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bolder text-danger">2004</h5>
+                                <img class="img-fluid w-100" src="images/official/sp-pace-card.webp" alt="Singapore Polytechnic lifelong learning">
+                                <p class="card-text pt-0 pt-md-3">Singapore Polytechnic turned 50. His Excellency, Mr S R Nathan, 
+                                    President of the Republic of Singapore (second from right), launched the yearlong celebrations
+                                     on 13 February at the official opening of the new Convention Centre and Plaza</p>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item position-relative d-flex justify-content-center  align-items-center my-3">
+                        <div class="timeline-content shadow position-relative p-3  right card hover text-start revealRight">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bolder text-danger">2005</h5>
+                                <img class="img-fluid w-100" src="images/TimeCapsule.png" alt="">
+                                <p class="card-text pt-0 pt-md-3">Singapore Polytechnic (SP) buried a time capsule to signify the close of the year long celebrations and the opening of a new chapter in the SP story. </p>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item position-relative d-flex justify-content-center  align-items-center my-3">
+                        <div class="timeline-content shadow position-relative p-3  left card hover text-start revealLeft">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bolder text-danger">2014</h5>
+                                <p class="card-text">SP celebrates its <i><b>60th</b></i> anniversary.<br>
+                                    SP's new vision - A caring community of inspired learners committed to serve with mastery was announced.</p>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item position-relative d-flex justify-content-center  align-items-center my-3">
+                        <div class="timeline-content shadow position-relative p-3  right card hover text-start revealRight">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bolder text-danger">2024</h5>
+                                <img class="img-fluid w-100" src="images/sp70.png" alt="">
+                                <p class="card-text">SP celebrates its 70th anniversary!</p>
+
+                              </div>    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="pb-4">
+        <div class="card container p-4">
+            <div class="row pt-3">
+                <p class="h1 fw-bolder text-center revealTop"><span class="sp70">SP70</span> Trivia</p>
+            </div>
+            <div class="container">
+                <div id="start-page" class="">
+                    <div class="d-flex flex-column justify-content-center text-light align-items-center text-center trivia rounded-3">
+                        <div>
+                            <h2>How well do you know SP?</h2>
+                        </div>
+                        <div>
+                            <button class="btn btn-danger mt-3" onclick="startQuiz()">Start Trivia</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="quiz-container" class="d-none">
+                    <form id="quiz-form" class="justify-content-center align-items-center p-5 text-center">
+                        <div>
+                            <div id="question1" class="question active">
+                                <div class="form-group">
+                                    <label>1. In which year was Singapore Polytechnic established?</label>
+                                    <div class="options py-3">
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="1" data-value="1">1954</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="1" data-value="0">1964</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="1" data-value="0">1974</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="1" data-value="0">1984</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="question2" class="question">
+                                <div class="form-group">
+                                    <label>2. How many academic schools does Singapore Polytechnic have?</label>
+                                    <div class="options py-3">
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="2" data-value="0">5</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="2" data-value="1">9</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="2" data-value="0">11</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="2" data-value="0">13</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="question3" class="question">
+                                <div class="form-group">
+                                    <label>3. What is the motto of Singapore Polytechnic?</label>
+                                    <div class="options py-3">
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="3" data-value="0">Knowledge is Power</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="3" data-value="0">Serve with Skill</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="3" data-value="1">A Tradition of Excellence</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="3" data-value="0">Strive for the Best</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="question4" class="question">
+                                <div class="form-group">
+                                    <label>4. In what year was Singapore Polytechnic established?</label>
+                                    <div class="options py-3">
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="4" data-value="1">1954</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="4" data-value="0">1965</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="4" data-value="0">1970</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="4" data-value="0">1980</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="question5" class="question">
+                                <div class="form-group">
+                                    <label>5. When did Singapore Polytechnic move to its current Dover campus?</label>
+                                    <div class="options py-3">
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="5" data-value="0">1960</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="5" data-value="0">1970</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="5" data-value="1">1978</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="5" data-value="0">1985</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="question6" class="question">
+                                <div class="form-group">
+                                    <label>6. Which year did Singapore Polytechnic celebrate its 50th anniversary?</label>
+                                    <div class="options py-3">
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="6" data-value="0">1994</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="6" data-value="1">2004</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="6" data-value="0">2014</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="6" data-value="0">2019</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="question7" class="question">
+                                <div class="form-group">
+                                    <label>7. When did Singapore Polytechnic launch its first full-time diploma course?</label>
+                                    <div class="options py-3">
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="7" data-value="0">1957</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="7" data-value="1">1958</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="7" data-value="0">1959</button>
+                                        <button type="button" class="btn btn-outline-primary option-btn" data-question="7" data-value="0">1960</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </form>
+                    <div class="progress mt-3">
+                        <div id="progress-bar" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="d-flex justify-content-center mt-3">
+                        <button type="button" class="restart btn btn-danger d-none" onclick="restartQuiz()">Restart Quiz</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-3">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Quiz Results</h1>
+                    <button type="button" class="btn-close border-0" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="score"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="restartQuiz()" data-bs-dismiss="modal">Restart Quiz</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="text-white text-center text-lg-start pt-2 bg-black">
+        <div class=" py-3">
+            <div class="container d-flex justify-content-between align-items-start border-top py-3">
+                <div>
+                    <img src="images/SPFullLogo.png" alt="">
+                    <figcaption class="figcaption pt-4">Singapore Polytechnic <br>
+                        500 Dover Road Singapore 139651</figcaption>
+                </div>
+                <ul class="nav list-unstyled d-flex align-items-start">
+                    <li class="ms-3">
+                        <a class="text-light-emphasis" href="https://x.com/singaporepoly" target="_blank"><i class="bi bi-twitter"
+                                style="font-size: 1.2rem"></i></a>
+                    </li>
+                    <li class="ms-3">
+                        <a class="text-light-emphasis" href="https://www.instagram.com/singaporepoly/?hl=en" target="_blank"><i class="bi bi-instagram"
+                                style="font-size: 1.2rem"></i></a>
+                    </li>
+                    <li class="ms-3">
+                        <a class="text-light-emphasis" href="https://www.facebook.com/singaporepolytechnic/" target="_blank"><i class="bi bi-facebook"
+                                style="font-size: 1.2rem"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
+
+<!-- Every image is taken from:
+- https://www.sp.edu.sg/
+- https://www.nas.gov.sg/archivesonline/photographs/
+- https://www.youtube.com/@singaporepolytechnic  -->

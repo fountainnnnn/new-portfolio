@@ -57,7 +57,7 @@ QG_SYSTEM_TEMPLATE = (
     "Allowed types: mcq, fill_code, drag_drop.\n\n"
     "Output rules:\n"
     "- Output ONLY JSON (no markdown, no commentary outside JSON).\n"
-    "- You MUST return EXACTLY N questions.\n"
+    "- You MUST return exactly the number of questions requested by the user.\n"
     "- Each item MUST have keys: ['type','question','options','code_with_blanks','answer','explanation'].\n"
     "- The 'question' text MUST NOT contain code — only describe the task.\n"
     "- All code must appear only in 'code_with_blanks'.\n"
@@ -193,63 +193,78 @@ async def generate_questions(
     topic: str = "loops",
     difficulty: str = "mixed",
     n: int = 10,
-    model_name: str = "gpt-4.1-mini",
+    model_name: str | None = None,
     api_key: str | None = None,
     batch_size: int = 1,
 ) -> QuestionResult:
     client = configure_openai(api_key)
     system_prompt = QG_SYSTEM_TEMPLATE.format(language=language)
+    selected_model = model_name or os.getenv("CODING_QUIZ_MODEL", "gpt-5-mini")
 
-    async def request_batch(batch_n: int, force_type: str | None = None) -> List[Dict[str, Any]]:
+    type_cycle = ["mcq", "fill_code", "drag_drop"]
+    desired_types = [type_cycle[i % len(type_cycle)] for i in range(n)]
+    type_requirements = {kind: desired_types.count(kind) for kind in type_cycle}
+    max_parallel_calls = max(1, min(int(os.getenv("CODING_QUIZ_MAX_PARALLEL_CALLS", "8")), n))
+    semaphore = asyncio.Semaphore(max_parallel_calls)
+
+    async def request_batch(batch_n: int, required_types: Dict[str, int] | None = None) -> List[Dict[str, Any]]:
         if topic.lower() == "mixed":
             topic_instruction = f"across a variety of {language} topics (loops, arrays/lists, functions, conditionals, classes/objects)"
         else:
             topic_instruction = f"about {topic}"
 
-        base_prompt = (
-            f"Generate {batch_n} {difficulty} {language} quiz question(s) {topic_instruction}. "
-            f"Apply all quality rules: variety, debugging, edge cases, nested logic, off-by-one, and clear explanations. "
-            f"Return a JSON list with exactly {batch_n} objects."
+        type_line = ", ".join(
+            f"{kind}: {count}" for kind, count in (required_types or {}).items() if count > 0
+        ) or "balanced mcq, fill_code, and drag_drop"
+        user_prompt = (
+            f"Generate exactly {batch_n} {difficulty} {language} quiz questions {topic_instruction}. "
+            f"Required type counts: {type_line}. "
+            "Return a JSON object with one key named questions. "
+            "questions must be an array of exactly the requested length. "
+            "Apply all quality rules: variety, debugging, edge cases, nested logic, off-by-one, and clear explanations. "
+            "Treat every question as a standalone high-quality item. "
+            "Do not repeat the same question pattern."
         )
 
-        if force_type:
-            user_prompt = base_prompt + f" Question type MUST be '{force_type}'."
-        else:
-            user_prompt = base_prompt + " The set MUST include a balanced mix of mcq, fill_code, and drag_drop types if N >= 3."
-
-        resp = await client.chat.completions.create(
-            model=model_name,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ],
-        )
+        async with semaphore:
+            resp = await client.chat.completions.create(
+                model=selected_model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+                response_format={"type": "json_object"},
+            )
         raw = resp.choices[0].message.content or ""
         return _parse_json_response(raw)
 
-    # ---- Split into batches
-    tasks = []
-    if batch_size == 1:
-        types = ["mcq", "fill_code", "drag_drop"]
-        random.shuffle(types)
-        for i in range(n):
-            force_type = types[i % len(types)]
-            tasks.append(request_batch(1, force_type=force_type))
-    else:
-        full_batches, remainder = divmod(n, batch_size)
-        for _ in range(full_batches):
-            tasks.append(request_batch(batch_size))
-        if remainder:
-            tasks.append(request_batch(remainder))
+    def build_type_batches(question_types: List[str]) -> List[Dict[str, int]]:
+        effective_batch_size = max(1, min(batch_size, len(question_types)))
+        batches: List[Dict[str, int]] = []
+        for start in range(0, len(question_types), effective_batch_size):
+            batch: Dict[str, int] = {}
+            for kind in question_types[start:start + effective_batch_size]:
+                batch[kind] = batch.get(kind, 0) + 1
+            batches.append(batch)
+        return batches
 
-    results = await asyncio.gather(*tasks, return_exceptions=True)
+    async def request_parallel(question_types: List[str]) -> List[Dict[str, Any]]:
+        tasks = [
+            request_batch(sum(required_types.values()), required_types)
+            for required_types in build_type_batches(question_types)
+        ]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        generated: List[Dict[str, Any]] = []
+        for result in results:
+            if isinstance(result, Exception):
+                logger.error(f"Parallel generation batch failed: {result}")
+                continue
+            generated.extend(result)
+        return generated
 
-    items: List[Dict[str, Any]] = []
-    for r in results:
-        if isinstance(r, Exception):
-            logger.error(f"Batch failed: {r}")
-            continue
-        items.extend(r)
+    # Keep generation parallel so each question gets focused model attention.
+    # The semaphore caps transport pressure while preserving per-question quality.
+    items = await request_parallel(desired_types)
 
     items = _deduplicate(items)
 
@@ -273,7 +288,15 @@ async def generate_questions(
             code_with_blanks = "\n".join(ln.rstrip() for ln in code_with_blanks.splitlines())
 
         # ---- Validations ----
-        qtype = q.get("type")
+        qtype = str(q.get("type", "")).strip().lower()
+        q["type"] = qtype
+        if qtype not in {"mcq", "fill_code", "drag_drop"}:
+            logger.warning(f"Dropping unsupported question type: {qtype}")
+            return False
+
+        if not str(q.get("question", "")).strip():
+            logger.warning("Dropping question without prompt text")
+            return False
 
         # Drop if explanation is missing or too short
         if not q.get("explanation") or len(str(q.get("explanation")).split()) < 5:
@@ -335,17 +358,31 @@ async def generate_questions(
     for q in items:
         process_question(q)
 
-    # enforce question count after filtering
-    while len(safe_list) < n:
+    # Enforce question count after filtering with bounded retries.
+    attempts = 0
+    while len(safe_list) < n and attempts < 3:
+        attempts += 1
         missing = n - len(safe_list)
         logger.warning(f"Regenerating {missing} extra question(s) due to dropped invalid ones...")
-        extras = await asyncio.gather(*[request_batch(1) for _ in range(missing)])
-        for e in extras:
-            if isinstance(e, Exception):
-                continue
-            for q in e:
-                if len(safe_list) < n:
-                    process_question(q)
+        current_counts = {kind: 0 for kind in type_cycle}
+        for item in safe_list:
+            current_counts[item["type"]] = current_counts.get(item["type"], 0) + 1
+        remaining_types = {
+            kind: max(0, type_requirements.get(kind, 0) - current_counts.get(kind, 0))
+            for kind in type_cycle
+        }
+        retry_types: List[str] = []
+        for kind in type_cycle:
+            retry_types.extend([kind] * remaining_types[kind])
+        while len(retry_types) < missing:
+            retry_types.append(type_cycle[len(retry_types) % len(type_cycle)])
+        extras = await request_parallel(retry_types[:missing])
+        for q in extras:
+            if len(safe_list) < n:
+                process_question(q)
+
+    if len(safe_list) < n:
+        raise HTTPException(status_code=502, detail=f"Generated only {len(safe_list)} valid questions out of {n}.")
 
     logger.info(f"Generated {len(safe_list)} valid questions (target {n}).")
     return {"safe": safe_list, "secret": secret_list}

@@ -1,8 +1,8 @@
 {
-  email admin@example.com
+  email {$CADDY_EMAIL:admin@example.com}
 }
 
-# Replace example.com after the real domain is known.
-example.com {
-  respond "new-portfolio-host is ready"
+{$SITE_DOMAIN:localhost} {
+  encode zstd gzip
+  reverse_proxy portfolio:3000
 }

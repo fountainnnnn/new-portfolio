@@ -1,0 +1,67 @@
+{% set current_path = request.path %}
+<header class="nav-shell">
+    <nav class="navbar-floating" aria-label="Primary">
+        <div class="nav-brand">
+            <a class="brand-link" href="{{ url_for('home') }}" aria-label="VeggieAI home">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M16.6 3.2c-3 .3-5.4 1.5-7.1 3.4C7 9.2 6.4 12.8 7 15.8c.6 2.8 2.3 4.8 4.7 5 2.4.2 4.5-1.3 5.7-3.9 1.3-2.9 1.5-6.4.7-9.1-.4-1.3-1-2.5-1.8-3.4Z" fill="currentColor" opacity=".9"/>
+                        <path d="M9.2 6.7c2.5 2.2 6.4 2.2 8.9 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".7"/>
+                    </svg>
+                </span>
+                <span class="brand-text">VeggieAI</span>
+            </a>
+        </div>
+
+        <button class="nav-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#navCollapse"
+                aria-controls="navCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <div class="collapse nav-collapse" id="navCollapse">
+            <div class="nav-links">
+                <a class="nav-link-pill {{ 'is-active' if current_path == url_for('home') else '' }}"
+                   href="{{ url_for('home') }}" {% if current_path == url_for('home') %}aria-current="page"{% endif %}>
+                    <i class="bi bi-house-door"></i> Home
+                </a>
+                <a class="nav-link-pill {{ 'is-active' if current_path.startswith('/predictor') else '' }}"
+                   href="{{ url_for('predictor') }}"
+                   {% if current_path.startswith('/predictor') %}aria-current="page"{% endif %}>
+                    <i class="bi bi-magic"></i> Predictor
+                </a>
+                <a class="nav-link-pill {{ 'is-active' if current_path.startswith('/live-predictor') else '' }}"
+                   href="{{ url_for('live_predictor') }}"
+                   {% if current_path.startswith('/live-predictor') %}aria-current="page"{% endif %}>
+                    <i class="bi bi-camera-video"></i> Live Cam
+                </a>
+                <a class="nav-link-pill {{ 'is-active' if current_path.startswith('/chat') else '' }}"
+                   href="{{ url_for('chat') }}"
+                   {% if current_path.startswith('/chat') %}aria-current="page"{% endif %}>
+                    <i class="bi bi-stars"></i> Chat
+                </a>
+                {% if current_user %}
+                <a class="nav-link-pill {{ 'is-active' if current_path.startswith('/profile') else '' }}"
+                   href="{{ url_for('profile') }}"
+                   {% if current_path.startswith('/profile') %}aria-current="page"{% endif %}>
+                    <i class="bi bi-person-circle"></i> Profile
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="nav-actions">
+                {% if current_user %}
+                    <span class="text-muted small d-none d-lg-inline">
+                        Hi, {{ current_user.full_name or current_user.username }}
+                    </span>
+                    <form method="post" action="{{ url_for('logout') }}" class="d-inline">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="btn btn-sm btn-ghost" type="submit">Logout</button>
+                    </form>
+                {% else %}
+                    <a class="btn btn-sm btn-ghost" href="{{ url_for('login') }}">Login</a>
+                    <a class="btn btn-sm btn-primary btn-pill" href="{{ url_for('signup') }}">Sign up</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+</header>

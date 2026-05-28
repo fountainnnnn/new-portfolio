@@ -1,0 +1,13 @@
+#feedbackcontainer {
+    margin-top: 20px;
+}
+
+.asterick {
+    color: red;
+}
+
+#imageGallery img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}

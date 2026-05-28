@@ -1,9 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
   const sections = document.querySelectorAll(".section");
   const projectsSection = document.querySelector("#projects");
+  const skillsSection = document.querySelector("#skills");
   const footer = document.querySelector("footer");
   const navLinks = [...document.querySelectorAll(".nav-link")]
     .filter(link => link.dataset.section || link.getAttribute("href")?.startsWith("#"));
+  const pageActiveLink = document.querySelector(".nav-link[aria-current='page']");
   const navMenu = document.querySelector(".nav-menu");
   const navbarCollapse = document.getElementById("navbarNav");
   const navTrackedSections = [...sections, ...(projectsSection ? [projectsSection] : [])];
@@ -33,6 +35,12 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const setActiveNav = (sectionId) => {
+    if (!sectionId && pageActiveLink && navMenu?.contains(pageActiveLink)) {
+      pageActiveLink.setAttribute("aria-current", "page");
+      requestAnimationFrame(() => updateNavIndicator(pageActiveLink));
+      return;
+    }
+
     let activeLink = null;
 
     navLinks.forEach(link => {
@@ -129,6 +137,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }, { threshold: 0.6 });
   [...sections, ...projectsSection ? [projectsSection] : []].forEach(el => activeObserver.observe(el));
+
+  if (document.querySelector(".portfolio-chat")) {
+    if (skillsSection) {
+      const skillsChatObserver = new IntersectionObserver((entries) => {
+        document.body.classList.toggle("skills-in-view", entries.some(entry => entry.isIntersecting));
+      }, { threshold: 0.18 });
+      skillsChatObserver.observe(skillsSection);
+    }
+
+    if (projectsSection) {
+      const projectsChatObserver = new IntersectionObserver((entries) => {
+        document.body.classList.toggle("projects-in-view", entries.some(entry => entry.isIntersecting));
+      }, { threshold: 0.18 });
+      projectsChatObserver.observe(projectsSection);
+    }
+  }
 
   let navScrollTicking = false;
   window.addEventListener("scroll", () => {
@@ -341,6 +365,86 @@ document.addEventListener("DOMContentLoaded", () => {
       if (event.key === "Escape" && certModal.classList.contains("show")) {
         closeCertModal();
       }
+    });
+  }
+
+  const schoolArtifactModal = document.getElementById("schoolArtifactModal");
+  const schoolArtifactFrame = document.getElementById("schoolArtifactFrame");
+  const schoolArtifactImage = document.getElementById("schoolArtifactImage");
+  const schoolArtifactLabel = document.getElementById("schoolArtifactModalLabel");
+  const schoolArtifactSidebar = document.getElementById("schoolArtifactSidebar");
+
+  if (schoolArtifactModal && schoolArtifactFrame && schoolArtifactImage && schoolArtifactLabel && schoolArtifactSidebar && window.bootstrap?.Modal) {
+    const schoolModal = window.bootstrap.Modal.getOrCreateInstance(schoolArtifactModal);
+    let activeArtifactCard = null;
+
+    const clearSchoolArtifact = () => {
+      schoolArtifactFrame.removeAttribute("src");
+      schoolArtifactImage.removeAttribute("src");
+      schoolArtifactImage.alt = "";
+      schoolArtifactFrame.hidden = false;
+      schoolArtifactImage.hidden = true;
+      schoolArtifactSidebar.replaceChildren();
+    };
+
+    const showSchoolArtifactFile = (file, title) => {
+      schoolArtifactLabel.textContent = file.title || title;
+
+      if (file.type === "image" || /\.(?:png|jpe?g|webp|gif)(?:$|[?#])/i.test(file.src)) {
+        schoolArtifactFrame.hidden = true;
+        schoolArtifactFrame.removeAttribute("src");
+        schoolArtifactImage.hidden = false;
+        schoolArtifactImage.src = file.src;
+        schoolArtifactImage.alt = file.title || title;
+      } else {
+        schoolArtifactImage.hidden = true;
+        schoolArtifactImage.removeAttribute("src");
+        schoolArtifactFrame.hidden = false;
+        schoolArtifactFrame.src = file.src;
+      }
+    };
+
+    document.querySelectorAll("[data-school-artifact]").forEach(card => {
+      card.addEventListener("click", (event) => {
+        const filesRaw = card.getAttribute("data-school-files");
+        if (!filesRaw) return;
+
+        let files = [];
+        try {
+          files = JSON.parse(filesRaw);
+        } catch (error) {
+          console.error("Invalid school artifact files", error);
+          return;
+        }
+
+        if (!files.length) return;
+        event.preventDefault();
+        activeArtifactCard = card;
+        clearSchoolArtifact();
+
+        const title = card.querySelector("h3")?.textContent?.trim() || "School project";
+        files.forEach((file, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `school-artifact-tab${index === 0 ? " is-active" : ""}`;
+          button.textContent = file.label || file.title || `File ${index + 1}`;
+          button.addEventListener("click", () => {
+            schoolArtifactSidebar.querySelectorAll(".school-artifact-tab").forEach(tab => tab.classList.remove("is-active"));
+            button.classList.add("is-active");
+            showSchoolArtifactFile(file, title);
+          });
+          schoolArtifactSidebar.appendChild(button);
+        });
+
+        showSchoolArtifactFile(files[0], title);
+        schoolModal.show();
+      });
+    });
+
+    schoolArtifactModal.addEventListener("hidden.bs.modal", () => {
+      clearSchoolArtifact();
+      activeArtifactCard?.focus?.();
+      activeArtifactCard = null;
     });
   }
 

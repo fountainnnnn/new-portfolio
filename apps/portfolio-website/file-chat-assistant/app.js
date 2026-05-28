@@ -9,6 +9,9 @@ const askForm = document.getElementById("ask-form");
 const statusAlert = document.getElementById("statusAlert");
 const messages = document.getElementById("messages");
 const typingIndicator = document.getElementById("typing-indicator");
+const uploadButton = uploadForm.querySelector('button[type="submit"]');
+const askInput = askForm.querySelector('input[name="question"]');
+const askButton = askForm.querySelector("button");
 
 let sessionId = null;
 
@@ -27,7 +30,10 @@ function showStatus(message, type = "info") {
 function addMessage(role, text) {
   const div = document.createElement("div");
   div.className = `message ${role}`;
-  div.innerHTML = `<div class="bubble">${text}</div>`;
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.textContent = text;
+  div.appendChild(bubble);
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
 }
@@ -58,7 +64,8 @@ uploadForm.addEventListener("submit", async (e) => {
     fd.append("openai_api_key", uploadForm.openai_api_key.value);
   }
 
-  showStatus("Uploading file and building QA session… please wait.", "info");
+  showStatus("Uploading file and building QA session...", "info");
+  uploadButton.disabled = true;
 
   try {
     const resp = await fetch(`${BACKEND_BASE_URL}/upload`, {
@@ -74,13 +81,19 @@ uploadForm.addEventListener("submit", async (e) => {
     showStatus("File uploaded! You can now ask questions.", "success");
 
     // Clear intro and unlock chat
-    messages.innerHTML = `<div class="text-muted small">Ask me anything about your document 👇</div>`;
-    const input = askForm.querySelector('input[name="question"]');
-    input.disabled = false;
-    askForm.querySelector("button").disabled = false;
+    messages.textContent = "";
+    const hint = document.createElement("div");
+    hint.className = "text-muted small";
+    hint.textContent = "Ask me anything about your document.";
+    messages.appendChild(hint);
+    askInput.disabled = false;
+    askButton.disabled = false;
+    askInput.focus();
   } catch (err) {
     console.error(err);
     showStatus("Error uploading file: " + err.message, "danger");
+  } finally {
+    uploadButton.disabled = false;
   }
 });
 
@@ -92,8 +105,7 @@ askForm.addEventListener("submit", async (e) => {
     return;
   }
 
-  const input = askForm.querySelector('input[name="question"]');
-  const q = input.value.trim();
+  const q = askInput.value.trim();
   if (!q) {
     showStatus("Please enter a question.", "warning");
     return;
@@ -101,11 +113,13 @@ askForm.addEventListener("submit", async (e) => {
 
   // Add user message
   addMessage("user", q);
-  input.value = "";
+  askInput.value = "";
+  askInput.disabled = true;
+  askButton.disabled = true;
 
   // Show typing indicator
   showTyping();
-  showStatus("Thinking…", "info");
+  showStatus("Thinking...", "info");
 
   try {
     const fd = new FormData();
@@ -129,6 +143,10 @@ askForm.addEventListener("submit", async (e) => {
     console.error(err);
     hideTyping();
     showStatus("Error fetching answer: " + err.message, "danger");
+  } finally {
+    askInput.disabled = false;
+    askButton.disabled = false;
+    askInput.focus();
   }
 });
 

@@ -80,13 +80,15 @@ export function DashboardStudio({
   }
 
   return (
-    <main className="flex h-screen min-h-0 flex-col overflow-hidden bg-[#f6f8fb] text-[#141414]">
+    <main className="flex h-[calc(100vh-80px)] min-h-0 flex-col overflow-hidden bg-[#f6f8fb] text-[#141414]">
       <header className="sticky top-0 z-30 border-b border-[#dde4ef] bg-white/90 px-4 py-3 backdrop-blur">
         <div className="flex w-full flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <BrandMark size={32} />
             <div>
-              <div className="text-sm font-semibold">Decidr Studio</div>
+              <div className="text-sm font-semibold flex items-center gap-1.5">
+                Decidr Studio <span className="text-[10px] font-normal px-1.5 py-0.5 rounded-md bg-[#e7edff] text-[#275efe] select-none">by Mervin</span>
+              </div>
               <div className="text-xs text-[#667085]">
                 Dashboard theme: {selectedTheme.label} · {dashboard.charts.length} Plotly charts
               </div>

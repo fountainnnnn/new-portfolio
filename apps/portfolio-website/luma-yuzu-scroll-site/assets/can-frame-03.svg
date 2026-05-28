@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 1080" role="img" aria-label="LUMA YUZU opened formula cutaway">
+  <defs>
+    <linearGradient id="shell" x1="160" x2="560" y1="100" y2="980" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f4fff4"/>
+      <stop offset=".32" stop-color="#93e7d0"/>
+      <stop offset=".62" stop-color="#dfff4d"/>
+      <stop offset="1" stop-color="#73d4c0"/>
+    </linearGradient>
+    <linearGradient id="liquid" x1="322" x2="410" y1="164" y2="920" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f9ff83"/>
+      <stop offset=".35" stop-color="#dbff48"/>
+      <stop offset=".7" stop-color="#80e0cc"/>
+      <stop offset="1" stop-color="#f7fff2"/>
+    </linearGradient>
+    <linearGradient id="metal" x1="140" x2="580" y1="0" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#697269"/>
+      <stop offset=".3" stop-color="#eef3e8"/>
+      <stop offset=".54" stop-color="#a5afa2"/>
+      <stop offset=".82" stop-color="#f9fbef"/>
+      <stop offset="1" stop-color="#687268"/>
+    </linearGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="7"/>
+    </filter>
+  </defs>
+  <ellipse cx="360" cy="1015" rx="235" ry="48" fill="#0d2218" opacity=".16"/>
+  <path d="M176 122C248 72 330 72 350 108C304 300 300 790 350 966C308 1014 226 1010 166 960C130 728 134 344 176 122Z" fill="url(#shell)" opacity=".74"/>
+  <path d="M544 122C472 72 390 72 370 108C416 300 420 790 370 966C412 1014 494 1010 554 960C590 728 586 344 544 122Z" fill="url(#shell)" opacity=".74"/>
+  <path d="M224 162C270 292 274 750 224 922" fill="none" stroke="#062818" stroke-width="4" opacity=".24"/>
+  <path d="M496 162C450 292 446 750 496 922" fill="none" stroke="#062818" stroke-width="4" opacity=".24"/>
+  <rect x="300" y="166" width="120" height="760" rx="60" fill="url(#liquid)" opacity=".9"/>
+  <rect x="300" y="166" width="120" height="760" rx="60" fill="#ffffff" opacity=".16"/>
+  <g fill="#fafff3" opacity=".9">
+    <circle cx="356" cy="238" r="9"/><circle cx="392" cy="336" r="12"/><circle cx="338" cy="452" r="7"/><circle cx="380" cy="548" r="11"/><circle cx="350" cy="666" r="8"/><circle cx="396" cy="782" r="12"/>
+  </g>
+  <g fill="none" stroke-linecap="round" stroke-width="24">
+    <path d="M202 308C260 264 292 246 346 250" stroke="#f4aa00"/>
+    <path d="M402 390C460 360 498 350 548 366" stroke="#198733"/>
+    <path d="M178 702C238 680 286 684 328 724" stroke="#dfff4d"/>
+    <path d="M396 756C456 724 500 718 548 738" stroke="#f4aa00"/>
+  </g>
+  <text x="360" y="470" text-anchor="middle" font-family="Bahnschrift, Aptos Display, Arial Narrow, Arial, sans-serif" font-size="76" font-weight="900" fill="#062818" opacity=".76">YUZU</text>
+  <text x="360" y="540" text-anchor="middle" font-family="Aptos, Segoe UI, Arial, sans-serif" font-size="22" font-weight="900" letter-spacing="4" fill="#062818" opacity=".78">WHITE TEA + MINERAL</text>
+  <ellipse cx="360" cy="104" rx="210" ry="44" fill="url(#metal)"/>
+  <path d="M250 105C292 66 428 66 470 105" fill="none" stroke="#cfd8cc" stroke-width="28" stroke-linecap="round"/>
+  <ellipse cx="360" cy="972" rx="218" ry="44" fill="url(#metal)"/>
+  <g opacity=".7" filter="url(#soft)">
+    <circle cx="360" cy="540" r="270" fill="#dfff4d" opacity=".18"/>
+  </g>
+</svg>

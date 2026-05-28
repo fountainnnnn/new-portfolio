@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const difficultySelect = document.getElementById("difficulty");
   const languageSelect = document.getElementById("language");
   const numQuestionsInput = document.getElementById("num-questions");
+  const quizStatus = document.getElementById("quiz-status");
 
   let quizContainer = document.getElementById("quiz-container");
   let resultCard = document.getElementById("result-card");
@@ -32,6 +33,53 @@ document.addEventListener("DOMContentLoaded", () => {
   let score = 0;
   let locked = false;
   let attemptedWrong = false;
+  let activeSubmitBtn = null;
+
+  function showSetupStatus(message, type = "danger") {
+    quizStatus.className = `alert alert-${type}`;
+    quizStatus.textContent = message;
+  }
+
+  function clearSetupStatus() {
+    quizStatus.className = "alert d-none mt-3";
+    quizStatus.textContent = "";
+  }
+
+  function renderCodeWithBlanks(codeText) {
+    codeBlock.textContent = "";
+    const codeEl = document.createElement("code");
+    const parts = String(codeText || "").split(/_{3,}/g);
+    parts.forEach((part, index) => {
+      codeEl.appendChild(document.createTextNode(part));
+      if (index < parts.length - 1) {
+        const blank = document.createElement("span");
+        blank.className = "blank";
+        blank.contentEditable = "true";
+        blank.dataset.blank = "";
+        codeEl.appendChild(blank);
+      }
+    });
+    codeBlock.appendChild(codeEl);
+  }
+
+  function setChoiceButtonsDisabled(disabled) {
+    optionsDiv.querySelectorAll(".option-btn").forEach((button) => {
+      button.disabled = disabled;
+      button.setAttribute("aria-disabled", String(disabled));
+    });
+  }
+
+  function markBlanksAsError() {
+    codeBlock.querySelectorAll("[data-blank]").forEach((el) => {
+      el.classList.add("is-error");
+      el.setAttribute("aria-invalid", "true");
+    });
+  }
+
+  function clearBlankError(el) {
+    el.classList.remove("is-error");
+    el.removeAttribute("aria-invalid");
+  }
 
   // Ensure dragZone never collapses
   dragZone.style.minHeight = "200px";
@@ -42,6 +90,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Load quiz
   async function loadQuiz(language, topic, difficulty, numQuestions) {
     loadingOverlay.classList.remove("hidden");
+    startBtn.disabled = true;
+    clearSetupStatus();
     try {
       const res = await fetch(`${BACKEND_BASE_URL}/generate_questions`, {
         method: "POST",
@@ -64,9 +114,10 @@ document.addEventListener("DOMContentLoaded", () => {
       showQuestion();
     } catch (err) {
       console.error("Quiz load error:", err);
-      alert("Failed to load quiz. Please try again.");
+      showSetupStatus(err.message || "Failed to load quiz. Please try again.");
     } finally {
       loadingOverlay.classList.add("hidden");
+      startBtn.disabled = false;
     }
   }
 
@@ -85,6 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
     feedbackEl.textContent = "";
     codeBlock.classList.add("hidden");
     optionsDiv.innerHTML = "";
+    activeSubmitBtn = null;
     dragZone.innerHTML = "";
     dragZone.classList.add("hidden");
     dragActions.classList.add("hidden");
@@ -101,15 +153,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Fill-in-the-blank
     if (q.type === "fill_code" && q.code_with_blanks) {
-      const codeHTML = q.code_with_blanks.replace(/_{3,}/g, () => {
-        return `<span class="blank" contenteditable="true" data-blank></span>`;
-      });
-      codeBlock.innerHTML = `<pre><code>${codeHTML}</code></pre>`;
+      renderCodeWithBlanks(q.code_with_blanks);
       codeBlock.classList.remove("hidden");
 
       const submitBtn = document.createElement("button");
-      submitBtn.className = "btn btn-primary mt-2";
+      submitBtn.className = "btn btn-accent mt-2";
       submitBtn.textContent = "Submit";
+      activeSubmitBtn = submitBtn;
       submitBtn.addEventListener("click", () => {
         if (!locked) {
           const blanks = [...codeBlock.querySelectorAll("[data-blank]")].map(
@@ -127,6 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
             submitBtn.click();
           }
         });
+        el.addEventListener("input", () => clearBlankError(el));
 
         const resize = () => {
           const span = document.createElement("span");
@@ -154,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.className = "option-btn";
         btn.textContent = opt;
         btn.addEventListener("click", () => {
-          if (!locked) submitAnswer(opt, btn);
+          if (!locked && !btn.disabled) submitAnswer(opt, btn);
         });
         optionsDiv.appendChild(btn);
       });
@@ -353,9 +404,16 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!attemptedWrong) score++;
         locked = true;
         if (clickedBtn) clickedBtn.classList.add("correct");
+        setChoiceButtonsDisabled(true);
+        if (activeSubmitBtn) activeSubmitBtn.disabled = true;
+        codeBlock.querySelectorAll("[data-blank]").forEach((el) => {
+          el.contentEditable = "false";
+          el.classList.remove("is-error");
+          el.removeAttribute("aria-invalid");
+        });
         feedbackEl.classList.remove("hidden");
         feedbackEl.className = "feedback success";
-        feedbackEl.textContent = `✅ Correct! ${data.explanation}`;
+        feedbackEl.textContent = `Correct. ${data.explanation}`;
 
         // Disable Submit Order button if drag_drop type
         if (q.type === "drag_drop") {
@@ -364,7 +422,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Show Next button instead of auto-advancing
         const nextBtn = document.createElement("button");
-        nextBtn.className = "btn btn-success mt-2";
+        nextBtn.className = "btn btn-accent mt-2";
         nextBtn.textContent = "Next Question";
         nextBtn.id = "next-btn";
         nextBtn.addEventListener("click", () => {
@@ -376,10 +434,18 @@ document.addEventListener("DOMContentLoaded", () => {
         feedbackEl.appendChild(nextBtn);
       } else {
         attemptedWrong = true;
-        if (clickedBtn) clickedBtn.classList.add("incorrect");
+        if (clickedBtn) {
+          clickedBtn.classList.add("incorrect");
+          clickedBtn.disabled = true;
+          clickedBtn.setAttribute("aria-disabled", "true");
+          clickedBtn.setAttribute("aria-label", `${clickedBtn.textContent} - tried and incorrect`);
+        }
+        if (q.type === "fill_code") markBlanksAsError();
         feedbackEl.classList.remove("hidden");
         feedbackEl.className = "feedback error";
-        feedbackEl.textContent = `❌ Incorrect. Try again.`;
+        feedbackEl.textContent = clickedBtn
+          ? "Incorrect. That option is marked as tried; choose another answer."
+          : "Incorrect. Adjust your answer and try again.";
       }
     } catch (err) {
       console.error("Answer submit error:", err);

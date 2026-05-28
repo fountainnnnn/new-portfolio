@@ -1,0 +1,161 @@
+{% extends "layout.html" %}
+
+{% block title %}Login or Sign Up{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/auth.js') }}" defer></script>
+{% endblock %}
+{% set initial_mode = 'login' if login_errors else 'signup' %}
+{% block content %}
+<section class="auth-hero" data-auth-shell data-initial-mode="{{ initial_mode }}" data-animate="fade-up">
+  <div class="auth-hero__overlay"></div>
+  <div class="auth-shell">
+    <div class="auth-copy-panel">
+      <div class="auth-copy auth-copy--signup">
+        <p class="eyebrow">Singapore HDB Price Predictor</p>
+        <h1>Let's Get You Started</h1>
+        <p>
+          Create a personalised workspace to save your forecasts, compare scenarios across towns,
+          and return to them anytime.
+        </p>
+      </div>
+      <div class="auth-copy auth-copy--login">
+        <p class="eyebrow">Welcome back</p>
+        <h1>Ready to pick up where you stopped?</h1>
+        <p>
+          Sign in to review saved submissions, refine your predicted resale price, or export
+          insights for your next client meeting.
+        </p>
+      </div>
+
+      <div class="auth-toggle">
+        <button class="auth-toggle-btn" type="button" data-auth-mode-btn="signup">
+          Create account
+        </button>
+        <button class="auth-toggle-btn" type="button" data-auth-mode-btn="login">
+          Sign in
+        </button>
+      </div>
+      <p class="auth-toggle-hint">
+        <span data-auth-mode-label="signup">Already registered? Switch to sign in.</span>
+        <span data-auth-mode-label="login">New here? Slide back to create an account.</span>
+      </p>
+    </div>
+
+    <div class="auth-form-panel">
+      <div class="auth-panel-tabs">
+        <span class="tab-indicator" aria-hidden="true"></span>
+        <button class="panel-tab" type="button" data-auth-mode-btn="signup">Sign up</button>
+        <button class="panel-tab" type="button" data-auth-mode-btn="login">Login</button>
+      </div>
+      <div class="auth-forms-stack">
+        <div class="auth-form-card" data-mode="signup">
+          <form method="post" action="{{ signup_action or url_for('signup') }}" class="auth-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="form_type" value="signup">
+            <h2 class="h4 fw-semibold mb-3">Create an account</h2>
+            {% if signup_errors %}
+            <div class="alert alert-danger small mb-3">
+              {{ signup_errors | join(', ') }}
+            </div>
+            {% endif %}
+            <div class="mb-3">
+              <label for="signup-name" class="form-label">Full name</label>
+              <input type="text"
+                     class="form-control"
+                     id="signup-name"
+                     name="full_name"
+                     placeholder="e.g. Alice Tan"
+                     value="{{ signup_defaults.full_name if signup_defaults is defined }}"
+                     autocomplete="name"
+                     required>
+            </div>
+            <div class="mb-3">
+              <label for="signup-email" class="form-label">Email address</label>
+              <input type="email"
+                     class="form-control"
+                     id="signup-email"
+                     name="email"
+                     placeholder="name@example.com"
+                     value="{{ signup_defaults.email if signup_defaults is defined }}"
+                     autocomplete="email"
+                     required>
+            </div>
+            <div class="mb-3">
+              <label for="signup-username" class="form-label">Username</label>
+              <input type="text"
+                     class="form-control"
+                     id="signup-username"
+                     name="username"
+                     placeholder="Choose a username"
+                     value="{{ signup_defaults.username if signup_defaults is defined }}"
+                     autocomplete="new-username"
+                     required>
+            </div>
+            <div class="mb-3">
+              <label for="signup-password" class="form-label">Password</label>
+              <input type="password"
+                     class="form-control"
+                     id="signup-password"
+                     name="password"
+                     placeholder="Create a password"
+                     autocomplete="new-password"
+                     required>
+            </div>
+            <div class="mb-4">
+              <label for="signup-confirm" class="form-label">Confirm password</label>
+              <input type="password"
+                     class="form-control"
+                     id="signup-confirm"
+                     name="confirm_password"
+                     placeholder="Re-type your password"
+                     autocomplete="new-password"
+                     required>
+            </div>
+            <button type="submit" class="btn w-100 auth-submit">Sign up</button>
+          </form>
+        </div>
+
+        <div class="auth-form-card" data-mode="login">
+          <form method="post" action="{{ login_action or url_for('login') }}" class="auth-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="form_type" value="login">
+            <h2 class="h4 fw-semibold mb-3">Sign in</h2>
+            {% if login_errors %}
+            <div class="alert alert-danger small mb-3">
+              {{ login_errors | join(', ') }}
+            </div>
+            {% endif %}
+            <div class="mb-3">
+              <label for="login-username" class="form-label">Username</label>
+              <input type="text"
+                     class="form-control"
+                     id="login-username"
+                     name="username"
+                     placeholder="Enter your username"
+                     value="{{ login_defaults.username if login_defaults is defined }}"
+                     autocomplete="username"
+                     required>
+            </div>
+            <div class="mb-4">
+              <label for="login-password" class="form-label">Password</label>
+              <input type="password"
+                     class="form-control"
+                     id="login-password"
+                     name="password"
+                     placeholder="Enter your password"
+                     autocomplete="current-password"
+                     required>
+            </div>
+            <button type="submit" class="btn w-100 auth-submit">Sign in</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,238 @@
+{% extends "layout.html" %}
+
+{% block title %}Singapore HDB Property Price Predictor{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+
+
+{% block content %}
+<section class="hero-section" data-animate="fade-up">
+    <div class="section-inner hero-single-column">
+      <div class="hero-copy-block">
+        <p class="hero-eyebrow text-uppercase">Singapore HDB Price Lab</p>
+        <h1 class="hero-title mb-4">Singapore HDB Property Resale Price Predictor</h1>
+        <p class="lead text-secondary mb-4 hero-description">
+          Use data-driven insights to estimate HDB resale prices instantly. Upload detailed flat information, compare scenarios, and decode the model’s reasoning in seconds.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <a class="btn btn-lg hero-cta d-flex justify-content-center align-items-center" href="{{ url_for('predict') }}">
+            Start Predicting Now &nbsp;
+            <i class="bi bi-box-arrow-up-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="data-insight-section" data-animate="left">
+  <div class="section-inner">
+    <div class="section-header">
+      <h2 class="fw-bold mb-4">Model Insights & Key Features</h2>
+      <p class="text-secondary py-4">
+        Explore the model’s performance metrics and learn what makes this predictor reliable and explainable.
+      </p>
+    </div>
+    <div class="metrics-row">
+      <div class="insight-card">
+        <p class="insight-label">Predictions delivered</p>
+        <p class="display-6 stat fw-bold mb-1">18,420+</p>
+        <p class="text-secondary small">Historical runs powered by ensemble regression with refreshed resale datasets.</p>
+      </div>
+      <div class="insight-card">
+        <p class="insight-label">Median absolute error</p>
+        <p class="display-6 stat fw-bold mb-1">< S$20k</p>
+        <p class="text-secondary small">Calibrated using 2017–2024 resale transactions across 26 towns.</p>
+      </div>
+      <div class="insight-card">
+        <p class="insight-label">Forecast latency</p>
+        <p class="display-6 stat fw-bold mb-1">~0.7s</p>
+        <p class="text-secondary small">Model warm-up ensures sub-second responses after your first prediction.</p>
+      </div>
+    </div>
+    <div class="feature-block">
+      <h3 class="fw-bold my-2">Core Features</h3>
+      <div class="feature-grid">
+        {% for feature in landing_features %}
+        <div class="feature-card" data-animate="right">
+          <h4 class="h6 fw-semibold mb-2">{{ feature.title }}</h4>
+          <p class="mb-0 text-secondary">{{ feature.description }}</p>
+        </div>
+        {% else %}
+        <div class="placeholder-glass text-secondary text-center p-4">
+          Add landing page highlights via <code>landing_features</code> in your view.
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="journey-section" data-animate="left">
+  <div class="section-inner">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-5">
+        <span class="section-header">
+          <h2 class="fw-bold mb-4 text-start">Plan the entire resale journey with confidence</h2>
+        </span>
+        <p class="text-secondary mb-4">
+          Capture the essentials, generate a price forecast, and understand the drivers behind it — all within
+          the same streamlined workflow built for Singapore's HDB resale market.
+        </p>
+        <ul class="timeline list-unstyled">
+          <li>
+            <span class="timeline-dot"></span>
+            <div>
+              <h4>Upload flat specifics</h4>
+              <p class="text-secondary mb-0">Town, block model, storey range and lease commencement date feed directly into the trained encoders.</p>
+            </div>
+          </li>
+          <li>
+            <span class="timeline-dot"></span>
+            <div>
+              <h4>Generate smart predictions</h4>
+              <p class="text-secondary mb-0">Gradient boosting ensemble evaluates multiple confidence bands in milliseconds.</p>
+            </div>
+          </li>
+          <li>
+            <span class="timeline-dot"></span>
+            <div>
+              <h4>Interpret SHAP insights</h4>
+              <p class="text-secondary mb-0">Scroll-triggered visualisations show feature contributions, so negotiations stay data-backed.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="col-lg-7">
+        <!-- Ensure 2x2 grid on medium screens and above, and 1x1 for smaller screens -->
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+          <!-- Journey Card 1 -->
+          <div class="col" data-animate="right">
+            <div class="journey-card">
+              <div class="journey-card-inner">
+                <h4 class="fw-semibold mb-2">Guided data entry</h4>
+                <p class="text-secondary mb-0">Helpful copy and validation keep town, block model, storey range, and lease data consistent before you submit.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Journey Card 2 -->
+          <div class="col" data-animate="right">
+            <div class="journey-card">
+              <div class="journey-card-inner">
+                <h4 class="fw-semibold mb-2">Prediction breakdown</h4>
+                <p class="text-secondary mb-0">Review the predicted price alongside the supporting details that summarise how the model interpreted your inputs.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Journey Card 3 -->
+          <div class="col" data-animate="right">
+            <div class="journey-card">
+              <div class="journey-card-inner">
+                <h4 class="fw-semibold mb-2">Comparison metrics</h4>
+                <p class="text-secondary mb-0">Interactive progress bars highlight how your submission stacks up against model benchmarks.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Journey Card 4 -->
+          <div class="col" data-animate="right">
+            <div class="journey-card">
+              <div class="journey-card-inner">
+                <h4 class="fw-semibold mb-2">SHAP insights</h4>
+                <p class="text-secondary mb-0">Lightbox-enabled visuals surface feature contributions so you can explain each prediction with confidence.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="testimonial-section" data-animate="fade-up">
+  <div class="section-inner">
+    <div class="section-header mb-5">
+      <h2 class="fw-bold mb-4">What Professionals Say</h2>
+      <p class="text-secondary">
+        Real estate advisors, analysts, and homeowners share how the HDB Price Predictor helps them make better decisions.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6" data-animate="left">
+        <div class="testimonial-card h-100">
+          <blockquote class="mb-4">
+            “We shaved hours off pricing discussions. Agents walk into viewings with a transparent explanation of
+            how location and storey impact resale value. Clients trust the numbers.”
+          </blockquote>
+          <div class="d-flex align-items-center gap-3">
+            <div class="avatar text-white fw-bold">JL</div>
+            <div>
+              <p class="mb-0 fw-semibold">Jamie Lim</p>
+              <small class="text-secondary">Associate Director, Resale Advisory</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6" data-animate="right">
+        <div class="testimonial-card h-100">
+          <blockquote class="mb-4">
+            “The SHAP charts are a game changer. Finance stakeholders finally see which levers matter most before
+            locking in renovation budgets.”
+          </blockquote>
+          <div class="d-flex align-items-center gap-3">
+            <div class="avatar text-white fw-bold">AT</div>
+            <div>
+              <p class="mb-0 fw-semibold">Anita Tan</p>
+              <small class="text-secondary">Lead Business Analyst, Property Tech</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6" data-animate="left">
+        <div class="testimonial-card h-100">
+          <blockquote class="mb-4">
+            “It’s surprisingly accurate. I compared the predictions to recent resale listings and the results were
+            within a few thousand dollars. This saves me time shortlisting units for clients.”
+          </blockquote>
+          <div class="d-flex align-items-center gap-3">
+            <div class="avatar text-white fw-bold">KR</div>
+            <div>
+              <p class="mb-0 fw-semibold">Kevin Rahman</p>
+              <small class="text-secondary">Senior Property Consultant</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6" data-animate="right">
+        <div class="testimonial-card h-100">
+          <blockquote class="mb-4">
+            “Our data team uses the same model architecture internally for forecasting demand. Having this accessible to
+            agents bridges the gap between analytics and operations.”
+          </blockquote>
+          <div class="d-flex align-items-center gap-3">
+            <div class="avatar text-white fw-bold">CW</div>
+            <div>
+              <p class="mb-0 fw-semibold">Clarissa Wong</p>
+              <small class="text-secondary">Data Scientist, Urban Analytics Lab</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+{% endblock %}
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+{% endblock %}

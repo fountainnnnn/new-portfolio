@@ -19,8 +19,8 @@ class Settings:
     app_name: str = "Decidr"
     openai_api_key: str | None = os.getenv("OPENAI_API_KEY")
     # Default planner model. Used for /dashboard/generate and /dashboard/refine.
-    openai_model: str = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-    openai_planner_model: str = os.getenv("OPENAI_PLANNER_MODEL", "gpt-4o-mini")
+    openai_model: str = os.getenv("OPENAI_MODEL", "gpt-5-mini")
+    openai_planner_model: str = os.getenv("OPENAI_PLANNER_MODEL", "gpt-5-mini")
     # Optional faster/cheaper model for the AI patch endpoint. Falls back to openai_model.
     openai_patch_model: str = os.getenv("OPENAI_PATCH_MODEL", "")
     # Reasoning effort for gpt-5* / o-series models. "low" is the sweet spot for chart selection
