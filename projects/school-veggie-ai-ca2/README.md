@@ -51,12 +51,13 @@ Security notes:
 - Do not commit API keys. Keep them only in `.env` / Render env vars.
 - If a key was ever pasted into chat, screenshots, or pushed to git, rotate it immediately.
 
-### Model inference (deployed CNN)
+### Model inference (internal CNN)
 
-The chat page supports uploading an image for prediction. The Flask backend calls a deployed TensorFlow Serving endpoint.
+The chat page supports uploading an image for prediction. In the portfolio VPS stack,
+the Flask backend calls the internal `school-veggie-ai-cnn` TensorFlow Serving service.
 
 - Optional env var:
-  - `MODEL_INFERENCE_URL` (base URL, default: `https://ca2-cnn-tfserving.onrender.com`)
+  - `MODEL_INFERENCE_URL` (base URL, default in Compose: `http://school-veggie-ai-cnn:8501`)
 
 ## Database (SQLite)
 

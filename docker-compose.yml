@@ -178,7 +178,7 @@ services:
       SECRET_KEY: ${SCHOOL_VEGGIE_SECRET_KEY:-}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       OPENAI_MODEL: ${SCHOOL_VEGGIE_OPENAI_MODEL:-gpt-4.1-mini}
-      MODEL_INFERENCE_URL: ${SCHOOL_VEGGIE_MODEL_INFERENCE_URL:-}
+      MODEL_INFERENCE_URL: ${SCHOOL_VEGGIE_MODEL_INFERENCE_URL:-http://school-veggie-ai-cnn:8501}
       GOOGLE_CLIENT_ID: ${SCHOOL_VEGGIE_GOOGLE_CLIENT_ID:-}
       GOOGLE_CLIENT_SECRET: ${SCHOOL_VEGGIE_GOOGLE_CLIENT_SECRET:-}
       OPENAI_CHAT_SYSTEM_PROMPT: ${SCHOOL_VEGGIE_OPENAI_CHAT_SYSTEM_PROMPT:-}
@@ -194,6 +194,21 @@ services:
       FLASK_ENV: production
     expose:
       - "5000"
+    restart: unless-stopped
+    depends_on:
+      - school-veggie-ai-cnn
+
+  school-veggie-ai-cnn:
+    image: tensorflow/serving:latest
+    command:
+      - "--port=8500"
+      - "--rest_api_port=8501"
+      - "--model_config_file=/models/models.config"
+      - "--model_config_file_poll_wait_seconds=60"
+    volumes:
+      - ./projects/school-veggie-ai-cnn/models:/models:ro
+    expose:
+      - "8501"
     restart: unless-stopped
 
   caddy:

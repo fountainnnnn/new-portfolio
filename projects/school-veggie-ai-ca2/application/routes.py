@@ -85,7 +85,7 @@ def _build_chat_image_data_token(image_bytes: bytes, image_mime: str | None) -> 
 def _get_model_inference_base_url() -> str:
     base_url = str(app.config.get("MODEL_INFERENCE_URL") or os.getenv("MODEL_INFERENCE_URL") or "").strip()
     if not base_url:
-        base_url = "https://ca2-cnn-tfserving.onrender.com"
+        base_url = "http://school-veggie-ai-cnn:8501"
     return base_url
 
 

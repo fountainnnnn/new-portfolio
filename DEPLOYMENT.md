@@ -49,6 +49,7 @@ curl -I http://localhost
 curl -I https://yourdomain.com/projects
 curl https://yourdomain.com/api/coding-quiz/healthz
 curl https://yourdomain.com/api/file-chat-assistant/healthz
+docker compose exec school-veggie-ai-ca2 python -c "import requests; print(requests.get('http://school-veggie-ai-cnn:8501/v1/models/vege_classifier_23', timeout=5).status_code)"
 ```
 
 ## Logs
@@ -56,6 +57,7 @@ curl https://yourdomain.com/api/file-chat-assistant/healthz
 ```bash
 docker compose logs -f caddy portfolio
 docker compose logs -f coding-quiz file-chat-assistant mock-generator quiz-generator
+docker compose logs -f school-veggie-ai-ca2 school-veggie-ai-cnn
 ```
 
 ## Notes
