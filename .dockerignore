@@ -1,0 +1,12 @@
+**
+
+!apps/
+!apps/portfolio-website/
+!apps/portfolio-website/**
+
+apps/portfolio-website/.env
+apps/portfolio-website/.env.*
+apps/portfolio-website/.visual-proof/
+apps/portfolio-website/dist/
+apps/portfolio-website/node_modules/
+apps/portfolio-website/*.log

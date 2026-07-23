@@ -18,4 +18,4 @@ RUN npm run build
 
 EXPOSE 8020
 
-CMD ["npm", "run", "start", "--", "-p", "8020"]
+CMD ["sh", "-c", "exec npm run start -- -H :: -p ${PORT:-8020}"]

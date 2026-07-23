@@ -45,7 +45,15 @@ These are shown on the portfolio projects page but are not copied into this repo
 
 ## Deploy Shape
 
-This repo is intended to run on a VPS with Docker Compose and a reverse proxy such as Caddy.
+This repo supports Railway as a multi-service monorepo and VPS deployment with
+Docker Compose.
+
+For Railway, the repository root deploys the public portfolio directly. Each
+dynamic project/API is a separate private Railway service. See
+[RAILWAY.md](RAILWAY.md) for the exact service roots, config paths, ports, and
+reference variables.
+
+For a VPS:
 
 ```bash
 docker compose up -d --build
