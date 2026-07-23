@@ -36,7 +36,7 @@ app.config.setdefault("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
 if os.getenv("OPENAI_CHAT_MODEL"):
     app.config["OPENAI_CHAT_MODEL"] = os.getenv("OPENAI_CHAT_MODEL")
 else:
-    app.config.setdefault("OPENAI_CHAT_MODEL", "gpt-4o-mini")
+    app.config.setdefault("OPENAI_CHAT_MODEL", "gpt-5")
 if os.getenv("OPENAI_INSIGHTS_MODEL"):
     app.config["OPENAI_INSIGHTS_MODEL"] = os.getenv("OPENAI_INSIGHTS_MODEL")
 app.config.setdefault(

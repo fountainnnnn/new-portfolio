@@ -26,7 +26,7 @@ app.add_middleware(
 
 OUTPUT_DIR = Path(__file__).resolve().parent / "outputs"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-DEFAULT_MODEL_NAME = os.getenv("QUIZ_GENERATOR_MODEL", "gpt-4.1")
+DEFAULT_MODEL_NAME = os.getenv("QUIZ_GENERATOR_MODEL", "gpt-5")
 RATE_BUCKETS: dict[str, list[float]] = {}
 RATE_LIMITS = {
     ("POST", "/generate"): (

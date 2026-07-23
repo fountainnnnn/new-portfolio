@@ -69,7 +69,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-DEFAULT_MODEL_NAME = os.getenv("MOCK_GENERATOR_MODEL", "gpt-4.1")
+DEFAULT_MODEL_NAME = os.getenv("MOCK_GENERATOR_MODEL", "gpt-5")
 MAX_UPLOAD_BYTES = int(os.getenv("MOCK_GENERATOR_MAX_UPLOAD_BYTES", str(20 * 1024 * 1024)))
 RATE_BUCKETS: dict[str, list[float]] = {}
 RATE_LIMITS = {

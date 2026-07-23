@@ -19,7 +19,7 @@
 ## Personas and Jobs
 - Primary personas: recruiters, technical reviewers, mentors, hackathon judges, peers.
 - User jobs: scan skills, inspect proof of work, open demos, verify credentials, contact Mervin.
-- Key contexts of use: desktop review, mobile browsing, VPS-hosted public domain, local development at `localhost:3000`.
+- Key contexts of use: desktop review, mobile browsing, Railway-hosted public domain, local development at `localhost:3000`.
 
 ## Information Architecture
 - Primary navigation: About, Projects, Skills, Certifications, Contact.

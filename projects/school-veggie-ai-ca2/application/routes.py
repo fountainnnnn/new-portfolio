@@ -85,7 +85,7 @@ def _build_chat_image_data_token(image_bytes: bytes, image_mime: str | None) -> 
 def _get_model_inference_base_url() -> str:
     base_url = str(app.config.get("MODEL_INFERENCE_URL") or os.getenv("MODEL_INFERENCE_URL") or "").strip()
     if not base_url:
-        base_url = "http://school-veggie-ai-cnn:8501"
+        base_url = "http://127.0.0.1:8501"
     return base_url
 
 
@@ -1200,7 +1200,7 @@ def api_chat():
             500,
         )
 
-    model = str(app.config.get("OPENAI_MODEL") or os.getenv("OPENAI_MODEL") or "gpt-4o-mini").strip() or "gpt-4o-mini"
+    model = str(app.config.get("OPENAI_MODEL") or os.getenv("OPENAI_MODEL") or "gpt-5").strip() or "gpt-5"
     system_prompt = str(app.config.get("OPENAI_CHAT_SYSTEM_PROMPT") or "").strip()
     app_context = _load_app_chat_context()
 
@@ -1345,8 +1345,7 @@ def api_chat():
         response = client.chat.completions.create(
             model=model,
             messages=messages,
-            temperature=0.35,
-            max_tokens=650,
+            max_completion_tokens=650,
         )
         reply = (response.choices[0].message.content or "").strip()
     except Exception as exc:

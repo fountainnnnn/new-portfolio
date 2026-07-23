@@ -17,7 +17,7 @@ Open `http://127.0.0.1:5000/`.
 - A starter file is provided at `.env.example`.
 - A ready-to-run local `.env` is also included (keep secrets out of git).
 
-### Google Sign-In (local now, Render later)
+### Google Sign-In
 
 1. In Google Cloud Console (OAuth client: Web), add redirect URI:
    - `http://127.0.0.1:5000/auth/google/callback`
@@ -31,10 +31,10 @@ Notes:
 - The redirect URI must match exactly (including `localhost` vs `127.0.0.1`).
 - If your OAuth consent screen is in "Testing", add your Google account under "Test users".
 
-For Render later, add another redirect URI:
-- `https://<your-render-domain>/auth/google/callback`
+For the hosted portfolio, add this redirect URI:
+- `https://ngyuhang.com/school-veggie-ai-ca2/auth/google/callback`
 
-And set Render env vars:
+Set these variables on the `school-veggie-ai-ca2` Railway service:
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `TRUST_PROXY_HEADERS=true`
 
 ### OpenAI Chatbot (local)
@@ -43,21 +43,21 @@ And set Render env vars:
 2. Add this env var to `.env`:
    - `OPENAI_API_KEY`
 3. Optional env vars:
-   - `OPENAI_MODEL` (default: `gpt-4o-mini`)
+   - `OPENAI_MODEL` (default: `gpt-5`)
    - `OPENAI_CHAT_SYSTEM_PROMPT`
 4. Start the app and open `http://127.0.0.1:5000/chat`.
 
 Security notes:
-- Do not commit API keys. Keep them only in `.env` / Render env vars.
+- Do not commit API keys. Keep them only in local `.env` files or Railway Variables.
 - If a key was ever pasted into chat, screenshots, or pushed to git, rotate it immediately.
 
 ### Model inference (internal CNN)
 
-The chat page supports uploading an image for prediction. In the portfolio VPS stack,
-the Flask backend calls the internal `school-veggie-ai-cnn` TensorFlow Serving service.
+The chat page supports uploading an image for prediction. On Railway, the
+Flask backend calls the `school-veggie-ai-cnn` service over private networking.
 
 - Optional env var:
-  - `MODEL_INFERENCE_URL` (base URL, default in Compose: `http://school-veggie-ai-cnn:8501`)
+  - `MODEL_INFERENCE_URL=http://${{school-veggie-ai-cnn.RAILWAY_PRIVATE_DOMAIN}}:8501`
 
 ## Database (SQLite)
 

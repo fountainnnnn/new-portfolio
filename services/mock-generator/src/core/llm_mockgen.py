@@ -28,7 +28,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from openai import OpenAI
 from pydantic import BaseModel, Field, RootModel, field_validator
 
-OPENAI_DEFAULT_MODEL = os.getenv("MOCK_GENERATOR_MODEL", "gpt-4.1")
+OPENAI_DEFAULT_MODEL = os.getenv("MOCK_GENERATOR_MODEL", "gpt-5")
 
 
 # ============================================================
@@ -412,7 +412,6 @@ def generate_mock_specs(
             {"role": "system", "content": MOCKPAPER_SYSTEM},
             {"role": "user", "content": prompt},
         ],
-        temperature=0.7,
         response_format={"type": "json_object"},
     ) if hasattr(client, "chat_completions") else client.chat.completions.create(
         model=model_name,
@@ -420,7 +419,6 @@ def generate_mock_specs(
             {"role": "system", "content": MOCKPAPER_SYSTEM},
             {"role": "user", "content": prompt},
         ],
-        temperature=0.7,
         response_format={"type": "json_object"},
     )
 
@@ -593,14 +591,12 @@ def generate_mock_papers(
                 {"role": "system", "content": LEGACY_SYSTEM},
                 {"role": "user", "content": prompt},
             ],
-            temperature=0.7,
         ) if hasattr(client, "chat_completions") else client.chat.completions.create(
             model=model_name,
             messages=[
                 {"role": "system", "content": LEGACY_SYSTEM},
                 {"role": "user", "content": prompt},
             ],
-            temperature=0.7,
         )
         raw = resp.choices[0].message.content.strip() if resp.choices else ""
 

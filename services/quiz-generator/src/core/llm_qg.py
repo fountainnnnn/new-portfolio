@@ -6,7 +6,7 @@ import os, math, re, json as _json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from openai import OpenAI
 
-OPENAI_DEFAULT_MODEL = os.getenv("QUIZ_GENERATOR_MODEL", "gpt-4.1")
+OPENAI_DEFAULT_MODEL = os.getenv("QUIZ_GENERATOR_MODEL", "gpt-5")
 
 # ------------------------------------------------------------
 # OpenAI configuration (env only — no embedded default key)

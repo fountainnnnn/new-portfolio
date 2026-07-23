@@ -37,7 +37,7 @@ app.config.setdefault("MODEL_INFERENCE_URL", os.getenv("MODEL_INFERENCE_URL", ""
 app.config.setdefault("GOOGLE_CLIENT_ID", os.getenv("GOOGLE_CLIENT_ID"))
 app.config.setdefault("GOOGLE_CLIENT_SECRET", os.getenv("GOOGLE_CLIENT_SECRET"))
 app.config.setdefault("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
-app.config.setdefault("OPENAI_MODEL", os.getenv("OPENAI_MODEL", "gpt-4o-mini"))
+app.config.setdefault("OPENAI_MODEL", os.getenv("OPENAI_MODEL", "gpt-5"))
 app.config.setdefault(
     "OPENAI_CHAT_SYSTEM_PROMPT",
     os.getenv(

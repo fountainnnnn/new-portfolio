@@ -21,7 +21,7 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.prompts import ChatPromptTemplate
 
 logger = logging.getLogger(__name__)
-DEFAULT_CHAT_MODEL = os.getenv("FILE_CHAT_MODEL", "gpt-5-mini")
+DEFAULT_CHAT_MODEL = os.getenv("FILE_CHAT_MODEL", "gpt-5")
 
 
 class SafeOpenAIEmbeddings(OpenAIEmbeddings):
@@ -63,9 +63,7 @@ def get_qa_chain(text: str):
 
         # 4. LLM + Prompt
         chat_kwargs = {"model": DEFAULT_CHAT_MODEL}
-        if DEFAULT_CHAT_MODEL.lower().startswith(("gpt-5", "o")):
-            chat_kwargs["temperature"] = 1
-        else:
+        if not DEFAULT_CHAT_MODEL.lower().startswith(("gpt-5", "o")):
             chat_kwargs["temperature"] = 0
         llm = ChatOpenAI(**chat_kwargs)
         prompt = ChatPromptTemplate.from_messages([

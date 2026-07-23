@@ -21,7 +21,7 @@ def run_pipeline_end_to_end(
     language: str = "en",
     dpi: int = 220,
     openai_api_key: Optional[str] = None,
-    model_name: str = "gpt-4o-mini",
+    model_name: str = "gpt-5",
     difficulty: str = "same",
     num_mocks: int = 1,
     out_dir: Optional[str] = None,       # now optional
@@ -37,7 +37,7 @@ def run_pipeline_end_to_end(
         language: OCR language
         dpi: resolution for OCR rasterization
         openai_api_key: OpenAI API key (user-supplied > backend .env)
-        model_name: OpenAI model (default gpt-4o-mini)
+        model_name: OpenAI model (default gpt-5)
         difficulty: "easy" | "same" | "harder"
         num_mocks: number of mock paper versions (1–3)
         out_dir: output directory for PDFs and text. If None, use a temp dir.

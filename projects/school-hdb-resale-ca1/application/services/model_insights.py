@@ -154,7 +154,7 @@ def generate_prediction_insights(
         raise ChatbotError("Insufficient data for insight generation.")
 
     model_name = current_app.config.get("OPENAI_INSIGHTS_MODEL") or current_app.config.get(
-        "OPENAI_CHAT_MODEL", "gpt-4o-mini"
+        "OPENAI_CHAT_MODEL", "gpt-5"
     )
 
     system_prompt = (
@@ -183,8 +183,7 @@ def generate_prediction_insights(
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
-            temperature=0.5,
-            max_tokens=300,
+            max_completion_tokens=300,
         )
     except Exception as exc:
         raise ChatbotError(f"Insights service temporarily unavailable: {exc}") from exc

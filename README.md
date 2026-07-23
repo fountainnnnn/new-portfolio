@@ -1,6 +1,7 @@
 # new-portfolio-host
 
-One VPS-hosted repo for the portfolio frontends, backends, services, and deployment config.
+One Railway-hosted monorepo for the portfolio, project frontends, APIs, and
+school-project applications.
 
 ## Layout
 
@@ -16,9 +17,9 @@ services/
 
 projects/
   auto-dashboard/
-
-infra/
-  # Reverse proxy and VPS configuration.
+  school-hdb-resale-ca1/
+  school-veggie-ai-ca2/
+  school-veggie-ai-cnn/
 ```
 
 ## Imported Sources
@@ -43,21 +44,13 @@ These are shown on the portfolio projects page but are not copied into this repo
 | Covid CNN | `https://github.com/fountainnnnn/Covid-CNN` |
 | AgentLabs LoRA Lab | `https://github.com/fountainnnnn/AgentLabs` |
 
-## Deploy Shape
+## Railway deployment
 
-This repo supports Railway as a multi-service monorepo and VPS deployment with
-Docker Compose.
-
-For Railway, the repository root deploys the public portfolio directly. Each
-dynamic project/API is a separate private Railway service. See
+The repository root deploys the public portfolio directly. Each dynamic
+project/API is a separate private Railway service built from this same
+repository. See
 [RAILWAY.md](RAILWAY.md) for the exact service roots, config paths, ports, and
 reference variables.
-
-For a VPS:
-
-```bash
-docker compose up -d --build
-```
 
 The portfolio server is the public entry point. It serves the static portfolio,
 proxies project APIs under `/api/...`, and proxies Decidr Auto Dashboard under
@@ -75,6 +68,12 @@ The portfolio app uses same-origin routes and proxies them to local FastAPI serv
 | `/api/coding-quiz/*` | `http://127.0.0.1:8014/*` |
 | `/api/auto-dashboard/*` | `http://127.0.0.1:8021/*` |
 | `/auto-dashboard/*` | `http://127.0.0.1:8020/auto-dashboard/*` |
+| `/school-hdb-resale-ca1/*` | `http://127.0.0.1:8031/school-hdb-resale-ca1/*` |
+| `/school-veggie-ai-ca2/*` | `http://127.0.0.1:8032/school-veggie-ai-ca2/*` |
+
+All other school-project viewers and artifacts are static files shipped inside
+`apps/portfolio-website`, so they are hosted directly by the public portfolio
+service without external links.
 
 ## Decidr Auto Dashboard
 
@@ -91,12 +90,6 @@ Local ports:
 | Decidr frontend | `8020` |
 | Decidr backend | `8021` |
 
-For VPS deployment, set `SITE_DOMAIN`, `PUBLIC_APP_URL`, and `OPENAI_API_KEY`
-in `.env`, then run:
-
-```bash
-docker compose up -d --build
-```
-
-See [DEPLOYMENT.md](DEPLOYMENT.md) for the full VPS checklist, clean-route
-health checks, and update commands.
+The checked-in `.env.example` is for local development only. Railway reads
+runtime settings from each service's **Variables** tab and project-level
+**Shared Variables**; it does not import the repository's `.env` files.

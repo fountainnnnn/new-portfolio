@@ -87,7 +87,7 @@ def _get_api_key(explicit: Optional[str]) -> Optional[str]:
 def _openai_generate_qa(
     text: str,
     total: int = 20,
-    model_name: str = os.getenv("QUIZ_GENERATOR_MODEL", "gpt-4.1"),
+    model_name: str = os.getenv("QUIZ_GENERATOR_MODEL", "gpt-5"),
     api_key: Optional[str] = None
 ) -> List[Tuple[str, str]]:
     """
@@ -333,7 +333,7 @@ def run_pipeline_end_to_end(
     prefer_com: bool = False,
     dpi: int = 180,
     openai_api_key: Optional[str] = None,
-    model_name: str = os.getenv("QUIZ_GENERATOR_MODEL", "gpt-4.1"),
+    model_name: str = os.getenv("QUIZ_GENERATOR_MODEL", "gpt-5"),
     total_questions: int = 20,
     mix_mode: str = "balanced",
     mcq_n: int = 0,

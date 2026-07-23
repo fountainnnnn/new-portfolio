@@ -128,7 +128,7 @@ Create a `.env` file in the project root and provide your OpenAI credentials:
 
 ```env
 OPENAI_API_KEY=replace-with-your-openai-api-key
-OPENAI_CHAT_MODEL=gpt-4o-mini   # optional override
+OPENAI_CHAT_MODEL=gpt-5   # optional override
 ```
 
 The HDB Resale Copilot button only appears when an API key is present. Context snippets for the assistant live in `application/resources/chatbot_context.txt`; feel free to extend the RAG knowledge base there.
@@ -185,7 +185,7 @@ Includes:
 
 ### CI/CD Concept
 - Code pushed to GitLab triggers automatic builds and tests (CI)  
-- Flask app structured for containerized or Render deployment (CD-ready)
+- Flask app structured for containerized Railway deployment (CD-ready)
 
 ---
 
@@ -228,19 +228,17 @@ Serialized to: `flat_price_prediction_model.pkl`
 | Backend Development | Flask routes, SQLite, login | 25 |
 | Automatic Testing | Unit tests, REST API testing | 20 |
 | Presentation | PowerPoint, demo walkthrough | 15 |
-| Deployment (Bonus) | Optional Render deployment | +5 |
+| Deployment (Bonus) | Optional hosted deployment | +5 |
 
 ---
 
-## Deployment (Optional)
+## Deployment
 
-To deploy the app online (bonus section):
-- Create a free account at [Render](https://render.com/)
-- Add repository and configure:
-  - Start Command: `python app.py`
-  - Environment: Python 3.11
-  - Build Command: `pip install -r requirements.txt`
-- Ensure `database.db` and model `.pkl` files are included.
+This application is deployed from this monorepo as the
+`school-hdb-resale-ca1` Railway service. Its public route is proxied through the
+portfolio at `/school-hdb-resale-ca1/`. Railway builds the checked-in
+`Dockerfile`; runtime secrets and settings come from the service's Variables
+tab.
 
 ---
 

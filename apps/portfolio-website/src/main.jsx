@@ -73,7 +73,6 @@ const stackLogos = {
   Playwright: "/img/issuer-logos/playwright.svg",
   n8n: "/img/issuer-logos/n8n.svg",
   Claude: "/img/issuer-logos/claude.svg",
-  Caddy: "/img/issuer-logos/caddy.svg",
 };
 
 const featuredProjects = [
@@ -187,8 +186,8 @@ const skills = [
   ["HTML5", stackLogos.HTML5], ["CSS3", stackLogos.CSS3], ["Tailwind CSS", `${cdn.simple}/tailwindcss/38BDF8`], ["FastAPI", stackLogos.FastAPI], ["PyTorch", stackLogos.PyTorch],
   ["TensorFlow", stackLogos.TensorFlow], ["Pandas", stackLogos.Pandas], ["NumPy", stackLogos.NumPy], ["Scikit-learn", stackLogos["Scikit-learn"]], ["Matplotlib", `${cdn.simple}/python/3776AB`],
   ["Plotly", stackLogos.Plotly], ["MySQL", stackLogos.MySQL], ["Bootstrap", stackLogos.Bootstrap], ["Node.js", stackLogos["Node.js"]], ["Express", `${cdn.simple}/express/111827`],
-  ["SQLite", `${cdn.devicon}/sqlite/sqlite-original.svg`], ["Docker", stackLogos.Docker], ["Vercel", `${cdn.simple}/vercel/111827`], ["Cloud Services", ""], ["VPS Hosting", ""],
-  ["Docker Compose", stackLogos.Docker], ["Caddy", stackLogos.Caddy], ["Telegram", stackLogos.Telegram], ["Telegraf", stackLogos.Telegram], ["Ollama", `${cdn.simple}/ollama/111827`],
+  ["SQLite", `${cdn.devicon}/sqlite/sqlite-original.svg`], ["Docker", stackLogos.Docker], ["Railway", ""], ["Vercel", `${cdn.simple}/vercel/111827`], ["Cloud Services", ""],
+  ["Docker Compose", stackLogos.Docker], ["Telegram", stackLogos.Telegram], ["Telegraf", stackLogos.Telegram], ["Ollama", `${cdn.simple}/ollama/111827`],
   ["n8n", stackLogos.n8n], ["OpenClaw", stackLogos.OpenClaw], ["AI Agents", ""], ["AI Automation", ""], ["Codex", ""],
   ["Claude", stackLogos.Claude], ["OpenAI", ""], ["LangChain", `${cdn.simple}/langchain/1C3C3C`], ["Playwright", stackLogos.Playwright], ["GSAP", stackLogos.GSAP],
   ["Lenis", stackLogos.Lenis], ["shadcn/ui", "/img/issuer-logos/shadcnui.svg"], ["ReportLab", ""], ["OCR", ""], ["NLP", ""],
@@ -198,7 +197,7 @@ const skills = [
 
 const skillFallbackIcons = {
   "Cloud Services": "bi-cloud-fill",
-  "VPS Hosting": "bi-server",
+  Railway: "bi-train-front-fill",
   Telegraf: "bi-telegram",
   "AI Agents": "bi-cpu",
   "AI Automation": "bi-lightning-charge",

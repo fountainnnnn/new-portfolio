@@ -75,7 +75,7 @@ def validate_with_llm(
     }
 
     resp = client.chat.completions.create(
-        model="gpt-4.1-mini",  # ⚡ reliable mid-tier model
+        model=os.getenv("CODING_QUIZ_MODEL", "gpt-5"),
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": json.dumps(payload, ensure_ascii=False)},

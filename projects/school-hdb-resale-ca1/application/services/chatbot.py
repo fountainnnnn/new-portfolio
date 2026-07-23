@@ -111,7 +111,7 @@ def generate_chat_response(message: str, page_context: str = "") -> str:
         raise ChatbotError("Please enter a question about HDB resale planning.")
 
     context_blob = _build_context(cleaned_message, (page_context or "")[:2000])
-    model_name = current_app.config.get("OPENAI_CHAT_MODEL", "gpt-4o-mini")
+    model_name = current_app.config.get("OPENAI_CHAT_MODEL", "gpt-5")
 
     system_prompt = (
         f"You are {current_app.config.get('CHATBOT_TITLE', 'an HDB resale planning assistant')}.\n"
@@ -135,7 +135,6 @@ def generate_chat_response(message: str, page_context: str = "") -> str:
                     ),
                 },
             ],
-            temperature=0.4,
         )
     except Exception as exc:  # pragma: no cover - API failure surface to caller
         status_code = getattr(exc, "status_code", None) or getattr(exc, "status", None)

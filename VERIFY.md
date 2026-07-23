@@ -4,7 +4,7 @@
 - Portfolio route smoke: `http://localhost:3000/index.html`, `/projects.html`, `/certificates.html`.
 - Project page smoke: `/quiz-slide-generator/`, `/mock-paper-generator/`, `/file-chat-assistant/`, `/coding-quiz/`, `/auto-dashboard`.
 - Auto Dashboard frontend: `npm run lint`, `npm run build`, `npm run test:e2e` from `projects/auto-dashboard/frontend`.
-- Docker syntax: `docker compose config --quiet`.
+- Railway config: validate every `railway.json` file and build each service Dockerfile.
 - Diff hygiene: `git diff --check`.
 - Abuse controls: set a service rate env var to `2`, send three quick POSTs, and confirm the third response is `429`.
 

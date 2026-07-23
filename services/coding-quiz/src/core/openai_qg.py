@@ -199,7 +199,7 @@ async def generate_questions(
 ) -> QuestionResult:
     client = configure_openai(api_key)
     system_prompt = QG_SYSTEM_TEMPLATE.format(language=language)
-    selected_model = model_name or os.getenv("CODING_QUIZ_MODEL", "gpt-4.1")
+    selected_model = model_name or os.getenv("CODING_QUIZ_MODEL", "gpt-5")
     request_timeout_seconds = float(os.getenv("CODING_QUIZ_OPENAI_TIMEOUT_SECONDS", "20"))
     effective_batch_size = max(1, int(batch_size or os.getenv("CODING_QUIZ_BATCH_SIZE", "5")))
 

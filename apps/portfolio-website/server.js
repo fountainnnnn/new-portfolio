@@ -52,7 +52,7 @@ const proxyTimeoutMs = Number(process.env.PROXY_TIMEOUT_MS || 300000);
 const chatRateWindowMs = Number(process.env.CHAT_RATE_WINDOW_MS || 60_000);
 const chatRateMax = Number(process.env.CHAT_RATE_MAX || 20);
 const chatOpenAiTimeoutMs = Number(process.env.CHAT_OPENAI_TIMEOUT_MS || 30_000);
-const chatModel = process.env.PORTFOLIO_OPENAI_MODEL || process.env.OPENAI_MODEL || "gpt-4.1-mini";
+const chatModel = process.env.PORTFOLIO_OPENAI_MODEL || process.env.OPENAI_MODEL || "gpt-5";
 const projectApiRateWindowMs = Number(process.env.PROJECT_API_RATE_WINDOW_MS || 60_000);
 const projectApiRateMax = Number(process.env.PROJECT_API_RATE_MAX || 8);
 const projectApiUploadRateMax = Number(process.env.PROJECT_API_UPLOAD_RATE_MAX || 4);
@@ -112,7 +112,7 @@ Portfolio facts:
 - Name: Ng Yu Hang (Mervin).
 - Location: Singapore, Singapore.
 - Positioning: aspiring AI full-stack developer; student portfolio with strong AI, backend, and applied-project work.
-- Current focus: AI-assisted apps, agentic AI automations, OpenClaw and n8n workflows, Codex/Claude-assisted development, FastAPI and Node.js backends, document processing, LLM-powered tools, data/visualization, cloud services, VPS hosting, Docker Compose/Caddy deployment, and practical integrations.
+- Current focus: AI-assisted apps, agentic AI automations, OpenClaw and n8n workflows, Codex/Claude-assisted development, FastAPI and Node.js backends, document processing, LLM-powered tools, data/visualization, Railway deployment, and practical integrations.
 - Main projects:
   1. Quiz Slide Deck Generator: FastAPI app that transforms PDFs/DOCX into structured quiz decks. Uses Python, FastAPI, OpenAI, and PPTX workflows.
   2. Mock Paper Generator: FastAPI app that transforms PDFs/DOCX into mock exam papers and answer keys. Uses OCR, NLP/LLMs, ReportLab PDF generation, math rendering, tables, and MCQs.
@@ -125,7 +125,7 @@ Portfolio facts:
   9. PetaniAI: remade version of petaniai.com using Mervin's GSAP design direction, React, Lenis, and a Southeast Asia AI field concept with resource and about pages.
   10. Telegram Reminder Bot: TypeScript and Node.js Telegram task assistant that parses natural-language reminders, schedules follow-ups, stores tasks in SQLite, and is Docker-ready.
   11. OpenClaw VPS Bot: 24/7 autonomous OpenClaw workflow with cron jobs for VPS command execution, service checks, backups/audits, and Telegram command traces. No repository is attached publicly for security reasons because it touches operational VPS/OpenClaw details.
-- Skills shown: Python, JavaScript, TypeScript, React, Next.js, HTML5, CSS3, Tailwind CSS, FastAPI, PyTorch, TensorFlow, Pandas, NumPy, Scikit-learn, Matplotlib, Plotly, MySQL, Bootstrap, Node.js, Express, SQLite, Docker, Docker Compose, Vercel, Cloud Services, VPS Hosting, Caddy, Telegram, Telegraf, Ollama, n8n, OpenClaw, AI Agents, Agentic AI Automations, Codex, Claude, OpenAI, LangChain, Playwright, GSAP, Lenis, shadcn/ui, ReportLab, OCR, NLP, Computer Vision, LLM Fine-Tuning, Google Cloud, AWS, Azure, AppSheet, Hugging Face, Watson Studio, RAG Systems, Payment APIs.
+- Skills shown: Python, JavaScript, TypeScript, React, Next.js, HTML5, CSS3, Tailwind CSS, FastAPI, PyTorch, TensorFlow, Pandas, NumPy, Scikit-learn, Matplotlib, Plotly, MySQL, Bootstrap, Node.js, Express, SQLite, Docker, Railway, Vercel, Cloud Services, Telegram, Telegraf, Ollama, n8n, OpenClaw, AI Agents, Agentic AI Automations, Codex, Claude, OpenAI, LangChain, Playwright, GSAP, Lenis, shadcn/ui, ReportLab, OCR, NLP, Computer Vision, LLM Fine-Tuning, Google Cloud, AWS, Azure, AppSheet, Hugging Face, Watson Studio, RAG Systems, Payment APIs.
 - Certifications include: IBM AI fundamentals/ethics/ML/deep learning/NLP/computer vision/Language and Vision in AI/Watson Studio, DataCamp generative AI/ChatGPT/deep learning/Plotly, NVIDIA Fundamentals of Deep Learning, Google Cloud image captioning/vector search/AppSheet, Hugging Face LLM post-training, AI Singapore AI for Good trainer/facilitator, AWS Academy Cloud Foundations, and NETS payment integration certificates.
 - Contact options on the page include the contact form, GitHub, LinkedIn, and downloadable CV.
 `.trim();

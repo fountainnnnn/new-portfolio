@@ -2,8 +2,8 @@ import json
 import os
 
 os.environ["OPENAI_API_KEY"] = ""
-os.environ["OPENAI_MODEL"] = "gpt-4o-mini"
-os.environ["OPENAI_PLANNER_MODEL"] = "gpt-4o-mini"
+os.environ["OPENAI_MODEL"] = "gpt-5"
+os.environ["OPENAI_PLANNER_MODEL"] = "gpt-5"
 
 from app.models.schemas import ChartPlan, DashboardPlan
 from app.services.bi_planner import (
