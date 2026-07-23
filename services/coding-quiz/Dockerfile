@@ -31,11 +31,6 @@ COPY . .
 EXPOSE 7860
 
 # --------------------------------------------------------
-# Healthcheck so Spaces knows when it's live
-# --------------------------------------------------------
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s CMD-SHELL curl -f "http://localhost:${PORT:-7860}/healthz" || exit 1
-
-# --------------------------------------------------------
 # Start FastAPI app
 # --------------------------------------------------------
 CMD ["sh", "-c", "exec uvicorn app:app --host 0.0.0.0 --port ${PORT:-7860}"]
