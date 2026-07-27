@@ -78,27 +78,30 @@ def _extract_text_from_pdf(pdf_path: Path, use_ocr: bool = False, lang: str = "e
 
 
 # =========================
-# OpenAI helpers
+# DeepSeek helpers
 # =========================
 def _get_api_key(explicit: Optional[str]) -> Optional[str]:
-    return explicit or os.getenv("OPENAI_API_KEY")
+    return explicit or os.getenv("DEEPSEEK_API_KEY")
 
 
 def _openai_generate_qa(
     text: str,
     total: int = 20,
-    model_name: str = os.getenv("QUIZ_GENERATOR_MODEL", "gpt-5"),
+    model_name: str = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash"),
     api_key: Optional[str] = None
 ) -> List[Tuple[str, str]]:
     """
-    Simple Q/A generator (question, answer) using OpenAI, with robust parsing.
+    Simple Q/A generator (question, answer) using DeepSeek, with robust parsing.
     """
     key = _get_api_key(api_key)
     if not key:
-        raise RuntimeError("OpenAI API key missing. Set OPENAI_API_KEY or pass openai_api_key.")
+        raise RuntimeError("DeepSeek API key missing. Set DEEPSEEK_API_KEY or pass an API key.")
 
     from openai import OpenAI
-    client = OpenAI(api_key=key)
+    client = OpenAI(
+        api_key=key,
+        base_url=os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
+    )
 
     sys = (
         "You are a question generator. Read the provided lecture text and produce concise study questions "
@@ -109,7 +112,8 @@ def _openai_generate_qa(
 
     resp = client.chat.completions.create(
         model=model_name,
-        messages=[{"role": "user", "content": prompt}]
+        messages=[{"role": "user", "content": prompt}],
+        extra_body={"thinking": {"type": "disabled"}},
     )
 
     out: List[Tuple[str, str]] = []
@@ -156,7 +160,10 @@ def _openai_explain_batch(
         return [f"Explanation: {a[:200]}" for _, a in qa]
 
     from openai import OpenAI
-    client = OpenAI(api_key=key)
+    client = OpenAI(
+        api_key=key,
+        base_url=os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
+    )
 
     pack = [{"q": q, "a": a} for q, a in qa]
     prompt = (
@@ -168,7 +175,8 @@ def _openai_explain_batch(
 
     resp = client.chat.completions.create(
         model=model_name,
-        messages=[{"role": "user", "content": prompt}]
+        messages=[{"role": "user", "content": prompt}],
+        extra_body={"thinking": {"type": "disabled"}},
     )
     data = resp.choices[0].message.content or "[]"
     data = re.sub(r"^```(?:json)?\s*|\s*```$", "", data.strip(), flags=re.I | re.M)
@@ -198,7 +206,10 @@ def _infer_title(
     if key:
         try:
             from openai import OpenAI
-            client = OpenAI(api_key=key)
+            client = OpenAI(
+                api_key=key,
+                base_url=os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
+            )
             prompt = (
                 "Give a concise 3–7 word title for this lecture text. "
                 "Return ONLY the title, no quotes, no trailing punctuation.\n\n"
@@ -206,7 +217,8 @@ def _infer_title(
             )
             resp = client.chat.completions.create(
                 model=model_name,
-                messages=[{"role": "user", "content": prompt}]
+                messages=[{"role": "user", "content": prompt}],
+                extra_body={"thinking": {"type": "disabled"}},
             )
             t = (resp.choices[0].message.content or "").replace("\n", " ").strip(" .,:;\"'")
             if len(t.split()) >= 2:
@@ -333,7 +345,7 @@ def run_pipeline_end_to_end(
     prefer_com: bool = False,
     dpi: int = 180,
     openai_api_key: Optional[str] = None,
-    model_name: str = os.getenv("QUIZ_GENERATOR_MODEL", "gpt-5"),
+    model_name: str = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash"),
     total_questions: int = 20,
     mix_mode: str = "balanced",
     mcq_n: int = 0,

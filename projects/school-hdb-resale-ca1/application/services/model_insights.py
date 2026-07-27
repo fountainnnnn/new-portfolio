@@ -13,12 +13,15 @@ from application.services.chatbot import ChatbotError
 _client_cache: Dict[str, OpenAI] = {}
 
 
-def _get_openai_client() -> OpenAI:
-    api_key = current_app.config.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
+def _get_deepseek_client() -> OpenAI:
+    api_key = current_app.config.get("DEEPSEEK_API_KEY") or os.getenv("DEEPSEEK_API_KEY")
     if not api_key:
-        raise ChatbotError("OpenAI API key is not configured. Insights are disabled.")
+        raise ChatbotError("DeepSeek API key is not configured. Insights are disabled.")
     if api_key not in _client_cache:
-        _client_cache[api_key] = OpenAI(api_key=api_key)
+        _client_cache[api_key] = OpenAI(
+            api_key=api_key,
+            base_url=current_app.config.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
+        )
     return _client_cache[api_key]
 
 
@@ -153,9 +156,7 @@ def generate_prediction_insights(
     if not context_blob:
         raise ChatbotError("Insufficient data for insight generation.")
 
-    model_name = current_app.config.get("OPENAI_INSIGHTS_MODEL") or current_app.config.get(
-        "OPENAI_CHAT_MODEL", "gpt-5"
-    )
+    model_name = current_app.config.get("DEEPSEEK_MODEL", "deepseek-v4-flash")
 
     system_prompt = (
         "You are an HDB resale market strategist. Analyse quantitative results from a prediction engine "
@@ -176,14 +177,15 @@ def generate_prediction_insights(
     )
 
     try:
-        client = _get_openai_client()
+        client = _get_deepseek_client()
         completion = client.chat.completions.create(
             model=model_name,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
-            max_completion_tokens=300,
+            max_tokens=300,
+            extra_body={"thinking": {"type": "disabled"}},
         )
     except Exception as exc:
         raise ChatbotError(f"Insights service temporarily unavailable: {exc}") from exc

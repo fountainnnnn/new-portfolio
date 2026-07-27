@@ -37,14 +37,14 @@ For the hosted portfolio, add this redirect URI:
 Set these variables on the `school-veggie-ai-ca2` Railway service:
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `TRUST_PROXY_HEADERS=true`
 
-### OpenAI Chatbot (local)
+### DeepSeek Chatbot (local)
 
-1. Create an OpenAI API key.
+1. Create a DeepSeek API key.
 2. Add this env var to `.env`:
-   - `OPENAI_API_KEY`
+   - `DEEPSEEK_API_KEY`
 3. Optional env vars:
-   - `OPENAI_MODEL` (default: `gpt-5`)
-   - `OPENAI_CHAT_SYSTEM_PROMPT`
+   - `DEEPSEEK_MODEL` (default: `deepseek-v4-flash`)
+   - `DEEPSEEK_CHAT_SYSTEM_PROMPT`
 4. Start the app and open `http://127.0.0.1:5000/chat`.
 
 Security notes:

@@ -36,7 +36,7 @@ for env_path in candidates:
         break
 else:
     load_dotenv(override=True)  # fallback
-print(f"[DEBUG] OPENAI_API_KEY after load: {'FOUND' if os.getenv('OPENAI_API_KEY') else 'MISSING'}")
+print(f"[DEBUG] DEEPSEEK_API_KEY after load: {'FOUND' if os.getenv('DEEPSEEK_API_KEY') else 'MISSING'}")
 
 # --------------------------------------------------------
 # Import project modules
@@ -163,14 +163,14 @@ async def upload_file(
         if openai_api_key and openai_api_key.strip().lower() != "string":
             key = openai_api_key.strip()
         else:
-            key = (os.getenv("OPENAI_API_KEY") or "").strip()
+            key = (os.getenv("DEEPSEEK_API_KEY") or "").strip()
 
         if not key:
             return JSONResponse(
-                {"status": "error", "message": "OPENAI_API_KEY missing. Provide via .env or form."},
+                {"status": "error", "message": "DEEPSEEK_API_KEY missing. Provide via .env or form."},
                 status_code=400,
             )
-        os.environ["OPENAI_API_KEY"] = key
+        os.environ["DEEPSEEK_API_KEY"] = key
 
         # Load document into text
         text = load_document(file.filename, content)

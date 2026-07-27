@@ -36,12 +36,13 @@ if app.config.get("ENV") == "production" and not app.config.get("SECRET_KEY"):
 app.config.setdefault("MODEL_INFERENCE_URL", os.getenv("MODEL_INFERENCE_URL", ""))
 app.config.setdefault("GOOGLE_CLIENT_ID", os.getenv("GOOGLE_CLIENT_ID"))
 app.config.setdefault("GOOGLE_CLIENT_SECRET", os.getenv("GOOGLE_CLIENT_SECRET"))
-app.config.setdefault("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
-app.config.setdefault("OPENAI_MODEL", os.getenv("OPENAI_MODEL", "gpt-5"))
+app.config.setdefault("DEEPSEEK_API_KEY", os.getenv("DEEPSEEK_API_KEY"))
+app.config.setdefault("DEEPSEEK_BASE_URL", os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com"))
+app.config.setdefault("DEEPSEEK_MODEL", os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash"))
 app.config.setdefault(
-    "OPENAI_CHAT_SYSTEM_PROMPT",
+    "DEEPSEEK_CHAT_SYSTEM_PROMPT",
     os.getenv(
-        "OPENAI_CHAT_SYSTEM_PROMPT",
+        "DEEPSEEK_CHAT_SYSTEM_PROMPT",
         (
             "You are VeggieAI Assistant, a helpful, friendly AI embedded in a web app."
             " Provide clear, accurate, practical answers about vegetables, nutrition, cooking, and how to use the app."

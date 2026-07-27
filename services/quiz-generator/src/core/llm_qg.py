@@ -6,28 +6,31 @@ import os, math, re, json as _json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from openai import OpenAI
 
-OPENAI_DEFAULT_MODEL = os.getenv("QUIZ_GENERATOR_MODEL", "gpt-5")
+DEEPSEEK_DEFAULT_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash")
 
 # ------------------------------------------------------------
 # OpenAI configuration (env only — no embedded default key)
 # ------------------------------------------------------------
-def configure_openai(api_key: Optional[str] = None) -> OpenAI:
+def configure_deepseek(api_key: Optional[str] = None) -> OpenAI:
     """
     Configure OpenAI client with a required API key.
 
     Precedence:
       1) function arg `api_key`
-      2) env var OPENAI_API_KEY
+      2) env var DEEPSEEK_API_KEY
 
     If none is set, raises a clear error.
     """
-    key = api_key or os.environ.get("OPENAI_API_KEY")
+    key = api_key or os.environ.get("DEEPSEEK_API_KEY")
     if not key:
         raise RuntimeError(
-            "OpenAI API key not found. Create one in OpenAI platform and set it on the backend "
-            "via environment variable OPENAI_API_KEY or pass api_key in the request."
+            "DeepSeek API key not found. Set DEEPSEEK_API_KEY on the backend "
+            "or pass api_key in the request."
         )
-    return OpenAI(api_key=key)
+    return OpenAI(
+        api_key=key,
+        base_url=os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
+    )
 
 
 # ------------------------------------------------------------
@@ -221,14 +224,14 @@ def generate_qa(
     mix: str = "auto",
     custom_counts: Optional[Dict[str, int]] = None,
     difficulty: str = "mixed",
-    model_name: str = OPENAI_DEFAULT_MODEL,
+    model_name: str = DEEPSEEK_DEFAULT_MODEL,
     api_key: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     """
     Generate questions using OpenAI (key from env or arg). Strict JSON parsing with validation.
     Supports types: mcq, theory, code_fill, fill_blank.
     """
-    client = configure_openai(api_key)
+    client = configure_deepseek(api_key)
 
     if mix == "custom" and custom_counts:
         desired = {
@@ -261,6 +264,7 @@ def generate_qa(
             model=model_name,
             messages=[{"role": "system", "content": QG_SYSTEM}, {"role": "user", "content": prompt}],
             response_format={"type": "json_object"},
+            extra_body={"thinking": {"type": "disabled"}},
         )
         text = resp.choices[0].message.content or ""
         return _clean_and_validate(safe_json_parse(text), idxs)
@@ -331,7 +335,7 @@ def explain_batch(
     2–3 sentence explanation per QA (same order).
     Requires API key (env/arg). If missing, raises; keep the call guarded in pipeline if you allow offline mode.
     """
-    client = configure_openai(api_key)
+    client = configure_deepseek(api_key)
 
     items: List[Tuple[str, str]] = []
     for it in qa:
@@ -357,8 +361,9 @@ def explain_batch(
     )
 
     resp = client.chat.completions.create(
-        model=model_name or OPENAI_DEFAULT_MODEL,
+        model=model_name or DEEPSEEK_DEFAULT_MODEL,
         messages=[{"role": "user", "content": prompt}],
+        extra_body={"thinking": {"type": "disabled"}},
     )
     data = resp.choices[0].message.content or "[]"
     start, end = data.find("["), data.rfind("]")
@@ -385,15 +390,16 @@ def infer_title(
     Requires API key (env/arg). If missing, returns heuristic.
     """
     try:
-        client = configure_openai(api_key)
+        client = configure_deepseek(api_key)
         prompt = (
             "Give a concise 3–7 word title for this lecture text. "
             "Return ONLY the title, no quotes, no trailing punctuation.\n\n"
             f"{lecture_text[:8000]}"
         )
         resp = client.chat.completions.create(
-            model=model_name or OPENAI_DEFAULT_MODEL,
+            model=model_name or DEEPSEEK_DEFAULT_MODEL,
             messages=[{"role": "user", "content": prompt}],
+            extra_body={"thinking": {"type": "disabled"}},
         )
         t = (resp.choices[0].message.content or "").replace("\n", " ").strip(" .,:;\"'")
         if len(t.split()) >= 2:

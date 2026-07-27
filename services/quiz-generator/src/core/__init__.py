@@ -23,9 +23,9 @@ from .ocr import (
     ocr_image_paddle,
 )
 
-# ---- LLM QG helpers (OpenAI) ----
+# ---- LLM QG helpers (DeepSeek) ----
 from .llm_qg import (
-    configure_openai,
+    configure_deepseek,
     chunk_slides_for_qg,
     build_qg_prompt,
     safe_json_parse,
@@ -50,8 +50,8 @@ __all__ = [
     # ocr
     "init_easyocr_temp", "init_paddleocr", "get_ocr_engine",
     "ocr_image_easy", "ocr_image_paddle",
-    # llm qg (openai)
-    "configure_openai", "chunk_slides_for_qg", "build_qg_prompt",
+    # llm qg (DeepSeek)
+    "configure_deepseek", "chunk_slides_for_qg", "build_qg_prompt",
     "safe_json_parse", "generate_qa",
     "explain_batch", "infer_title",
     # pptx

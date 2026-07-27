@@ -12,7 +12,7 @@ Those files are only for local development.
 Railway injects runtime variables from:
 
 1. **Project Settings → Shared Variables** for values used by multiple services,
-   such as `OPENAI_API_KEY`.
+   such as `DEEPSEEK_API_KEY`.
 2. Each service's **Variables** tab for its port, model, secret, and private
    service references.
 3. Railway-provided variables such as `RAILWAY_PRIVATE_DOMAIN`.
@@ -64,7 +64,8 @@ variables keep the private domains synchronized with their services.
 ```env
 PORT=8080
 PUBLIC_APP_URL=https://ngyuhang.com
-PORTFOLIO_OPENAI_MODEL=gpt-5
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_MODEL=deepseek-v4-flash
 QUIZ_GENERATOR_API_URL=http://${{quiz-generator.RAILWAY_PRIVATE_DOMAIN}}:7860
 MOCK_GENERATOR_API_URL=http://${{mock-generator.RAILWAY_PRIVATE_DOMAIN}}:7860
 FILE_CHAT_ASSISTANT_API_URL=http://${{file-chat-assistant.RAILWAY_PRIVATE_DOMAIN}}:7860
@@ -75,36 +76,13 @@ SCHOOL_HDB_RESALE_URL=http://${{school-hdb-resale-ca1.RAILWAY_PRIVATE_DOMAIN}}:5
 SCHOOL_VEGGIE_AI_URL=http://${{school-veggie-ai-ca2.RAILWAY_PRIVATE_DOMAIN}}:5000
 ```
 
-Create `OPENAI_API_KEY` as a Shared Variable and share it with the portfolio,
+Create `DEEPSEEK_API_KEY` as a Shared Variable and share it with the portfolio,
 the four API services, Auto Dashboard backend, HDB app, and VeggieAI app.
 
-Set the following model variables on their corresponding services:
-
-```env
-# quiz-generator
-QUIZ_GENERATOR_MODEL=gpt-5
-
-# mock-generator
-MOCK_GENERATOR_MODEL=gpt-5
-
-# file-chat-assistant
-FILE_CHAT_MODEL=gpt-5
-
-# coding-quiz
-CODING_QUIZ_MODEL=gpt-5
-
-# auto-dashboard-backend
-OPENAI_MODEL=gpt-5
-OPENAI_PLANNER_MODEL=gpt-5
-OPENAI_PATCH_MODEL=gpt-5
-
-# school-hdb-resale-ca1
-OPENAI_CHAT_MODEL=gpt-5
-OPENAI_INSIGHTS_MODEL=gpt-5
-
-# school-veggie-ai-ca2
-OPENAI_MODEL=gpt-5
-```
+Create `DEEPSEEK_BASE_URL=https://api.deepseek.com` and
+`DEEPSEEK_MODEL=deepseek-v4-flash` as Shared Variables too. The model has a
+code default for both values, but shared variables keep every service explicit
+and make future provider changes a single project-level edit.
 
 Add this variable to `school-veggie-ai-ca2`:
 

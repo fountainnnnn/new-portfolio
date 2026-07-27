@@ -26,7 +26,7 @@ app.add_middleware(
 
 OUTPUT_DIR = Path(__file__).resolve().parent / "outputs"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-DEFAULT_MODEL_NAME = os.getenv("QUIZ_GENERATOR_MODEL", "gpt-5")
+DEFAULT_MODEL_NAME = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash")
 RATE_BUCKETS: dict[str, list[float]] = {}
 RATE_LIMITS = {
     ("POST", "/generate"): (
@@ -120,13 +120,13 @@ async def generate(
     tmp_in = OUTPUT_DIR / f"upload_{original_name}"
     tmp_in.write_bytes(content)
 
-    key = openai_api_key or os.getenv("OPENAI_API_KEY", "")
+    key = openai_api_key or os.getenv("DEEPSEEK_API_KEY", "")
     if not key:
         return JSONResponse(
-            {"status": "error", "message": "OPENAI_API_KEY missing. Provide via form or .env."},
+            {"status": "error", "message": "DEEPSEEK_API_KEY missing. Provide via form or .env."},
             status_code=400,
         )
-    os.environ["OPENAI_API_KEY"] = key
+    os.environ["DEEPSEEK_API_KEY"] = key
 
     try:
         with tmp_in.open("rb") as input_file:

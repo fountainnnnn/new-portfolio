@@ -167,7 +167,7 @@ async def generate_questions_route(req: GenerateRequest):
     except RuntimeError as e:
         logger.error(f"RuntimeError: {e}")
         return JSONResponse(
-            {"status": "error", "message": "OpenAI API key is missing."},
+            {"status": "error", "message": "DeepSeek API key is missing."},
             status_code=503,
         )
     except HTTPException:

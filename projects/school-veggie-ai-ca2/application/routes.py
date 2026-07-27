@@ -1187,21 +1187,21 @@ def api_chat():
         image_size_bytes = len(image_bytes)
         image_sha256 = hashlib.sha256(image_bytes).hexdigest()
 
-    api_key = app.config.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
+    api_key = app.config.get("DEEPSEEK_API_KEY") or os.getenv("DEEPSEEK_API_KEY")
     if not api_key:
         return (
             jsonify(
                 {
                     "ok": False,
-                    "error": "openai_not_configured",
-                    "message": "OpenAI is not configured. Set OPENAI_API_KEY in your environment.",
+                    "error": "deepseek_not_configured",
+                    "message": "DeepSeek is not configured. Set DEEPSEEK_API_KEY in your environment.",
                 }
             ),
             500,
         )
 
-    model = str(app.config.get("OPENAI_MODEL") or os.getenv("OPENAI_MODEL") or "gpt-5").strip() or "gpt-5"
-    system_prompt = str(app.config.get("OPENAI_CHAT_SYSTEM_PROMPT") or "").strip()
+    model = str(app.config.get("DEEPSEEK_MODEL") or "deepseek-v4-flash").strip() or "deepseek-v4-flash"
+    system_prompt = str(app.config.get("DEEPSEEK_CHAT_SYSTEM_PROMPT") or "").strip()
     app_context = _load_app_chat_context()
 
     try:
@@ -1211,14 +1211,17 @@ def api_chat():
             jsonify(
                 {
                     "ok": False,
-                    "error": "openai_sdk_missing",
-                    "message": "OpenAI SDK is not installed. Add 'openai' to requirements.",
+                    "error": "deepseek_client_missing",
+                    "message": "The DeepSeek-compatible client is not installed. Add 'openai' to requirements.",
                 }
             ),
             500,
         )
 
-    client = OpenAI(api_key=api_key)
+    client = OpenAI(
+        api_key=api_key,
+        base_url=app.config.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
+    )
     messages: list[dict[str, str]] = []
     if system_prompt:
         messages.append({"role": "system", "content": system_prompt})
@@ -1345,7 +1348,8 @@ def api_chat():
         response = client.chat.completions.create(
             model=model,
             messages=messages,
-            max_completion_tokens=650,
+            max_tokens=650,
+            extra_body={"thinking": {"type": "disabled"}},
         )
         reply = (response.choices[0].message.content or "").strip()
     except Exception as exc:
@@ -1353,14 +1357,14 @@ def api_chat():
         error_code = getattr(exc, "code", None) or getattr(getattr(exc, "body", None), "code", None)
         diagnostic_code = f"chat_upstream_http_{status_code}" if status_code else "chat_upstream_error"
         app.logger.exception(
-            "OpenAI chat request failed",
+            "DeepSeek chat request failed",
             extra={"status_code": status_code, "error_code": error_code, "diagnostic_code": diagnostic_code},
         )
         return (
             jsonify(
                 {
                     "ok": False,
-                    "error": "openai_error",
+                    "error": "deepseek_error",
                     "code": diagnostic_code,
                     "message": "Assistant is unavailable right now. Please try again in a moment.",
                 }

@@ -95,12 +95,15 @@ def _build_context(question: str, page_context: str) -> str:
     return "\n\n".join(snippets).strip()
 
 
-def _get_openai_client() -> OpenAI:
-    api_key = current_app.config.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
+def _get_deepseek_client() -> OpenAI:
+    api_key = current_app.config.get("DEEPSEEK_API_KEY") or os.getenv("DEEPSEEK_API_KEY")
     if not api_key:
-        raise ChatbotError("OpenAI API key is not configured. Set OPENAI_API_KEY in your environment.")
+        raise ChatbotError("DeepSeek API key is not configured. Set DEEPSEEK_API_KEY in your environment.")
     if api_key not in _client_cache:
-        _client_cache[api_key] = OpenAI(api_key=api_key)
+        _client_cache[api_key] = OpenAI(
+            api_key=api_key,
+            base_url=current_app.config.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
+        )
     return _client_cache[api_key]
 
 
@@ -111,7 +114,7 @@ def generate_chat_response(message: str, page_context: str = "") -> str:
         raise ChatbotError("Please enter a question about HDB resale planning.")
 
     context_blob = _build_context(cleaned_message, (page_context or "")[:2000])
-    model_name = current_app.config.get("OPENAI_CHAT_MODEL", "gpt-5")
+    model_name = current_app.config.get("DEEPSEEK_MODEL", "deepseek-v4-flash")
 
     system_prompt = (
         f"You are {current_app.config.get('CHATBOT_TITLE', 'an HDB resale planning assistant')}.\n"
@@ -120,7 +123,7 @@ def generate_chat_response(message: str, page_context: str = "") -> str:
     )
 
     try:
-        client = _get_openai_client()
+        client = _get_deepseek_client()
         completion = client.chat.completions.create(
             model=model_name,
             messages=[
@@ -135,6 +138,7 @@ def generate_chat_response(message: str, page_context: str = "") -> str:
                     ),
                 },
             ],
+            extra_body={"thinking": {"type": "disabled"}},
         )
     except Exception as exc:  # pragma: no cover - API failure surface to caller
         status_code = getattr(exc, "status_code", None) or getattr(exc, "status", None)

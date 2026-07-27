@@ -232,7 +232,7 @@ def _serialize_purchase_month(value) -> str | None:
 @app.context_processor
 def inject_chatbot_flags():
     """Expose chatbot availability to templates."""
-    enabled = bool(app.config.get("OPENAI_API_KEY"))
+    enabled = bool(app.config.get("DEEPSEEK_API_KEY"))
     return {
         "chatbot_enabled": enabled,
         "chatbot_title": app.config.get("CHATBOT_TITLE", "HDB Resale Assistant"),

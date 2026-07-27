@@ -5,7 +5,7 @@ import zipfile
 from io import BytesIO
 from pathlib import Path
 
-os.environ["OPENAI_API_KEY"] = ""
+os.environ["DEEPSEEK_API_KEY"] = ""
 os.environ["AUTODASH_DB_PATH"] = str(Path(tempfile.gettempdir()) / f"autodash-test-{os.getpid()}.sqlite")
 
 from app.models.schemas import ChartPlan, DashboardFilterControl, DashboardFilterOption, DashboardPlan, DatasetProfile

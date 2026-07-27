@@ -62,11 +62,15 @@ class AiPatchPlanner:
         selected_chart_id: str | None = None,
     ) -> AiPatchOperation:
         if not self.settings.openai_api_key:
-            raise RuntimeError("OPENAI_API_KEY not configured.")
+            raise RuntimeError("DEEPSEEK_API_KEY not configured.")
 
         from openai import OpenAI
 
-        client = OpenAI(api_key=self.settings.openai_api_key, timeout=self.settings.openai_request_timeout)
+        client = OpenAI(
+            api_key=self.settings.openai_api_key,
+            base_url=self.settings.deepseek_base_url,
+            timeout=self.settings.openai_request_timeout,
+        )
         payload = {
             "instruction": instruction,
             "selected_chart_id": selected_chart_id,
@@ -98,6 +102,7 @@ class AiPatchPlanner:
                 {"role": "user", "content": json.dumps(payload, default=str)},
             ],
             "response_format": {"type": "json_object"},
+            "extra_body": {"thinking": {"type": "disabled"}},
         }
         if model.lower().startswith(("gpt-5", "o")):
             request_kwargs["reasoning_effort"] = self.settings.openai_reasoning_effort

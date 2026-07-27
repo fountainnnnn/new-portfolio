@@ -51,8 +51,9 @@ const port = Number(process.env.PORT || 3000);
 const proxyTimeoutMs = Number(process.env.PROXY_TIMEOUT_MS || 300000);
 const chatRateWindowMs = Number(process.env.CHAT_RATE_WINDOW_MS || 60_000);
 const chatRateMax = Number(process.env.CHAT_RATE_MAX || 20);
-const chatOpenAiTimeoutMs = Number(process.env.CHAT_OPENAI_TIMEOUT_MS || 30_000);
-const chatModel = process.env.PORTFOLIO_OPENAI_MODEL || process.env.OPENAI_MODEL || "gpt-5";
+const chatDeepSeekTimeoutMs = Number(process.env.CHAT_DEEPSEEK_TIMEOUT_MS || 30_000);
+const deepSeekBaseUrl = (process.env.DEEPSEEK_BASE_URL || "https://api.deepseek.com").replace(/\/+$/, "");
+const chatModel = process.env.DEEPSEEK_MODEL || "deepseek-v4-flash";
 const projectApiRateWindowMs = Number(process.env.PROJECT_API_RATE_WINDOW_MS || 60_000);
 const projectApiRateMax = Number(process.env.PROJECT_API_RATE_MAX || 8);
 const projectApiUploadRateMax = Number(process.env.PROJECT_API_UPLOAD_RATE_MAX || 4);
@@ -114,10 +115,10 @@ Portfolio facts:
 - Positioning: aspiring AI full-stack developer; student portfolio with strong AI, backend, and applied-project work.
 - Current focus: AI-assisted apps, agentic AI automations, OpenClaw and n8n workflows, Codex/Claude-assisted development, FastAPI and Node.js backends, document processing, LLM-powered tools, data/visualization, Railway deployment, and practical integrations.
 - Main projects:
-  1. Quiz Slide Deck Generator: FastAPI app that transforms PDFs/DOCX into structured quiz decks. Uses Python, FastAPI, OpenAI, and PPTX workflows.
+  1. Quiz Slide Deck Generator: FastAPI app that transforms PDFs/DOCX into structured quiz decks. Uses Python, FastAPI, DeepSeek, and PPTX workflows.
   2. Mock Paper Generator: FastAPI app that transforms PDFs/DOCX into mock exam papers and answer keys. Uses OCR, NLP/LLMs, ReportLab PDF generation, math rendering, tables, and MCQs.
-  3. Document Q&A Chat Assistant: upload PDF/DOCX/TXT and ask questions. Uses FastAPI, LangChain, OpenAI, Bootstrap, and session-based QA.
-  4. AI Generated Coding Quiz: generates coding quizzes by topic/difficulty. Uses JavaScript, Python, FastAPI, OpenAI, Bootstrap, multiple question types, session answer tracking, and explanations.
+  3. Document Q&A Chat Assistant: upload PDF/DOCX/TXT and ask questions. Uses FastAPI, DeepSeek, Bootstrap, and session-based QA.
+  4. AI Generated Coding Quiz: generates coding quizzes by topic/difficulty. Uses JavaScript, Python, FastAPI, DeepSeek, Bootstrap, multiple question types, session answer tracking, and explanations.
   5. Decidr Auto Dashboard: Next.js and Python dashboard project that profiles CSVs and creates interactive Plotly charts.
   6. GrowthLab News: OpenClaw-integrated hackathon project for agent-ranked SEA startup news monitoring and digest automation.
   7. Trading Bot: OpenClaw-powered agent automation workflow for market checks, risk decisions, trade journaling, and backtest loops.
@@ -171,9 +172,10 @@ const server = http.createServer(async (request, response) => {
     if (request.method === "GET" && request.url === "/api/chat/health") {
       sendJson(response, 200, {
         ok: true,
-        keyConfigured: Boolean(process.env.OPENAI_API_KEY),
+        keyConfigured: Boolean(process.env.DEEPSEEK_API_KEY),
+        provider: "deepseek",
         model: chatModel,
-        timeoutMs: chatOpenAiTimeoutMs,
+        timeoutMs: chatDeepSeekTimeoutMs,
         lastChatDiagnostic,
       });
       return;
@@ -206,9 +208,10 @@ server.on("upgrade", (request, socket, head) => {
 server.listen(port, () => {
   console.log(`Portfolio server running at http://localhost:${port}`);
   console.log("Portfolio chat config", {
-    keyConfigured: Boolean(process.env.OPENAI_API_KEY),
+    keyConfigured: Boolean(process.env.DEEPSEEK_API_KEY),
+    provider: "deepseek",
     model: chatModel,
-    timeoutMs: chatOpenAiTimeoutMs,
+    timeoutMs: chatDeepSeekTimeoutMs,
   });
 });
 
@@ -265,7 +268,7 @@ function getAllowedOrigin(origin) {
 }
 
 async function handleChat(request, response) {
-  const key = process.env.OPENAI_API_KEY;
+  const key = process.env.DEEPSEEK_API_KEY;
   if (!key) {
     sendJson(response, 503, { error: "Chat is not connected yet. Add the server key and restart." });
     return;
@@ -293,24 +296,27 @@ async function handleChat(request, response) {
 
   const payload = {
     model: chatModel,
-    instructions: profilePrompt,
-    input: messages,
-    max_output_tokens: 420
+    messages: [
+      { role: "system", content: profilePrompt },
+      ...messages,
+    ],
+    max_tokens: 420,
+    thinking: { type: "disabled" },
   };
 
   let apiResponse;
   try {
-    apiResponse = await postJson("https://api.openai.com/v1/responses", payload, {
+    apiResponse = await postJson(`${deepSeekBaseUrl}/v1/chat/completions`, payload, {
       Authorization: `Bearer ${key}`,
       "Content-Type": "application/json"
-    }, chatOpenAiTimeoutMs);
+    }, chatDeepSeekTimeoutMs);
   } catch (error) {
     const code = classifyChatRequestError(error);
     lastChatDiagnostic = {
       code,
       at: new Date().toISOString(),
     };
-    console.error("Chat OpenAI request error", {
+    console.error("Chat DeepSeek request error", {
       name: error.name,
       message: error.message,
       code: error.code,
@@ -455,7 +461,7 @@ function postJson(url, payload, headers, timeoutMs) {
     });
 
     request.setTimeout(timeoutMs, () => {
-      request.destroy(new Error(`OpenAI request timed out after ${Math.round(timeoutMs / 1000)}s.`));
+      request.destroy(new Error(`DeepSeek request timed out after ${Math.round(timeoutMs / 1000)}s.`));
     });
 
     request.on("error", reject);
@@ -486,17 +492,8 @@ function summarizeUpstreamError(body) {
 }
 
 function extractReply(body) {
-  if (typeof body.output_text === "string") {
-    return body.output_text.trim();
-  }
-
-  const output = Array.isArray(body.output) ? body.output : [];
-  return output
-    .flatMap(item => Array.isArray(item.content) ? item.content : [])
-    .filter(content => content.type === "output_text" && typeof content.text === "string")
-    .map(content => content.text)
-    .join("\n")
-    .trim();
+  const content = body?.choices?.[0]?.message?.content;
+  return typeof content === "string" ? content.trim() : "";
 }
 
 function cleanReply(reply) {

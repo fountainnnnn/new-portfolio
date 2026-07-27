@@ -32,19 +32,22 @@ class QuestionResult(TypedDict):
     secret: List[SecretRecord]
 
 # ------------------------------------------------------------
-# Global OpenAI client (async)
+# Global DeepSeek client (the official API is OpenAI SDK-compatible)
 # ------------------------------------------------------------
 _client: AsyncOpenAI | None = None
 
-def configure_openai(api_key: str | None = None) -> AsyncOpenAI:
-    """Create or reuse an AsyncOpenAI client."""
+def configure_deepseek(api_key: str | None = None) -> AsyncOpenAI:
+    """Create or reuse a DeepSeek-compatible async client."""
     global _client
     if _client is None:
-        key = api_key or os.getenv("OPENAI_API_KEY", "")
+        key = api_key or os.getenv("DEEPSEEK_API_KEY", "")
         if not key:
-            raise RuntimeError("OPENAI_API_KEY missing. Provide via env or param.")
-        _client = AsyncOpenAI(api_key=key)
-        logger.info("OpenAI async client configured (global instance).")
+            raise RuntimeError("DEEPSEEK_API_KEY missing. Provide via env or param.")
+        _client = AsyncOpenAI(
+            api_key=key,
+            base_url=os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
+        )
+        logger.info("DeepSeek async client configured (global instance).")
     return _client
 
 # ------------------------------------------------------------
@@ -197,10 +200,10 @@ async def generate_questions(
     api_key: str | None = None,
     batch_size: int | None = None,
 ) -> QuestionResult:
-    client = configure_openai(api_key)
+    client = configure_deepseek(api_key)
     system_prompt = QG_SYSTEM_TEMPLATE.format(language=language)
-    selected_model = model_name or os.getenv("CODING_QUIZ_MODEL", "gpt-5")
-    request_timeout_seconds = float(os.getenv("CODING_QUIZ_OPENAI_TIMEOUT_SECONDS", "20"))
+    selected_model = model_name or os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash")
+    request_timeout_seconds = float(os.getenv("CODING_QUIZ_DEEPSEEK_TIMEOUT_SECONDS", "20"))
     effective_batch_size = max(1, int(batch_size or os.getenv("CODING_QUIZ_BATCH_SIZE", "5")))
 
     type_cycle = ["mcq", "fill_code", "drag_drop"]
@@ -237,6 +240,7 @@ async def generate_questions(
                         {"role": "user", "content": user_prompt},
                     ],
                     response_format={"type": "json_object"},
+                    extra_body={"thinking": {"type": "disabled"}},
                     timeout=request_timeout_seconds,
                 ),
                 timeout=request_timeout_seconds,

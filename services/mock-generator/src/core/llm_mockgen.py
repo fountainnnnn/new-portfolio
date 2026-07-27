@@ -28,19 +28,22 @@ from typing import Any, Dict, List, Optional, Tuple
 from openai import OpenAI
 from pydantic import BaseModel, Field, RootModel, field_validator
 
-OPENAI_DEFAULT_MODEL = os.getenv("MOCK_GENERATOR_MODEL", "gpt-5")
+DEEPSEEK_DEFAULT_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash")
 
 
 # ============================================================
 # OpenAI configuration
 # ============================================================
-def configure_openai(api_key: Optional[str] = None) -> OpenAI:
-    key = (api_key or os.environ.get("OPENAI_API_KEY") or "").strip()
+def configure_deepseek(api_key: Optional[str] = None) -> OpenAI:
+    key = (api_key or os.environ.get("DEEPSEEK_API_KEY") or "").strip()
     if not key:
         raise RuntimeError(
-            "OpenAI API key not found. Set OPENAI_API_KEY or pass api_key=..."
+            "DeepSeek API key not found. Set DEEPSEEK_API_KEY or pass api_key=..."
         )
-    return OpenAI(api_key=key)
+    return OpenAI(
+        api_key=key,
+        base_url=os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
+    )
 
 
 # ============================================================
@@ -397,13 +400,13 @@ def generate_mock_specs(
     paper_text: str,
     difficulty: str = "same",
     num_mocks: int = 1,
-    model_name: str = OPENAI_DEFAULT_MODEL,
+    model_name: str = DEEPSEEK_DEFAULT_MODEL,
     api_key: Optional[str] = None,
     variant_guidance: str = "",
 ) -> List[Dict[str, Any]]:
     # Cap to 3 like before (unchanged behavior)
     num_mocks = max(1, min(num_mocks, 3))
-    client = configure_openai(api_key)
+    client = configure_deepseek(api_key)
     prompt = build_structured_prompt(paper_text, difficulty, num_mocks, variant_guidance)
 
     resp = client.chat_completions.create(  # type: ignore[attr-defined]
@@ -413,6 +416,7 @@ def generate_mock_specs(
             {"role": "user", "content": prompt},
         ],
         response_format={"type": "json_object"},
+        extra_body={"thinking": {"type": "disabled"}},
     ) if hasattr(client, "chat_completions") else client.chat.completions.create(
         model=model_name,
         messages=[
@@ -420,6 +424,7 @@ def generate_mock_specs(
             {"role": "user", "content": prompt},
         ],
         response_format={"type": "json_object"},
+        extra_body={"thinking": {"type": "disabled"}},
     )
 
     raw = resp.choices[0].message.content.strip() if resp.choices else "{}"
@@ -531,7 +536,7 @@ def generate_mock_papers(
     paper_text: str,
     difficulty: str = "same",
     num_mocks: int = 1,
-    model_name: str = OPENAI_DEFAULT_MODEL,
+    model_name: str = DEEPSEEK_DEFAULT_MODEL,
     api_key: Optional[str] = None,
 ) -> List[Tuple[str, str]]:
     """
@@ -582,7 +587,7 @@ def generate_mock_papers(
         raise ValueError("Structured mock generation returned no results.")
     except Exception:
         # Legacy fallback (text parsing)
-        client = configure_openai(api_key)
+        client = configure_deepseek(api_key)
         prompt = _build_legacy_prompt(paper_text, difficulty, num_mocks)
 
         resp = client.chat_completions.create(  # type: ignore[attr-defined]
@@ -591,12 +596,14 @@ def generate_mock_papers(
                 {"role": "system", "content": LEGACY_SYSTEM},
                 {"role": "user", "content": prompt},
             ],
+            extra_body={"thinking": {"type": "disabled"}},
         ) if hasattr(client, "chat_completions") else client.chat.completions.create(
             model=model_name,
             messages=[
                 {"role": "system", "content": LEGACY_SYSTEM},
                 {"role": "user", "content": prompt},
             ],
+            extra_body={"thinking": {"type": "disabled"}},
         )
         raw = resp.choices[0].message.content.strip() if resp.choices else ""
 

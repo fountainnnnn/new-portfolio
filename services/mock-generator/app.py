@@ -38,10 +38,10 @@ for env_path in candidates:
 else:
     load_dotenv(override=True)  # fallback: current working dir
 
-if os.getenv("OPENAI_API_KEY"):
-    print("[DEBUG] OPENAI_API_KEY loaded (hidden)")
+if os.getenv("DEEPSEEK_API_KEY"):
+    print("[DEBUG] DEEPSEEK_API_KEY loaded (hidden)")
 else:
-    print("[DEBUG] OPENAI_API_KEY not set")
+    print("[DEBUG] DEEPSEEK_API_KEY not set")
 
 # --------------------------------------------------------
 # Import pipeline and EasyOCR bootstrap
@@ -69,7 +69,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-DEFAULT_MODEL_NAME = os.getenv("MOCK_GENERATOR_MODEL", "gpt-5")
+DEFAULT_MODEL_NAME = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash")
 MAX_UPLOAD_BYTES = int(os.getenv("MOCK_GENERATOR_MAX_UPLOAD_BYTES", str(20 * 1024 * 1024)))
 RATE_BUCKETS: dict[str, list[float]] = {}
 RATE_LIMITS = {
@@ -191,15 +191,15 @@ async def generate(
     if openai_api_key and openai_api_key.strip().lower() != "string":
         key = openai_api_key.strip()
     else:
-        key = (os.getenv("OPENAI_API_KEY") or "").strip()
+        key = (os.getenv("DEEPSEEK_API_KEY") or "").strip()
 
     if not key:
         shutil.rmtree(tmpdir, ignore_errors=True)
         return JSONResponse(
-            {"status": "error", "message": "OPENAI_API_KEY missing. Provide via .env or form."},
+            {"status": "error", "message": "DEEPSEEK_API_KEY missing. Provide via .env or form."},
             status_code=400,
         )
-    os.environ["OPENAI_API_KEY"] = key
+    os.environ["DEEPSEEK_API_KEY"] = key
 
     # Run pipeline
     try:

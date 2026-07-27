@@ -124,11 +124,12 @@ Key dependencies:
 - sqlite3 (built-in)
 
 ### 4. Configure API keys (chatbot)
-Create a `.env` file in the project root and provide your OpenAI credentials:
+Create a `.env` file in the project root and provide your DeepSeek credentials:
 
 ```env
-OPENAI_API_KEY=replace-with-your-openai-api-key
-OPENAI_CHAT_MODEL=gpt-5   # optional override
+DEEPSEEK_API_KEY=replace-with-your-deepseek-api-key
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_MODEL=deepseek-v4-flash
 ```
 
 The HDB Resale Copilot button only appears when an API key is present. Context snippets for the assistant live in `application/resources/chatbot_context.txt`; feel free to extend the RAG knowledge base there.

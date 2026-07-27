@@ -4,12 +4,12 @@
 
 Decidr is a local full-stack MVP for turning uploaded CSV datasets into interactive analytics dashboards. Users upload a dataset, review an automatically generated profile, ask for a dashboard in natural language, and receive KPI cards, Plotly charts, and suggested insights they can edit live in the browser.
 
-The backend uses FastAPI, Pandas, Plotly, and OpenAI when an API key is available. If `OPENAI_API_KEY` is not configured, Decidr falls back to a deterministic rule-based dashboard planner so the app still works locally.
+The backend uses FastAPI, Pandas, Plotly, and DeepSeek V4 Flash when an API key is available. If `DEEPSEEK_API_KEY` is not configured, Decidr falls back to a deterministic rule-based dashboard planner so the app still works locally.
 
 ## Tech Stack
 
 - Frontend: Next.js App Router, React, TypeScript, Tailwind CSS, shadcn/ui, Plotly via `react-plotly.js`
-- Backend: FastAPI, Python, Pandas, Plotly, OpenAI API
+- Backend: FastAPI, Python, Pandas, Plotly, DeepSeek API
 - Storage: in-memory dictionaries for datasets and dashboards
 - Auth: none for the MVP
 
@@ -41,17 +41,17 @@ The backend uses FastAPI, Pandas, Plotly, and OpenAI when an API key is availabl
 
 ## Environment
 
-Copy `.env.example` to `.env` if you want OpenAI-powered planning:
+Copy `.env.example` to `.env` if you want DeepSeek-powered planning:
 
 ```bash
-OPENAI_API_KEY=your_key_here
-OPENAI_MODEL=gpt-5.5
-OPENAI_REASONING_EFFORT=high
+DEEPSEEK_API_KEY=your_key_here
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_MODEL=deepseek-v4-flash
 FRONTEND_ORIGIN=http://localhost:3000
 NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
 ```
 
-`OPENAI_API_KEY` is optional. Without it, the fallback planner generates charts from detected numeric, categorical, and datetime columns.
+`DEEPSEEK_API_KEY` is optional. Without it, the fallback planner generates charts from detected numeric, categorical, and datetime columns.
 
 ## Backend Setup
 
@@ -109,8 +109,8 @@ The frontend runs on `http://localhost:3000` and the backend runs on `http://loc
   - categorical summaries
   - sample rows
   - detected date and metric columns
-- OpenAI dashboard planning with strict JSON instructions
-- Local fallback dashboard planner when no OpenAI key is present
+- DeepSeek dashboard planning with strict JSON instructions
+- Local fallback dashboard planner when no DeepSeek key is present
 - Plan validation against real dataset columns
 - Plotly chart JSON generation
 - Interactive chart rendering in the browser
@@ -131,7 +131,7 @@ The frontend runs on `http://localhost:3000` and the backend runs on `http://loc
 - CSV is the only supported upload format.
 - There is no authentication, multi-user isolation, or persistent dashboard saving yet.
 - Large datasets are profiled in-process; future versions should add file size limits, async jobs, and persistent storage.
-- The OpenAI JSON response is validated and sanitized, but complex malformed plans fall back to rule-based generation.
+- The DeepSeek JSON response is validated and sanitized, but complex malformed plans fall back to rule-based generation.
 
 ## Future Improvements
 

@@ -1,9 +1,8 @@
 import json
 import os
 
-os.environ["OPENAI_API_KEY"] = ""
-os.environ["OPENAI_MODEL"] = "gpt-5"
-os.environ["OPENAI_PLANNER_MODEL"] = "gpt-5"
+os.environ["DEEPSEEK_API_KEY"] = ""
+os.environ["DEEPSEEK_MODEL"] = "deepseek-v4-flash"
 
 from app.models.schemas import ChartPlan, DashboardPlan
 from app.services.bi_planner import (

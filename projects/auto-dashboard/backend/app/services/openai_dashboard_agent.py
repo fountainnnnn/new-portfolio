@@ -129,7 +129,7 @@ class OpenAIDashboardAgent:
             return PlanResult(
                 plan=self._fallback_plan(profile, user_prompt),
                 source="fallback",
-                detail="OPENAI_API_KEY not set",
+                detail="DEEPSEEK_API_KEY not set",
             )
 
         try:
@@ -188,7 +188,7 @@ class OpenAIDashboardAgent:
             return PlanResult(
                 plan=self._fallback_refine_plan(profile, current_plan, user_prompt),
                 source="fallback",
-                detail="OPENAI_API_KEY not set",
+                detail="DEEPSEEK_API_KEY not set",
             )
 
         try:
@@ -240,6 +240,7 @@ class OpenAIDashboardAgent:
         model = self.settings.openai_planner_model or self.settings.openai_model
         client = OpenAI(
             api_key=self.settings.openai_api_key,
+            base_url=self.settings.deepseek_base_url,
             timeout=timeout,
             max_retries=self.settings.openai_max_retries,
         )
@@ -374,6 +375,7 @@ class OpenAIDashboardAgent:
             "model": model,
             "messages": messages,
             "response_format": {"type": "json_object"},
+            "extra_body": {"thinking": {"type": "disabled"}},
         }
         if self._supports_reasoning_effort(model):
             # Reasoning models (gpt-5*, o*) reject custom temperature but accept reasoning_effort.

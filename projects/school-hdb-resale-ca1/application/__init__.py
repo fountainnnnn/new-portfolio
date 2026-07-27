@@ -32,13 +32,9 @@ if os.getenv("FLASK_ENV", "").lower() == "production":
     app.config["ENV"] = "production"
     if not app.config.get("SECRET_KEY"):
         raise RuntimeError("SECRET_KEY must be set in production.")
-app.config.setdefault("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
-if os.getenv("OPENAI_CHAT_MODEL"):
-    app.config["OPENAI_CHAT_MODEL"] = os.getenv("OPENAI_CHAT_MODEL")
-else:
-    app.config.setdefault("OPENAI_CHAT_MODEL", "gpt-5")
-if os.getenv("OPENAI_INSIGHTS_MODEL"):
-    app.config["OPENAI_INSIGHTS_MODEL"] = os.getenv("OPENAI_INSIGHTS_MODEL")
+app.config.setdefault("DEEPSEEK_API_KEY", os.getenv("DEEPSEEK_API_KEY"))
+app.config.setdefault("DEEPSEEK_BASE_URL", os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com"))
+app.config.setdefault("DEEPSEEK_MODEL", os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash"))
 app.config.setdefault(
     "CHATBOT_CONTEXT_PATH",
     os.getenv("CHATBOT_CONTEXT_PATH", "application/resources/chatbot_context.txt"),

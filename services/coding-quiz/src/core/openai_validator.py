@@ -4,13 +4,16 @@ from fastapi import HTTPException
 from openai import OpenAI
 
 # ------------------------------------------------------------
-# OpenAI setup
+# DeepSeek setup (via its OpenAI-compatible API)
 # ------------------------------------------------------------
-def configure_openai(api_key: str | None = None) -> OpenAI:
-    key = api_key or os.getenv("OPENAI_API_KEY", "")
+def configure_deepseek(api_key: str | None = None) -> OpenAI:
+    key = api_key or os.getenv("DEEPSEEK_API_KEY", "")
     if not key:
-        raise RuntimeError("OPENAI_API_KEY missing. Provide via env or param.")
-    return OpenAI(api_key=key)
+        raise RuntimeError("DEEPSEEK_API_KEY missing. Provide via env or param.")
+    return OpenAI(
+        api_key=key,
+        base_url=os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
+    )
 
 
 # ------------------------------------------------------------
@@ -61,7 +64,7 @@ def validate_with_llm(
     Validate user answers using an LLM.
     Supports JavaScript, Python, and C++ quiz questions.
     """
-    client = configure_openai(api_key)
+    client = configure_deepseek(api_key)
 
     system_prompt = VALIDATOR_SYSTEM_TEMPLATE.format(language=language)
 
@@ -75,11 +78,12 @@ def validate_with_llm(
     }
 
     resp = client.chat.completions.create(
-        model=os.getenv("CODING_QUIZ_MODEL", "gpt-5"),
+        model=os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash"),
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": json.dumps(payload, ensure_ascii=False)},
         ],
+        extra_body={"thinking": {"type": "disabled"}},
     )
 
     raw = resp.choices[0].message.content or "{}"

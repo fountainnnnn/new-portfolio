@@ -17,12 +17,13 @@ def _bool_env(name: str, default: bool) -> bool:
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Decidr"
-    openai_api_key: str | None = os.getenv("OPENAI_API_KEY")
+    openai_api_key: str | None = os.getenv("DEEPSEEK_API_KEY")
+    deepseek_base_url: str = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
     # Default planner model. Used for /dashboard/generate and /dashboard/refine.
-    openai_model: str = os.getenv("OPENAI_MODEL", "gpt-5")
-    openai_planner_model: str = os.getenv("OPENAI_PLANNER_MODEL", "gpt-5")
+    openai_model: str = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash")
+    openai_planner_model: str = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash")
     # Optional faster/cheaper model for the AI patch endpoint. Falls back to openai_model.
-    openai_patch_model: str = os.getenv("OPENAI_PATCH_MODEL", "")
+    openai_patch_model: str = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash")
     # Reasoning effort for gpt-5* / o-series models. "low" is the sweet spot for chart selection
     # (medium adds 10-30s with limited quality gains for this task).
     openai_reasoning_effort: str = os.getenv("OPENAI_REASONING_EFFORT", "low")

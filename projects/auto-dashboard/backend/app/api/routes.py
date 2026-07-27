@@ -60,11 +60,14 @@ THEME_PROMPT_MAP = {
 async def debug_openai_ping() -> dict[str, object]:
     """Live probe so you can see whether the configured OpenAI model actually works."""
     if not agent.settings.openai_api_key:
-        return {"ok": False, "reason": "OPENAI_API_KEY not set", "model": agent.settings.openai_model}
+        return {"ok": False, "reason": "DEEPSEEK_API_KEY not set", "model": agent.settings.openai_model}
     try:
         from openai import OpenAI
 
-        client = OpenAI(api_key=agent.settings.openai_api_key)
+        client = OpenAI(
+            api_key=agent.settings.openai_api_key,
+            base_url=agent.settings.deepseek_base_url,
+        )
         kwargs: dict[str, object] = {
             "model": agent.settings.openai_model,
             "messages": [{"role": "user", "content": "Reply with the single word: pong"}],
@@ -73,6 +76,7 @@ async def debug_openai_ping() -> dict[str, object]:
             kwargs["reasoning_effort"] = agent.settings.openai_reasoning_effort
         else:
             kwargs["temperature"] = 0
+        kwargs["extra_body"] = {"thinking": {"type": "disabled"}}
         response = client.chat.completions.create(**kwargs)
         return {
             "ok": True,
