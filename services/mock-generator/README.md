@@ -96,3 +96,5 @@ The tests mock every LLM client (DeepSeek and vision) and clear provider keys,
 so they make no network calls. They cover filename sanitising, provider
 resolution order, PDF/DOCX text-layer fallback, the vision path (PDF pages and
 DOCX pictures), retries, page cap, `/healthz`, `/generate`, rate limiting and CORS.
+
+`CORS_ORIGINS` (comma-separated, default `https://ngyuhang.com`) sets which browser origins may call the API. For local development with the static frontend, use `CORS_ORIGINS=http://localhost:5173`.

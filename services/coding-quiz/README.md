@@ -96,3 +96,5 @@ python -m pytest -q
 
 Railway builds `Dockerfile` (see `railway.json`, watch pattern `/services/coding-quiz/**`,
 healthcheck `/healthz`). The `tests/` folder is excluded from the image.
+
+`CORS_ORIGINS` (comma-separated, default `https://ngyuhang.com`) sets which browser origins may call the API. For local development with the static frontend, use `CORS_ORIGINS=http://localhost:5173`.

@@ -55,7 +55,7 @@ app = FastAPI(title="Mock Paper Generator API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://ngyuhang.com"],
+    allow_origins=[o.strip() for o in os.getenv("CORS_ORIGINS", "https://ngyuhang.com").split(",") if o.strip()],
     allow_methods=["*"],
     allow_headers=["*"],
 )
