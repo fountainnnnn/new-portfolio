@@ -248,3 +248,39 @@ body { margin: 0; padding: 0; height: 100%; background: #fafafa; color: #333; }
     --navbar-height: 60px; /* adjust if your mobile navbar is taller/shorter */
   }
 }
+/* ====== CITATIONS (sources under an answer) ====== */
+.message.assistant { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+.citations {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-width: 100%;
+}
+.citation {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: #566273;
+}
+.citation-label {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--project-accent, var(--accent)) 28%, transparent);
+  color: var(--project-accent-dark, var(--accent));
+  background: color-mix(in srgb, var(--project-accent, var(--accent)) 10%, white);
+  font-weight: 800;
+  white-space: nowrap;
+}
+.citation-snippet { overflow-wrap: anywhere; }
+@media (max-width: 576px) {
+  .citation { flex-direction: column; gap: 0.2rem; }
+}

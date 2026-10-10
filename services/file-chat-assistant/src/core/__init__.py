@@ -1,32 +1,23 @@
-# backend/src/core/__init__.py
+# -*- coding: utf-8 -*-
 """
-Core module exports for LangChain QA API.
+Core modules for the document QA API.
 
-- Document loading (PDF/DOCX/TXT → text)
-- QA chain construction (LangChain pipeline)
-- Session management (in-memory store)
+- loader: PDF/DOCX/TXT/PNG/JPEG -> per-page text (vision for scanned pages)
+- vision: vision-model provider resolution and page transcription
+- qa_chain: page-aware chunking, retrieval and cited answers
+- sessions: in-memory TTL + capped session store
 """
 
-# ---- Document loading ----
-from .loader import (
-    load_document,
-)
-
-# ---- QA chain ----
-from .qa_chain import (
-    get_qa_chain,
-)
-
-# ---- Session management ----
-from .sessions import (
-    session_store,
-)
+from .loader import load_document, DocumentError, LoadedDocument, sanitize_filename
+from .qa_chain import get_qa_chain
+from .sessions import session_store, SessionStore
 
 __all__ = [
-    # loader
     "load_document",
-    # qa_chain
+    "DocumentError",
+    "LoadedDocument",
+    "sanitize_filename",
     "get_qa_chain",
-    # sessions
     "session_store",
+    "SessionStore",
 ]
