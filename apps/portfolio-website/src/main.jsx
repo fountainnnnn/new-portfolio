@@ -95,13 +95,13 @@ const featuredProjects = [
     stack: ["React", "Node.js", "OpenClaw", "Agents"],
   },
   {
-    title: "AgentLabs LoRA Lab",
-    category: "Hackathon lab",
-    kind: "GitHub",
-    href: "https://github.com/fountainnnnn/AgentLabs",
+    title: "AgentLabs",
+    category: "AI safety lab",
+    kind: "Demo",
+    href: "https://agentlabs-production-efd2.up.railway.app/",
     image: "/img/project-previews/agentlabs.png",
-    description: "Workbench for LoRA training experiments, adapter simulation, and evaluation workflows.",
-    stack: ["React", "Python", "LoRA"],
+    description: "Attacks AI agents with adversarial prompts, checks failures with deterministic rules, patches the agent, and retests, shown as a live battle arena. Also trains LoRA adapters for small open models.",
+    stack: ["React", "FastAPI", "Python", "LoRA"],
   },
 ];
 
@@ -127,8 +127,8 @@ const projectGroups = [
     projects: [
       project("Quiz Slide Deck Generator", "AI study tool", "Demo", "/quiz-slide-generator/", "/img/project-previews/quiz-slide-generator.png", "Transforms PDFs and slide decks into editable quiz presentations with answer slides.", ["Python", "FastAPI", "DeepSeek"]),
       project("Mock Paper Generator", "Exam workflow", "Demo", "/mock-paper-generator/", "/img/project-previews/mock-paper-generator.png", "Builds new practice papers and answer materials from uploaded source documents.", ["Python", "FastAPI", "ReportLab"]),
-      project("Document Q&A Chat Assistant", "Document assistant", "Demo", "/file-chat-assistant/", "/img/project-previews/file-chat-assistant.png", "Uploads PDF, DOCX, or TXT files and answers questions through a focused chat surface.", ["Python", "LangChain", "DeepSeek"]),
-      project("Coding Quiz", "Coding practice", "Demo", "/coding-quiz/", "/img/project-previews/coding-quiz.png", "Generates language-specific coding quizzes with topic controls and instant feedback.", ["React", "Python", "FastAPI"]),
+      project("Document Q&A Chat Assistant", "Document assistant", "Demo", "/file-chat-assistant/", "/img/project-previews/file-chat-assistant.png", "Answers questions about PDFs, Word files and scanned pages, citing the page each answer came from.", ["Python", "FastAPI", "DeepSeek"]),
+      project("Coding Quiz", "Coding practice", "Demo", "/coding-quiz/", "/img/project-previews/coding-quiz.png", "Generates coding quizzes with hints, explanations after each answer, and an end-of-quiz review of weak topics.", ["React", "Python", "FastAPI"]),
     ],
   },
   {

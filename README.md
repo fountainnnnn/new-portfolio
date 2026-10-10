@@ -42,7 +42,7 @@ These are shown on the portfolio projects page but are not copied into this repo
 | Project | Link |
 | --- | --- |
 | Covid CNN | `https://github.com/fountainnnnn/Covid-CNN` |
-| AgentLabs LoRA Lab | `https://github.com/fountainnnnn/AgentLabs` |
+| AgentLabs | `https://github.com/fountainnnnn/AgentLabs` (live demo: `https://agentlabs-production-efd2.up.railway.app/`) |
 
 ## Railway deployment
 
