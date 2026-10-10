@@ -74,6 +74,9 @@ const projectApiTargets = [
   {
     prefix: "/api/coding-quiz",
     target: process.env.CODING_QUIZ_API_URL || "http://127.0.0.1:8014",
+    // A quiz sends one cheap request per answer and hint; the service itself
+    // rate-limits the expensive question generation.
+    rateMax: Number(process.env.CODING_QUIZ_PROXY_RATE_MAX || 40),
   },
   {
     prefix: "/api/auto-dashboard",
@@ -392,7 +395,7 @@ function enforceProxyLimits(request, response, targetConfig) {
   }
 
   const isUpload = /multipart\/form-data/i.test(String(request.headers["content-type"] || ""));
-  const maxRequests = isUpload ? projectApiUploadRateMax : projectApiRateMax;
+  const maxRequests = isUpload ? projectApiUploadRateMax : targetConfig.rateMax || projectApiRateMax;
   const bucket = `project:${targetConfig.prefix}:${request.method}:${clientId}`;
   if (!allowRequest(bucket, projectApiRateWindowMs, maxRequests)) {
     sendJson(response, 429, { error: "Too many project requests. Try again shortly." });
