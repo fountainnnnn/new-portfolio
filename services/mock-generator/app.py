@@ -3,14 +3,16 @@
 """
 Mock Paper Generator API
 - Accepts PDF/DOCX uploads
-- Extracts + cleans text (EasyOCR fallback for scanned PDFs)
+- Reads each page with a vision LLM (embedded text-layer fallback)
 - Generates mock exam papers using OpenAI models
 - Returns generated papers as a zip download
 """
 
 import os
 import io
+import re
 import time
+import uuid
 import asyncio
 import tempfile
 import zipfile
@@ -38,24 +40,13 @@ for env_path in candidates:
 else:
     load_dotenv(override=True)  # fallback: current working dir
 
-if os.getenv("DEEPSEEK_API_KEY"):
-    print("[DEBUG] DEEPSEEK_API_KEY loaded (hidden)")
-else:
-    print("[DEBUG] DEEPSEEK_API_KEY not set")
-
 # --------------------------------------------------------
-# Import pipeline and EasyOCR bootstrap
+# Import pipeline
 # --------------------------------------------------------
 try:
     from src.core.pipeline import run_pipeline_end_to_end
 except Exception as e:
     raise RuntimeError(f"Failed to import pipeline: {e}")
-
-try:
-    from src.core.bootstrap import ensure_easyocr_weights
-except Exception as e:
-    ensure_easyocr_weights = None
-    print(f"[WARN] EasyOCR bootstrap unavailable: {e}")
 
 # =========================
 # App setup
@@ -78,6 +69,23 @@ RATE_LIMITS = {
         int(os.getenv("MOCK_GENERATOR_RATE_WINDOW_SECONDS", "60")),
     ),
 }
+
+
+def safe_upload_name(filename: Optional[str], default: str = "upload") -> str:
+    """
+    Reduce a client-supplied filename to a safe basename: no directories, only
+    [A-Za-z0-9._-], no leading dots, bounded length. Never use the raw name in a path.
+    """
+    name = Path((filename or "").replace("\\", "/")).name
+    stem, suffix = os.path.splitext(name)
+    stem = re.sub(r"[^A-Za-z0-9._-]+", "_", stem).strip("._-")[:80] or default
+    suffix = re.sub(r"[^A-Za-z0-9]+", "", suffix)[:10].lower()
+    return f"{stem}.{suffix}" if suffix else stem
+
+
+def unique_upload_name(filename: Optional[str]) -> str:
+    """Safe basename with a random uuid prefix."""
+    return f"{uuid.uuid4().hex[:12]}_{safe_upload_name(filename)}"
 
 
 def _client_id(request: Request) -> str:
@@ -117,30 +125,6 @@ async def rate_limit_middleware(request: Request, call_next):
 
 
 # --------------------------------------------------------
-# Warm-up hook for EasyOCR
-# --------------------------------------------------------
-@app.on_event("startup")
-def warm_up():
-    if os.getenv("MOCK_GENERATOR_WARM_EASYOCR", "0") != "1":
-        print("[STARTUP] EasyOCR warm-up skipped")
-        return
-    if ensure_easyocr_weights is None:
-        print("[STARTUP] EasyOCR warm-up unavailable; skipping")
-        return
-    print("[STARTUP] Preloading EasyOCR...")
-    try:
-        reader = ensure_easyocr_weights(lang="en")
-
-        # Dummy warm-up read on a small black image
-        import numpy as np
-        dummy = np.zeros((10, 10, 3), dtype=np.uint8)
-        _ = reader.readtext(dummy)
-
-        print("[STARTUP] EasyOCR warm-up complete")
-    except Exception as e:
-        print(f"[STARTUP] Warm-up failed (non-critical): {e}")
-
-# --------------------------------------------------------
 # Routes
 # --------------------------------------------------------
 @app.get("/")
@@ -155,6 +139,7 @@ def index():
 async def generate(
     request: Request,
     file: UploadFile = File(...),
+    ocr_engine: str = Form("vision"),  # deprecated: accepted for compatibility, ignored
     language: str = Form("en"),
     dpi: int = Form(220),
     openai_api_key: Optional[str] = Form(None),
@@ -167,7 +152,8 @@ async def generate(
     Generates cleaned text and new mock exam papers.
     Returns a zip file containing generated PDFs.
     """
-    if Path(file.filename or "").suffix.lower() not in {".pdf", ".docx"}:
+    upload_name = safe_upload_name(file.filename)
+    if Path(upload_name).suffix.lower() not in {".pdf", ".docx"}:
         raise HTTPException(status_code=400, detail="Upload a PDF or DOCX file.")
     num_mocks = max(1, min(int(num_mocks), 3))
     dpi = max(120, min(int(dpi), 300))
@@ -184,10 +170,11 @@ async def generate(
         shutil.rmtree(tmpdir, ignore_errors=True)
         mb = MAX_UPLOAD_BYTES // (1024 * 1024)
         raise HTTPException(status_code=413, detail=f"File is too large. Max size is {mb}MB.")
-    tmp_in = tmpdir / f"upload_{file.filename}"
+    tmp_in = tmpdir / unique_upload_name(upload_name)
     tmp_in.write_bytes(content)
 
-    # API key resolution (ignore Swagger’s "string")
+    # API key resolution (ignore Swagger’s "string"). A form key is used for this
+    # request only and is passed explicitly; it is never written to os.environ.
     if openai_api_key and openai_api_key.strip().lower() != "string":
         key = openai_api_key.strip()
     else:
@@ -199,7 +186,6 @@ async def generate(
             {"status": "error", "message": "DEEPSEEK_API_KEY missing. Provide via .env or form."},
             status_code=400,
         )
-    os.environ["DEEPSEEK_API_KEY"] = key
 
     # Run pipeline
     try:

@@ -3,18 +3,13 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # --------------------------------------------------------
-# Install system libraries + fonts
+# Install system libraries + fonts (Chromium runtime libs for Playwright).
+# No OCR/OpenCV stack: pages are read by a vision LLM (src/core/vision.py).
 # --------------------------------------------------------
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    swig \
-    pkg-config \
     libglib2.0-0 \
-    libsm6 \
     libxrender1 \
     libxext6 \
-    libgl1 \
-    poppler-utils \
     wget \
     curl \
     unzip \
@@ -42,14 +37,10 @@ RUN apt-get update && apt-get install -y \
 
 # --------------------------------------------------------
 # Copy requirements and install Python deps
-# Force CPU-only PyTorch first, then everything else
 # --------------------------------------------------------
 COPY requirements.txt .
 
-RUN pip install --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir \
-      torch==2.4.1+cpu torchvision==0.19.1+cpu torchaudio==2.4.1+cpu \
-      --index-url https://download.pytorch.org/whl/cpu && \
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
     pip install --no-cache-dir -r requirements.txt
 
 # --------------------------------------------------------
