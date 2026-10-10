@@ -4,23 +4,15 @@ from .render import (
     render_slides_to_images,
 )
 
-# ---- Notes / OCR→Markdown ----
-from .notes import (
-    extract_notes_and_alttext,
-    bbox_to_xywh,
-    normalize_lines,
-    lines_to_markdown,
-    ocr_slide_to_markdown,
-    slides_to_clean_text,
-)
+# ---- Notes / alt text ----
+from .notes import extract_notes_and_alttext
 
-# ---- OCR engines ----
-from .ocr import (
-    init_easyocr_temp,
-    init_paddleocr,
-    get_ocr_engine,
-    ocr_image_easy,
-    ocr_image_paddle,
+# ---- Vision page reader (replaces EasyOCR) ----
+from .vision import (
+    VisionProvider,
+    resolve_vision_provider,
+    read_document,
+    read_pages,
 )
 
 # ---- LLM QG helpers (DeepSeek) ----
@@ -44,12 +36,10 @@ from .pipeline import run_pipeline_end_to_end
 __all__ = [
     # render
     "pptx_to_png_windows_com", "render_slides_to_images",
-    # notes / ocr-md
-    "extract_notes_and_alttext", "bbox_to_xywh", "normalize_lines",
-    "lines_to_markdown", "ocr_slide_to_markdown", "slides_to_clean_text",
-    # ocr
-    "init_easyocr_temp", "init_paddleocr", "get_ocr_engine",
-    "ocr_image_easy", "ocr_image_paddle",
+    # notes
+    "extract_notes_and_alttext",
+    # vision page reader
+    "VisionProvider", "resolve_vision_provider", "read_document", "read_pages",
     # llm qg (DeepSeek)
     "configure_deepseek", "chunk_slides_for_qg", "build_qg_prompt",
     "safe_json_parse", "generate_qa",

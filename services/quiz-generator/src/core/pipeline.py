@@ -8,73 +8,19 @@ from pptx.util import Inches, Pt
 from pptx.enum.text import PP_ALIGN
 from pptx.dml.color import RGBColor
 
-import fitz
-
-# Optional EasyOCR (only used for bitmap PDFs/images)
-try:
-    import easyocr  # type: ignore
-    _easyocr_reader = None
-except Exception:
-    easyocr = None
-    _easyocr_reader = None
+from .vision import read_document
 
 
 # =========================
-# Extraction helpers
+# Extraction
 # =========================
-def _extract_text_from_pptx(pptx_path: Path) -> str:
-    prs = Presentation(pptx_path)
-    chunks: List[str] = []
-    for slide in prs.slides:
-        # shapes text
-        for shape in slide.shapes:
-            try:
-                if hasattr(shape, "text") and shape.text:
-                    chunks.append(shape.text)
-            except Exception:
-                continue
-        # notes
-        try:
-            if slide.has_notes_slide and slide.notes_slide and slide.notes_slide.notes_text_frame:
-                nt = slide.notes_slide.notes_text_frame.text
-                if nt:
-                    chunks.append(nt)
-        except Exception:
-            pass
-    return "\n\n".join(chunks)
-
-
-def _extract_text_from_pdf(pdf_path: Path, use_ocr: bool = False, lang: str = "en") -> str:
-    doc = fitz.open(pdf_path)
-    parts: List[str] = []
-    has_text = False
-    for page in doc:
-        txt = page.get_text().strip()
-        if txt:
-            has_text = True
-            parts.append(txt)
-    if has_text or not use_ocr:
-        return "\n\n".join(parts)
-
-    # OCR path
-    if easyocr is None:
-        return "\n\n".join(parts)
-
-    global _easyocr_reader
-    if _easyocr_reader is None:
-        _easyocr_reader = easyocr.Reader([lang], gpu=False)
-
-    oc_parts: List[str] = []
-    for page in doc:
-        pix = page.get_pixmap(dpi=220)
-        import numpy as np, cv2  # local import
-        img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.h, pix.w, pix.n)
-        if img.shape[2] == 4:
-            img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
-        results = _easyocr_reader.readtext(img, detail=0, paragraph=True)
-        if results:
-            oc_parts.append("\n".join(results))
-    return "\n\n".join(oc_parts)
+def _extract_lecture_text(path: Path, work_dir: Path, dpi: int, language: str) -> str:
+    """
+    Per-page Markdown from the vision page reader (falls back to the embedded
+    text layer when no vision provider is configured), joined in page order.
+    """
+    pages = read_document(path, work_dir, dpi=dpi, language=language)
+    return "\n\n".join(f"<!-- PAGE {i} -->\n{text}" for i, text in enumerate(pages, 1) if text.strip())
 
 
 # =========================
@@ -340,7 +286,7 @@ def _set_textbox(slide, text: str, title: bool = False,
 # =========================
 def run_pipeline_end_to_end(
     pptx_file,
-    ocr_engine: str = "easyocr",
+    ocr_engine: str = "vision",   # deprecated: ignored, kept for API compatibility
     language: str = "en",
     prefer_com: bool = False,
     dpi: int = 180,
@@ -354,7 +300,8 @@ def run_pipeline_end_to_end(
     fillblank_n: int = 0,
     difficulty: str = "mixed",
     deck_title: str = "Auto Quiz",
-    include_thumbs: bool = True   # repurposed: include explanations when True
+    include_thumbs: bool = True,  # repurposed: include explanations when True
+    source_name: Optional[str] = None,  # display name for the deck subtitle/title fallback
 ):
     """
     Returns: (pptx_bytes, zip_path, out_dir, msg)
@@ -388,14 +335,14 @@ def run_pipeline_end_to_end(
     tmp_in = tmp_dir / f"input_upload{ext}"
     tmp_in.write_bytes(data or b"")
 
-    # --- Extract text
-    if ext == ".pptx":
-        lecture_text = _extract_text_from_pptx(tmp_in)
-    else:
-        lecture_text = _extract_text_from_pdf(tmp_in, use_ocr=(ocr_engine == "easyocr"), lang=language)
+    # --- Extract text (vision page reader, text-layer fallback)
+    lecture_text = _extract_lecture_text(tmp_in, tmp_dir, dpi=dpi, language=language)
 
     if not lecture_text.strip():
-        raise ValueError("No text extracted from the document. Check OCR/inputs.")
+        raise ValueError(
+            "No text extracted from the document. If it is a scanned PDF, configure a vision "
+            "provider (VISION_API_KEY, OPENROUTER_API_KEY or OPENAI_API_KEY)."
+        )
 
     total_questions = max(1, min(int(total_questions), 50))
     mix_mode = (mix_mode or "balanced").lower()
@@ -429,7 +376,7 @@ def run_pipeline_end_to_end(
         if not qa_items:
             raise ValueError("Q/A generation returned empty results.")
 
-        filename_stem = Path(name_hint or tmp_in.name).stem
+        filename_stem = Path(source_name or name_hint or tmp_in.name).stem
         auto_title = infer_structured_title(lecture_text, filename_stem, model_name, openai_api_key)
         final_title = deck_title if (deck_title and deck_title != "Auto Quiz") else auto_title
         out_path = tmp_dir / f"{filename_stem}_quizdeck.pptx"
@@ -452,7 +399,7 @@ def run_pipeline_end_to_end(
         raise ValueError("Q/A generation returned empty results.")
 
     # --- Title & Explanations (optional)
-    filename_stem = Path(name_hint or tmp_in.name).stem
+    filename_stem = Path(source_name or name_hint or tmp_in.name).stem
     auto_title = _infer_title(lecture_text, filename_stem, model_name, openai_api_key)
     final_title = deck_title if (deck_title and deck_title != "Auto Quiz") else auto_title
 
@@ -460,4 +407,4 @@ def run_pipeline_end_to_end(
 
     # --- Build deck (higher-quality)
     pptx_bytes = _build_qa_deck(qa, title=final_title, explanations=explanations, source_name=filename_stem)
-    return pptx_bytes, None, None, "ok"
+    return pptx_bytes, None, str(tmp_dir), "ok"

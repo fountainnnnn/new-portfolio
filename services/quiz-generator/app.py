@@ -1,6 +1,9 @@
 import os
+import re
 import shutil
+import tempfile
 import time
+import uuid
 import asyncio
 from pathlib import Path
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request
@@ -38,6 +41,23 @@ RATE_LIMITS = {
         int(os.getenv("QUIZ_GENERATOR_FILE_RATE_WINDOW_SECONDS", "60")),
     ),
 }
+
+
+def safe_upload_name(filename: str | None, default: str = "upload") -> str:
+    """
+    Reduce a client-supplied filename to a safe basename: no directories, only
+    [A-Za-z0-9._-], no leading dots, bounded length. Never use the raw name in a path.
+    """
+    name = Path((filename or "").replace("\\", "/")).name
+    stem, suffix = os.path.splitext(name)
+    stem = re.sub(r"[^A-Za-z0-9._-]+", "_", stem).strip("._-")[:80] or default
+    suffix = re.sub(r"[^A-Za-z0-9]+", "", suffix)[:10].lower()
+    return f"{stem}.{suffix}" if suffix else stem
+
+
+def unique_upload_name(filename: str | None) -> str:
+    """Safe basename with a random uuid prefix, for files written to shared directories."""
+    return f"{uuid.uuid4().hex[:12]}_{safe_upload_name(filename)}"
 
 
 def _client_id(request: Request) -> str:
@@ -90,7 +110,7 @@ def index():
 async def generate(
     request: Request,
     file: UploadFile = File(...),
-    ocr_engine: str = Form("easyocr"),
+    ocr_engine: str = Form("vision"),  # deprecated: accepted for compatibility, ignored
     language: str = Form("en"),
     prefer_com: bool = Form(False),
     dpi: int = Form(180),
@@ -107,7 +127,7 @@ async def generate(
     include_thumbs: bool = Form(True),
     include_explanations: bool = Form(True),
 ):
-    original_name = Path(file.filename or "upload").name
+    original_name = safe_upload_name(file.filename)
     if Path(original_name).suffix.lower() not in {".pptx", ".pdf"}:
         raise HTTPException(status_code=400, detail="Upload a PPTX or PDF file.")
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -117,55 +137,58 @@ async def generate(
     if len(content) > int(os.getenv("QUIZ_GENERATOR_MAX_UPLOAD_BYTES", str(15 * 1024 * 1024))):
         raise HTTPException(status_code=413, detail="File is too large. Max size is 15MB.")
 
-    tmp_in = OUTPUT_DIR / f"upload_{original_name}"
-    tmp_in.write_bytes(content)
-
-    key = openai_api_key or os.getenv("DEEPSEEK_API_KEY", "")
+    # Per-request key: used only for this request, never written to os.environ.
+    key = (openai_api_key or "").strip() or os.getenv("DEEPSEEK_API_KEY", "")
     if not key:
         return JSONResponse(
             {"status": "error", "message": "DEEPSEEK_API_KEY missing. Provide via form or .env."},
             status_code=400,
         )
-    os.environ["DEEPSEEK_API_KEY"] = key
 
+    request_dir = Path(tempfile.mkdtemp(prefix="quizgen_req_"))
+    tmp_in = request_dir / unique_upload_name(original_name)
+    tmp_in.write_bytes(content)
+    out_dir = None
     try:
-        with tmp_in.open("rb") as input_file:
-            result_pptx, zip_path, out_dir, msg = await asyncio.to_thread(
-                run_pipeline_end_to_end,
-                pptx_file=input_file,
-                ocr_engine=ocr_engine,
-                language=language,
-                prefer_com=prefer_com,
-                dpi=dpi,
-                openai_api_key=key,
-                model_name=model_name,
-                total_questions=total_questions,
-                mix_mode=mix_mode,
-                mcq_n=mcq_n,
-                theory_n=theory_n,
-                codefill_n=codefill_n,
-                fillblank_n=fillblank_n,
-                difficulty=difficulty,
-                deck_title=deck_title,
-                include_thumbs=include_thumbs and include_explanations,
-            )
-    except Exception as e:
-        tmp_in.unlink(missing_ok=True)
-        raise HTTPException(status_code=500, detail=f"Pipeline error: {e}")
+        try:
+            with tmp_in.open("rb") as input_file:
+                result_pptx, zip_path, out_dir, msg = await asyncio.to_thread(
+                    run_pipeline_end_to_end,
+                    pptx_file=input_file,
+                    ocr_engine=ocr_engine,
+                    language=language,
+                    prefer_com=prefer_com,
+                    dpi=dpi,
+                    openai_api_key=key,
+                    model_name=model_name,
+                    total_questions=total_questions,
+                    mix_mode=mix_mode,
+                    mcq_n=mcq_n,
+                    theory_n=theory_n,
+                    codefill_n=codefill_n,
+                    fillblank_n=fillblank_n,
+                    difficulty=difficulty,
+                    deck_title=deck_title,
+                    include_thumbs=include_thumbs and include_explanations,
+                    source_name=original_name,
+                )
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Pipeline error: {e}")
 
-    if not result_pptx:
-        raise HTTPException(status_code=500, detail=f"Generation failed: {msg}")
+        if not result_pptx:
+            raise HTTPException(status_code=500, detail=f"Generation failed: {msg}")
 
-    out_name = Path(original_name).stem + "_quizdeck.pptx"
-    out_path = OUTPUT_DIR / out_name
-    try:
-        data = Path(result_pptx).read_bytes()
-    except Exception:
-        data = result_pptx if isinstance(result_pptx, (bytes, bytearray)) else bytes(result_pptx)
-    out_path.write_bytes(data)
-    if out_dir:
-        shutil.rmtree(out_dir, ignore_errors=True)
-    tmp_in.unlink(missing_ok=True)
+        out_name = Path(unique_upload_name(original_name)).stem + "_quizdeck.pptx"
+        out_path = OUTPUT_DIR / out_name
+        try:
+            data = Path(result_pptx).read_bytes()
+        except Exception:
+            data = result_pptx if isinstance(result_pptx, (bytes, bytearray)) else bytes(result_pptx)
+        out_path.write_bytes(data)
+    finally:
+        if out_dir:
+            shutil.rmtree(out_dir, ignore_errors=True)
+        shutil.rmtree(request_dir, ignore_errors=True)
 
     # ✅ Always return a public HTTPS link
     public_base_url = (
