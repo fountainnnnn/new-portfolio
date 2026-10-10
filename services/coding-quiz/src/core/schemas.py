@@ -1,5 +1,10 @@
+import os
 from pydantic import BaseModel, Field, field_validator
-from typing import List, Union, Optional
+from typing import Dict, List, Union, Optional
+
+MAX_ANSWER_CHARS = int(os.getenv("CODING_QUIZ_MAX_ANSWER_CHARS", "4000"))
+MAX_ANSWER_ITEMS = int(os.getenv("CODING_QUIZ_MAX_ANSWER_ITEMS", "50"))
+ID_MAX_LENGTH = 64
 
 # ------------------------------------------------------------
 # Request models
@@ -36,10 +41,29 @@ class GenerateRequest(BaseModel):
 
 
 class AnswerRequest(BaseModel):
-    session_id: str                # required for backend session tracking
-    question_id: str
+    session_id: str = Field(max_length=ID_MAX_LENGTH)   # required for backend session tracking
+    question_id: str = Field(max_length=ID_MAX_LENGTH)
     user_answer: Union[str, List[str]]
-    language: Optional[str] = "javascript"  # default JS, can also be python/cpp
+    language: Optional[str] = Field(default="javascript", max_length=20)  # unused; kept for compatibility
+
+    @field_validator("user_answer")
+    @classmethod
+    def answer_size_limited(cls, value):
+        items = value if isinstance(value, list) else [value]
+        if len(items) > MAX_ANSWER_ITEMS:
+            raise ValueError(f"answer has too many parts (max {MAX_ANSWER_ITEMS})")
+        if sum(len(item) for item in items) > MAX_ANSWER_CHARS:
+            raise ValueError(f"answer is too long (max {MAX_ANSWER_CHARS} characters)")
+        return value
+
+
+class HintRequest(BaseModel):
+    session_id: str = Field(max_length=ID_MAX_LENGTH)
+    question_id: str = Field(max_length=ID_MAX_LENGTH)
+
+
+class EndQuizRequest(BaseModel):
+    session_id: str = Field(max_length=ID_MAX_LENGTH)
 
 
 # ------------------------------------------------------------
@@ -51,6 +75,8 @@ class SafeQuestion(BaseModel):
     question: str
     options: Optional[List[str]] = None
     code_with_blanks: Optional[str] = None
+    topic: Optional[str] = None
+    has_hint: bool = False
 
 
 class GenerateResponse(BaseModel):
@@ -64,3 +90,47 @@ class CheckAnswerResponse(BaseModel):
     correct: bool
     expected: Union[str, List[str]]
     explanation: str
+    # New fields (additive)
+    correct_answer: Union[str, List[str]] = ""
+    attempts: int = 0
+    first_try: bool = False
+    hint_used: bool = False
+
+
+class HintResponse(BaseModel):
+    status: str
+    question_id: str
+    hint: str
+    hints_used: int
+
+
+class TopicSummary(BaseModel):
+    topic: str
+    total: int
+    answered: int
+    correct_first_try: int
+    hints_used: int
+    accuracy: float
+
+
+class ReviewItem(BaseModel):
+    question_id: str
+    question: str
+    topic: str
+    type: str
+    answered: bool
+    correct: bool
+    correct_first_try: bool
+    attempts: int
+    hint_used: bool
+
+
+class EndQuizResponse(BaseModel):
+    status: str
+    message: str
+    score: Dict[str, Union[int, float]]
+    hints_used: int
+    by_topic: List[TopicSummary]
+    by_type: List[TopicSummary]
+    weak_areas: List[str]
+    review: List[ReviewItem]

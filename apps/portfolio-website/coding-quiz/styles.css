@@ -437,3 +437,70 @@ label {
     --navbar-height: 60px; /* adjust if your mobile navbar is taller/shorter */
   }
 }
+/* Hints */
+.hint-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+.hint-row .btn { display: inline-flex; align-items: center; gap: 6px; }
+.hint-text {
+  margin: 0;
+  padding: 0.55rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--project-accent, var(--accent)) 24%, transparent);
+  background: color-mix(in srgb, var(--project-accent, var(--accent)) 8%, white);
+  color: #33424a;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+/* Answer + explanation shown after answering */
+.feedback .reveal-heading { margin: 0 0 0.35rem; font-weight: 800; }
+.feedback .reveal-label {
+  margin: 0.5rem 0 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.feedback .reveal-answer {
+  margin: 0 0 0.5rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  background: #1f2937;
+  color: #f1f5f9;
+  font-size: 0.82rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.feedback .reveal-explanation { margin: 0 0 0.25rem; color: #263241; font-weight: 500; line-height: 1.5; }
+
+/* End-of-quiz review */
+.review-summary { margin: 0.5rem 0 1rem; }
+.review-heading { font-size: 0.95rem; font-weight: 800; margin: 0.75rem 0 0.5rem; }
+.review-topics { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.5rem; }
+.review-topics li {
+  display: grid;
+  grid-template-columns: minmax(90px, 0.6fr) 1fr;
+  gap: 0.25rem 0.75rem;
+  align-items: center;
+}
+.review-topic-name { font-weight: 800; text-transform: capitalize; }
+.review-topic-stats { color: #566273; font-size: 0.85rem; text-align: right; }
+.review-bar {
+  grid-column: 1 / -1;
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+.review-bar span { display: block; height: 100%; background: var(--project-accent, var(--accent)); }
+.review-note { margin: 0.75rem 0 0; font-weight: 700; color: #33424a; }
+@media (max-width: 576px) {
+  .review-topics li { grid-template-columns: 1fr; }
+  .review-topic-stats { text-align: left; }
+}

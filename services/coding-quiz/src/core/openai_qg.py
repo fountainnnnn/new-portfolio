@@ -21,11 +21,17 @@ class SafeQuestion(TypedDict):
     question: str
     options: List[str] | None
     code_with_blanks: str | None
+    topic: str
+    has_hint: bool
 
 class SecretRecord(TypedDict):
     question_id: str
     answer: List[str]
     explanation: str
+    hint: str
+    topic: str
+    type: str
+    question: str
 
 class QuestionResult(TypedDict):
     safe: List[SafeQuestion]
@@ -61,7 +67,10 @@ QG_SYSTEM_TEMPLATE = (
     "Output rules:\n"
     "- Output ONLY JSON (no markdown, no commentary outside JSON).\n"
     "- You MUST return exactly the number of questions requested by the user.\n"
-    "- Each item MUST have keys: ['type','question','options','code_with_blanks','answer','explanation'].\n"
+    "- Each item MUST have keys: ['type','topic','question','options','code_with_blanks','answer','explanation','hint'].\n"
+    "- 'topic' MUST be one of: loops, arrays, functions, conditionals, objects, classes.\n"
+    "- 'hint' is ONE short nudge (max 25 words) toward the reasoning. It MUST NOT state, quote or "
+    "give away the answer or any option text.\n"
     "- The 'question' text MUST NOT contain code — only describe the task.\n"
     "- All code must appear only in 'code_with_blanks'.\n"
     "- Never duplicate code in both 'question' and 'code_with_blanks'.\n\n"
@@ -79,6 +88,41 @@ QG_SYSTEM_TEMPLATE = (
 # ------------------------------------------------------------
 # Helpers
 # ------------------------------------------------------------
+TOPICS = {"loops", "arrays", "functions", "conditionals", "objects", "classes"}
+_TOPIC_ALIASES = {
+    "loop": "loops", "iteration": "loops", "array": "arrays", "lists": "arrays", "list": "arrays",
+    "function": "functions", "conditional": "conditionals", "if": "conditionals",
+    "object": "objects", "class": "classes", "oop": "classes",
+}
+FALLBACK_HINTS = {
+    "mcq": "Rule out options that would break on an edge case, such as an empty collection or the last index.",
+    "fill_code": "Read the lines around each blank: the missing piece must make the code run and give the described result.",
+    "drag_drop": "Start with the line that sets things up, then follow the order the program would actually execute.",
+}
+MAX_HINT_CHARS = 240
+
+
+def _normalize_topic(raw: Any, requested_topic: str) -> str:
+    if requested_topic and requested_topic.lower() != "mixed":
+        return requested_topic.lower()
+    value = str(raw or "").strip().lower()
+    value = _TOPIC_ALIASES.get(value, value)
+    return value if value in TOPICS else "general"
+
+
+def _clean_hint(raw: Any, qtype: str, answers: List[str]) -> str:
+    """Keep the model's hint unless it is missing, too long, or leaks the answer."""
+    hint = " ".join(str(raw or "").split())
+    if not hint or len(hint) > MAX_HINT_CHARS:
+        return FALLBACK_HINTS.get(qtype, FALLBACK_HINTS["mcq"])
+    lowered = hint.lower()
+    for ans in answers:
+        a = ans.strip().lower()
+        if len(a) >= 3 and a in lowered:
+            return FALLBACK_HINTS.get(qtype, FALLBACK_HINTS["mcq"])
+    return hint
+
+
 def _parse_json_response(text: str) -> List[Dict[str, Any]]:
     if not text:
         raise HTTPException(status_code=500, detail="Empty response from model")
@@ -227,6 +271,7 @@ async def generate_questions(
             "Return a JSON object with one key named questions. "
             "questions must be an array of exactly the requested length. "
             "Apply all quality rules: variety, debugging, edge cases, nested logic, off-by-one, and clear explanations. "
+            "Give every question its topic and one hint that does not reveal the answer. "
             "Treat every question as a standalone high-quality item. "
             "Do not repeat the same question pattern."
         )
@@ -346,6 +391,8 @@ async def generate_questions(
                 if ans not in opts:
                     opts.append(ans)
 
+        clean_answers = [a.strip() for a in ans_list if a.strip()]
+        question_topic = _normalize_topic(q.get("topic"), topic)
         safe_list.append(
             {
                 "question_id": qid,
@@ -353,13 +400,19 @@ async def generate_questions(
                 "question": q.get("question", "").strip(),
                 "options": opts,
                 "code_with_blanks": code_with_blanks,
+                "topic": question_topic,
+                "has_hint": True,
             }
         )
         secret_list.append(
             {
                 "question_id": qid,
-                "answer": [a.strip() for a in ans_list if a.strip()],
+                "answer": clean_answers,
                 "explanation": str(q.get("explanation")).strip(),
+                "hint": _clean_hint(q.get("hint"), qtype, clean_answers),
+                "topic": question_topic,
+                "type": qtype,
+                "question": q.get("question", "").strip(),
             }
         )
         return True
@@ -430,24 +483,32 @@ async def generate_questions(
                 "options": [syntax.get("loop", "for item in items:"), "if item in items:", "return items", "break items"],
                 "answer": [syntax.get("loop", "for item in items:")],
                 "explanation": "A for loop visits each element in the collection without manually managing every index.",
+                "hint": "Look for the keyword that repeats a block once per element.",
+                "topic": "loops",
             },
             {
                 "question": f"Which {language} snippet begins a reusable function definition?",
                 "options": [syntax.get("function", "def total(values):"), "while total(values):", "import total(values)", "class total(values)"],
                 "answer": [syntax.get("function", "def total(values):")],
                 "explanation": "A function definition names a reusable block that can receive values and return a result.",
+                "hint": "Which keyword declares something you can call again later with arguments?",
+                "topic": "functions",
             },
             {
                 "question": f"Which expression points to the final valid index in a {language} list or array?",
                 "options": [syntax.get("index", "len(values) - 1"), "len(values)", "0 - len(values)", "values + 1"],
                 "answer": [syntax.get("index", "len(values) - 1")],
                 "explanation": "Indexes start at zero, so the last valid position is one less than the collection length.",
+                "hint": "Remember that counting positions starts at zero.",
+                "topic": "arrays",
             },
             {
                 "question": f"Which {language} snippet creates a small numeric collection?",
                 "options": [syntax.get("array", "values = [1, 2, 3]"), "values == 1, 2, 3", "values -> [1, 2, 3]", "values call [1, 2, 3]"],
                 "answer": [syntax.get("array", "values = [1, 2, 3]")],
                 "explanation": "This syntax initializes a collection so later code can loop through or index the values.",
+                "hint": "Pick the line that assigns several values to one name in a single statement.",
+                "topic": "arrays",
             },
         ]
         fallback_index = 0
@@ -462,6 +523,8 @@ async def generate_questions(
                     "question": template["question"],
                     "options": template["options"],
                     "code_with_blanks": None,
+                    "topic": template["topic"],
+                    "has_hint": True,
                 }
             )
             secret_list.append(
@@ -469,6 +532,10 @@ async def generate_questions(
                     "question_id": qid,
                     "answer": template["answer"],
                     "explanation": template["explanation"],
+                    "hint": template["hint"],
+                    "topic": template["topic"],
+                    "type": "mcq",
+                    "question": template["question"],
                 }
             )
 

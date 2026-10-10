@@ -23,6 +23,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let feedbackEl = document.getElementById("feedback");
   let scoreText = document.getElementById("score-text");
   let restartBtn = document.getElementById("restart-btn");
+  const hintBtn = document.getElementById("hint-btn");
+  const hintText = document.getElementById("hint-text");
+  const reviewSummary = document.getElementById("review-summary");
 
   // Loading overlay
   const loadingOverlay = document.getElementById("loading-overlay");
@@ -34,6 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let locked = false;
   let attemptedWrong = false;
   let activeSubmitBtn = null;
+  let hintsUsed = 0;
 
   function showSetupStatus(message, type = "danger") {
     quizStatus.className = `alert alert-${type}`;
@@ -101,13 +105,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await res.json();
       if (!res.ok || data.status !== "ok" || !Array.isArray(data.questions)) {
-        throw new Error(data.detail || data.message || "Failed to load questions");
+        throw new Error(data.detail || data.message || data.error || "Failed to load questions");
       }
 
       sessionId = data.session_id;
       questions = data.questions;
       currentIndex = 0;
       score = 0;
+      hintsUsed = 0;
 
       setupCard.classList.add("hidden");
       quizContainer.classList.remove("hidden");
@@ -143,6 +148,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Reset submit order button state
     submitOrderBtn.disabled = false;
+
+    // Reset hint
+    hintText.textContent = "";
+    hintText.classList.add("hidden");
+    hintBtn.disabled = false;
+    hintBtn.classList.remove("hidden");
 
     // Remove lingering next button
     const oldNext = document.getElementById("next-btn");
@@ -380,6 +391,80 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Fetch the stored hint for the current question (recorded server-side).
+  async function showHint() {
+    const q = questions[currentIndex];
+    if (!q || hintBtn.disabled) return;
+    hintBtn.disabled = true;
+    try {
+      const res = await fetch(`${BACKEND_BASE_URL}/hint`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ session_id: sessionId, question_id: q.question_id }),
+      });
+      const data = await res.json();
+      if (!res.ok || data.status !== "ok") {
+        throw new Error(data.detail || data.message || data.error || "Hint unavailable");
+      }
+      hintsUsed = data.hints_used ?? hintsUsed + 1;
+      hintText.textContent = `Hint: ${data.hint}`;
+      hintText.classList.remove("hidden");
+      hintBtn.classList.add("hidden");
+    } catch (err) {
+      console.error("Hint error:", err);
+      hintText.textContent = `Hint unavailable: ${err.message}`;
+      hintText.classList.remove("hidden");
+      hintBtn.disabled = false;
+    }
+  }
+
+  function formatAnswer(value) {
+    return Array.isArray(value) ? value.join("\n") : String(value ?? "");
+  }
+
+  // Answer + explanation block, shown only after the user has answered.
+  function appendReveal(container, data, includeAnswer) {
+    if (includeAnswer && data.expected != null && formatAnswer(data.expected)) {
+      const label = document.createElement("p");
+      label.className = "reveal-label";
+      label.textContent = "Correct answer";
+      const pre = document.createElement("pre");
+      pre.className = "reveal-answer";
+      pre.textContent = formatAnswer(data.expected);
+      container.appendChild(label);
+      container.appendChild(pre);
+    }
+    if (data.explanation) {
+      const p = document.createElement("p");
+      p.className = "reveal-explanation";
+      p.textContent = data.explanation;
+      container.appendChild(p);
+    }
+  }
+
+  function lockQuestion() {
+    locked = true;
+    setChoiceButtonsDisabled(true);
+    if (activeSubmitBtn) activeSubmitBtn.disabled = true;
+    submitOrderBtn.disabled = true;
+    hintBtn.disabled = true;
+    codeBlock.querySelectorAll("[data-blank]").forEach((el) => {
+      el.contentEditable = "false";
+    });
+  }
+
+  function appendNextButton() {
+    const nextBtn = document.createElement("button");
+    nextBtn.className = "btn btn-accent mt-2";
+    nextBtn.textContent = currentIndex + 1 < questions.length ? "Next Question" : "See results";
+    nextBtn.id = "next-btn";
+    nextBtn.addEventListener("click", () => {
+      currentIndex++;
+      showQuestion();
+    });
+    feedbackEl.appendChild(nextBtn);
+  }
+
   // Submit answer
   async function submitAnswer(ans, clickedBtn = null) {
     const q = questions[currentIndex];
@@ -396,7 +481,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await res.json();
       if (!res.ok || data.status !== "ok") {
-        throw new Error(data.detail || data.message || "Failed to check answer");
+        throw new Error(data.detail || data.message || data.error || "Failed to check answer");
       }
 
       const correct = data.correct;
@@ -411,27 +496,18 @@ document.addEventListener("DOMContentLoaded", () => {
           el.classList.remove("is-error");
           el.removeAttribute("aria-invalid");
         });
+        lockQuestion();
         feedbackEl.classList.remove("hidden");
         feedbackEl.className = "feedback success";
-        feedbackEl.textContent = `Correct. ${data.explanation}`;
-
-        // Disable Submit Order button if drag_drop type
-        if (q.type === "drag_drop") {
-          submitOrderBtn.disabled = true;
-        }
+        feedbackEl.textContent = "";
+        const heading = document.createElement("p");
+        heading.className = "reveal-heading";
+        heading.textContent = attemptedWrong ? "Correct on a retry." : "Correct.";
+        feedbackEl.appendChild(heading);
+        appendReveal(feedbackEl, data, false);
 
         // Show Next button instead of auto-advancing
-        const nextBtn = document.createElement("button");
-        nextBtn.className = "btn btn-accent mt-2";
-        nextBtn.textContent = "Next Question";
-        nextBtn.id = "next-btn";
-        nextBtn.addEventListener("click", () => {
-          currentIndex++;
-          showQuestion();
-        });
-
-        feedbackEl.appendChild(document.createElement("br"));
-        feedbackEl.appendChild(nextBtn);
+        appendNextButton();
       } else {
         attemptedWrong = true;
         if (clickedBtn) {
@@ -446,6 +522,19 @@ document.addEventListener("DOMContentLoaded", () => {
         feedbackEl.textContent = clickedBtn
           ? "Incorrect. That option is marked as tried; choose another answer."
           : "Incorrect. Adjust your answer and try again.";
+
+        // Offer the answer + explanation from this response instead of another retry.
+        const revealBtn = document.createElement("button");
+        revealBtn.type = "button";
+        revealBtn.className = "btn btn-outline-accent btn-sm mt-2 d-block";
+        revealBtn.textContent = "Show answer and explanation";
+        revealBtn.addEventListener("click", () => {
+          lockQuestion();
+          revealBtn.remove();
+          appendReveal(feedbackEl, data, true);
+          appendNextButton();
+        });
+        feedbackEl.appendChild(revealBtn);
       }
     } catch (err) {
       console.error("Answer submit error:", err);
@@ -456,10 +545,82 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Results
-  function showResults() {
+  async function showResults() {
     quizContainer.classList.add("hidden");
     resultCard.classList.remove("hidden");
     scoreText.textContent = `You scored ${score} out of ${questions.length} questions.`;
+    reviewSummary.textContent = "";
+    reviewSummary.classList.add("hidden");
+    if (!sessionId) return;
+
+    const endedSession = sessionId;
+    sessionId = null;
+    try {
+      const res = await fetch(`${BACKEND_BASE_URL}/end_quiz?session_id=${encodeURIComponent(endedSession)}`, {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok || data.status !== "ok") throw new Error(data.detail || data.message || "Review unavailable");
+      renderReview(data);
+    } catch (err) {
+      console.error("End quiz error:", err);
+    }
+  }
+
+  function renderReview(data) {
+    const s = data.score || {};
+    scoreText.textContent =
+      `You scored ${s.correct_first_try ?? score} out of ${s.total_questions ?? questions.length} on the first try` +
+      (data.hints_used ? `, using ${data.hints_used} hint${data.hints_used === 1 ? "" : "s"}.` : ".");
+
+    const addHeading = (text) => {
+      const h = document.createElement("h3");
+      h.className = "review-heading";
+      h.textContent = text;
+      reviewSummary.appendChild(h);
+    };
+
+    const topics = Array.isArray(data.by_topic) ? data.by_topic : [];
+    if (topics.length) {
+      addHeading("By topic");
+      const list = document.createElement("ul");
+      list.className = "review-topics";
+      topics.forEach((t) => {
+        const item = document.createElement("li");
+        const name = document.createElement("span");
+        name.className = "review-topic-name";
+        name.textContent = t.topic;
+        const stats = document.createElement("span");
+        stats.className = "review-topic-stats";
+        const unanswered = t.total - t.answered;
+        stats.textContent =
+          `${t.correct_first_try}/${t.answered} first try` +
+          (t.hints_used ? ` · ${t.hints_used} hint${t.hints_used === 1 ? "" : "s"}` : "") +
+          (unanswered ? ` · ${unanswered} skipped` : "");
+        const bar = document.createElement("span");
+        bar.className = "review-bar";
+        bar.setAttribute("aria-hidden", "true");
+        const fill = document.createElement("span");
+        fill.style.width = `${Math.round((t.accuracy || 0) * 100)}%`;
+        bar.appendChild(fill);
+        item.append(name, stats, bar);
+        list.appendChild(item);
+      });
+      reviewSummary.appendChild(list);
+    }
+
+    const weak = Array.isArray(data.weak_areas) ? data.weak_areas : [];
+    const note = document.createElement("p");
+    note.className = "review-note";
+    const icon = document.createElement("i");
+    icon.className = weak.length ? "bi bi-arrow-repeat" : "bi bi-check2-circle";
+    icon.setAttribute("aria-hidden", "true");
+    note.appendChild(icon);
+    note.appendChild(document.createTextNode(
+      weak.length ? ` Practice next: ${weak.join(", ")}.` : " No weak areas this round."
+    ));
+    reviewSummary.appendChild(note);
+    reviewSummary.classList.remove("hidden");
   }
 
   // Events
@@ -470,6 +631,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const numQuestions = parseInt(numQuestionsInput.value, 10) || 10;
     loadQuiz(language, topic, difficulty, numQuestions);
   });
+
+  hintBtn.addEventListener("click", showHint);
 
   restartBtn.addEventListener("click", () => {
     resultCard.classList.add("hidden");
