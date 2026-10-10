@@ -22,16 +22,16 @@ projects/
   school-veggie-ai-cnn/
 ```
 
-## Imported Sources
+## Origins
 
-| Destination | Source |
+The portfolio site and the four AI demo services started as standalone projects and were consolidated here so they deploy together on Railway. The original repos for the services are still public:
+
+| Service | Original repo |
 | --- | --- |
-| `apps/portfolio-website` | `D:\SP Files\Personal Projects\portfolio-website` |
-| `services/coding-quiz` | `D:\SP Files\Personal Projects\backend-apis\coding-quiz` |
-| `services/file-chat-assistant` | `D:\SP Files\Personal Projects\backend-apis\file-chat-assistant` |
-| `services/mock-generator` | `D:\SP Files\Personal Projects\backend-apis\mock-generator` |
-| `services/quiz-generator` | `D:\SP Files\Personal Projects\backend-apis\quiz-generator` |
-| `projects/auto-dashboard` | `D:\SP Files\Personal Projects\auto-dashboard` |
+| `services/quiz-generator` | [quiz-slides-generator](https://github.com/fountainnnnn/quiz-slides-generator) |
+| `services/mock-generator` | [Mock-Paper-Generator](https://github.com/fountainnnnn/Mock-Paper-Generator) |
+| `services/file-chat-assistant` | [file-chat-assistant](https://github.com/fountainnnnn/file-chat-assistant) |
+| `services/coding-quiz` | [coding-quiz-webapp](https://github.com/fountainnnnn/coding-quiz-webapp) |
 
 Generated folders, dependency folders, virtualenvs, model weights, caches, and local datasets are intentionally excluded from Git.
 
