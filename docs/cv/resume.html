@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Ng Yu Hang (Mervin) – CV</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  @page { size: A4; margin: 11mm 13mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Inter, "Helvetica Neue", Arial, sans-serif; font-size: 8.7pt; line-height: 1.34; color: #1f2937; }
+  a { color: inherit; text-decoration: none; }
+  header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #4338ca; padding-bottom: 6px; margin-bottom: 7px; }
+  h1 { font-size: 21pt; font-weight: 700; color: #111827; letter-spacing: -0.3px; line-height: 1.05; }
+  .role { font-size: 10pt; font-weight: 500; color: #4338ca; margin-top: 2px; }
+  .contact { text-align: right; font-size: 8.3pt; color: #374151; line-height: 1.5; }
+  h2 { font-size: 9.6pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #4338ca; margin: 7px 0 2.5px; }
+  .summary { color: #374151; }
+  .item { margin-bottom: 4.5px; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .title { font-weight: 600; color: #111827; }
+  .org { color: #4b5563; font-weight: 500; }
+  .date { color: #6b7280; font-size: 8.2pt; white-space: nowrap; }
+  ul { margin: 1.5px 0 0 13px; }
+  li { margin-bottom: 1px; }
+  .proj { margin-bottom: 2.5px; }
+  .proj b { color: #111827; }
+  .tag { color: #6b7280; font-size: 8pt; }
+  .skills div { display: grid; grid-template-columns: 96px 1fr; margin-bottom: 1.5px; }
+  .skills b { color: #111827; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Ng Yu Hang (Mervin)</h1>
+    <div class="role">AI / ML Engineer · Generative AI · LLM Applications</div>
+  </div>
+  <div class="contact">
+    +65 9186 3614 · spiralcrust@gmail.com · Singapore<br />
+    <a href="https://ngyuhang.com">ngyuhang.com</a> · <a href="https://github.com/fountainnnnn">github.com/fountainnnnn</a> · <a href="https://www.linkedin.com/in/ngyuhang/">linkedin.com/in/ngyuhang</a>
+  </div>
+</header>
+
+<p class="summary">AI engineer focused on generative AI and applied ML. I design and ship production LLM systems end to end: RAG pipelines, agents and tool use, evaluation and red-teaming, fine-tuning, and the APIs, interfaces and cloud deployments around them. I have delivered RAG and LLM-evaluation systems for real users at Singapore Polytechnic and in industry, with measured impact.</p>
+
+<h2>Experience</h2>
+
+<div class="item">
+  <div class="row"><div><span class="title">Full-Stack AI Engineer (Intern)</span> · <span class="org">SP Data Science &amp; Analytics Centre (DSAC)</span></div><span class="date">Mar 2026 – Present</span></div>
+  <ul>
+    <li>Built an Azure-based RAG chatbot for EM Services, a town council managing agent, cutting document retrieval time by ~70–85% and manual search time by ~60%.</li>
+    <li>Built an LLM grading system for Power BI dashboards that reads the .pbix file, maps each visual to its student and grades against the rubric with cited evidence, reducing grading time by ~50–70%.</li>
+    <li>Proposed and prototyped a project portal that matches DSAC's client projects with lecturers across SP's schools.</li>
+  </ul>
+</div>
+
+<div class="item">
+  <div class="row"><div><span class="title">Product &amp; AI (Part-time)</span> · <span class="org">Influencees</span></div><span class="date">Sep 2026 – Present</span></div>
+  <ul>
+    <li>Building AI features and product prototypes for a Singapore creator-marketing platform, including an internal business-development agent workspace and a creator Trust Check.</li>
+  </ul>
+</div>
+
+<div class="item">
+  <div class="row"><div><span class="title">AI Researcher / Developer (Part-time)</span> · <span class="org">PetaniAI</span></div><span class="date">May 2026 – Aug 2026</span></div>
+  <ul>
+    <li>Evaluated new AI models and tools and turned them into working prototypes, including an interactive product site and a TikTok views leaderboard.</li>
+  </ul>
+</div>
+
+<div class="item">
+  <div class="row"><div><span class="title">Student Developer</span> · <span class="org">Singapore Polytechnic, School of Computing</span></div><span class="date">Sep 2025 – Feb 2026</span></div>
+  <ul>
+    <li>Built and evaluated an end-to-end generative-AI chatbot for a paid internal client project, using cloud services and both qualitative and quantitative user testing to iterate.</li>
+    <li>Presented the piloted prototype to SP's Deputy Principal and PCEO, and showcased it to hundreds of SP staff at a seminar.</li>
+  </ul>
+</div>
+
+<h2>Selected Projects</h2>
+<div class="proj"><b>AgentLabs</b> <span class="tag">LLM evaluation · red-teaming · LoRA · FastAPI</span> – Adversarial hardening for AI agents: attacks with 200 prompt-injection and tool-abuse cases, detects failures with deterministic verifiers, auto-patches prompts, tool policies and output filters, and retests; also fine-tunes small open models with LoRA. Live demo.</div>
+<div class="proj"><b>ProofBench</b> <span class="tag">FastAPI · PostgreSQL · Docker · CI</span> – Evaluates software tools by generating adapters, running them in disposable sandboxes and scoring the output with a deterministic evaluator.</div>
+<div class="proj"><b>Lactic</b> <span class="tag">Graph RAG · embeddings · agents · Flutter</span> – AI tutor app for Singapore A-Level students: hybrid vector and graph retrieval over 30k+ chunks, a deterministic agent harness and model routing through OpenRouter.</div>
+<div class="proj"><b>ESG Evidence Engine</b> <span class="tag">FastAPI · LLM agents · Sentinel-2</span> – Research agent that checks companies' ESG claims against sourced evidence and satellite imagery, producing cited reports (PolyFintech 2026, team).</div>
+<div class="proj"><b>Edge Human Detection</b> <span class="tag">Computer vision · YOLO · PyTorch</span> – Fine-tuned YOLO11 on thermal imagery for night-vision CCTV, with temporal filtering to cut false alarms and on-device inference.</div>
+
+<h2>Hackathons</h2>
+<p><b>PolyFintech 2026</b> – ESG Evidence Engine (team) · <b>Edu2030 Vibe Hackathon, MOE HQ</b> – AI-literacy platform with an LLM prompt judge · <b>'Sup Build2026</b> – support-agent builder in 12 hours · <b>Ralphton</b> – one-shot autonomous app build · <b>OpenClaw Hackathon</b> – news-intelligence agent for GrowthLab</p>
+
+<h2>Skills</h2>
+<div class="skills">
+  <div><b>GenAI / LLM</b><span>RAG, embeddings and vector search, agents and tool use, LLM evaluation and red-teaming, prompt engineering, vision-language models, LoRA fine-tuning, OpenAI / OpenRouter / DeepSeek APIs, LangChain</span></div>
+  <div><b>ML</b><span>PyTorch, TensorFlow, Hugging Face Transformers / PEFT, scikit-learn, CNNs, YOLO, OpenCV, time-series forecasting</span></div>
+  <div><b>Languages</b><span>Python, TypeScript, JavaScript, SQL, Dart, Go</span></div>
+  <div><b>Backend &amp; apps</b><span>FastAPI, Node.js, React, Next.js, Flutter</span></div>
+  <div><b>Deploy &amp; data</b><span>Docker, Azure, Railway, GitHub Actions CI, PostgreSQL, Supabase, Power BI, Tableau</span></div>
+</div>
+
+<h2>Education</h2>
+<div class="item">
+  <div class="row"><div><span class="title">Diploma in Applied AI &amp; Analytics</span> · <span class="org">Singapore Polytechnic</span></div><span class="date">2024 – 2027</span></div>
+  <div>CGPA 3.83 / 4.00 · A / Distinction (top 5%) in AI modules including Deep Learning and AI &amp; Machine Learning</div>
+</div>
+<div class="item">
+  <div class="row"><div><span class="title">GCE O-Level</span> · <span class="org">Chung Cheng High School (Main)</span></div><span class="date">2022 – 2023</span></div>
+</div>
+
+<h2>Certifications &amp; Affiliations</h2>
+<p><b>Certified AI Trainer, AI Singapore</b> (selected for the Youth AI Train-the-Trainer Programme) · NVIDIA Fundamentals of Deep Learning · AWS Academy Cloud Foundations · Google Cloud skill badges (BigQuery data analytics and ML) · IBM AI Fundamentals · Member, Singapore Computer Society · Languages: English, Chinese</p>
+</body>
+</html>
