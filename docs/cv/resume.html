@@ -6,7 +6,7 @@
 <style>
   @page { size: A4; margin: 11mm 13mm; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: "Times New Roman", Times, serif; font-size: 9.2pt; line-height: 1.22; color: #000; }
+  body { font-family: "Times New Roman", Times, serif; font-size: 10.3pt; line-height: 1.3; color: #000; }
   a { color: inherit; text-decoration: none; }
   header { text-align: center; margin-bottom: 4px; }
   h1 { font-size: 18pt; font-weight: 700; }
@@ -24,6 +24,8 @@
   .tag { font-style: italic; }
   ul.awards { margin-left: 15px; }
   .skills div { display: grid; grid-template-columns: 105px 1fr; margin-bottom: 1px; }
+  .awards td { padding: 0 14px 1px 0; vertical-align: top; }
+  .tight li { margin-bottom: 1.5px; }
 </style>
 </head>
 <body>
@@ -34,76 +36,73 @@
 </header>
 
 <h2>Summary</h2>
-<p>AI engineer focused on generative AI and applied ML. I design and ship production LLM systems end to end: RAG pipelines, agents and tool use, evaluation and red-teaming, fine-tuning, and the APIs, interfaces and cloud deployments around them. I have delivered RAG and LLM-evaluation systems for real users at Singapore Polytechnic and in industry, with measured impact.</p>
+<p>AI engineer who builds and ships LLM systems end to end: RAG, agents, evaluation and deployment. Delivered production AI for Singapore Polytechnic and industry clients.</p>
 
 <h2>Experience</h2>
 <div class="item">
   <div class="row"><div><span class="title">Product &amp; AI (Part-time)</span>, <span class="org">Influencees</span></div><span class="date">Sep 2026 - Present</span></div>
-  <ul>
-    <li>Built Ai-kyo, the platform's AI assistant for creators: an intent-routed agent with tool use (website reading, a social trends tool), live streamed reasoning and answers grounded in each creator's profile and location.</li>
-    <li>Built the Unified Inbox, bringing WhatsApp, Instagram, Messenger, LinkedIn, TikTok and Gmail conversations into one tab with owner-controlled access, iterated through staff testing.</li>
+  <ul class="tight">
+    <li>Built Ai-kyo, an AI agent for creators with tool use, web reading and live reasoning</li>
+    <li>Built a Unified Inbox for 6 channels (WhatsApp, Instagram, Messenger, LinkedIn, TikTok, Gmail)</li>
+    <li>Cut inbox sign-in lag from 1.1 s to 12 ms; 10 pull requests merged to production</li>
   </ul>
 </div>
-
 <div class="item">
-  <div class="row"><div><span class="title">Full-Stack AI Engineer (Intern)</span>, <span class="org">SP Data Science &amp; Analytics Centre (DSAC)</span></div><span class="date">Mar 2026 - Present</span></div>
-  <ul>
-    <li>Built an Azure-based RAG chatbot for EM Services, a town council managing agent, cutting document retrieval time by ~70-85% and manual search time by ~60%.</li>
-    <li>Built an LLM grading system for Power BI dashboards that reads the .pbix file, maps each visual to its student and grades against the rubric with cited evidence, reducing grading time by ~50-70%.</li>
-    <li>Proposed and prototyped a project portal that matches DSAC's client projects with lecturers across SP's schools.</li>
+  <div class="row"><div><span class="title">Full-Stack AI Engineer (Intern)</span>, <span class="org">SP Data Science &amp; Analytics Centre</span></div><span class="date">Mar 2026 - Present</span></div>
+  <ul class="tight">
+    <li>Azure RAG chatbot for EM Services: ~70-85% faster document retrieval, ~60% less manual search</li>
+    <li>LLM grader for Power BI dashboards: ~50-70% less grading time</li>
   </ul>
 </div>
-
-
 <div class="item">
   <div class="row"><div><span class="title">AI Researcher / Developer (Part-time)</span>, <span class="org">PetaniAI</span></div><span class="date">May 2026 - Aug 2026</span></div>
-  <ul>
-    <li>Evaluated new AI models and tools and turned them into working prototypes, including an interactive product site and a TikTok views leaderboard.</li>
+  <ul class="tight">
+    <li>Benchmarked LLMs against the company's own requirements</li>
+    <li>Built prototypes on new models and tools</li>
   </ul>
 </div>
-
 <div class="item">
   <div class="row"><div><span class="title">Student Developer</span>, <span class="org">Singapore Polytechnic, School of Computing</span></div><span class="date">Sep 2025 - Feb 2026</span></div>
-  <ul>
-    <li>Built and evaluated an end-to-end generative-AI chatbot for a paid internal client project, using cloud services and both qualitative and quantitative user testing to iterate.</li>
-    <li>Presented the piloted prototype to SP's Deputy Principal and PCEO, and showcased it to hundreds of SP staff at a seminar.</li>
+  <ul class="tight">
+    <li>Built and user-tested a GenAI chatbot for a paid internal client</li>
+    <li>Presented to SP's Deputy Principal and PCEO, and to hundreds of staff at a seminar</li>
   </ul>
 </div>
 
-<h2>Awards &amp; Hackathons</h2>
-<ul class="awards">
-  <li><b>National Olympiad in Artificial Intelligence 2026</b>: Bronze (top 60 in Singapore) | <b>Director's Honour Roll</b> AY25/26</li>
-  <li><b>Projet: Hack &amp; Hire</b>: Winner | <b>'SUP Build2026</b>: Top 3 + Best Use of Zo Computer | <b>OpenClaw Hackathon</b>: Top 3</li>
-  <li><b>Daytona HackSprint</b>: 2nd runner-up | <b>Agent Forge Hackathon</b>: 3rd runner-up | <b>PolyFinTech 2026</b> (ESG): Finalist</li>
-  <li><b>NAISC Hackathon</b> (Huawei Track): Semi-finalist, top 10 | Also: Edu2030 Vibe Hackathon (MOE HQ), Ralphton</li>
-</ul>
+<h2>Awards</h2>
+<table class="awards">
+  <tr><td><b>Projet: Hack &amp; Hire</b>: Winner</td><td><b>National Olympiad in AI 2026</b>: Bronze (top 60)</td></tr>
+  <tr><td><b>'SUP Build2026</b>: Top 3 + Best Use of Zo</td><td><b>OpenClaw Hackathon</b>: Top 3</td></tr>
+  <tr><td><b>Daytona HackSprint</b>: 2nd runner-up</td><td><b>Agent Forge Hackathon</b>: 3rd runner-up</td></tr>
+  <tr><td><b>NAISC (Huawei Track)</b>: Top 10</td><td><b>PolyFinTech 2026 (ESG)</b>: Finalist</td></tr>
+  <tr><td colspan="2"><b>Director's Honour Roll</b> AY25/26</td></tr>
+</table>
 
-<h2>Selected Projects</h2>
-<div class="proj"><b>AgentLabs</b> <span class="tag">(LLM evaluation, red-teaming, LoRA, FastAPI)</span>: Adversarial hardening for AI agents: attacks with 200 prompt-injection and tool-abuse cases, detects failures with deterministic verifiers, auto-patches prompts, tool policies and output filters, and retests; also fine-tunes small open models with LoRA. Live demo.</div>
-<div class="proj"><b>ProofBench</b> <span class="tag">(FastAPI, PostgreSQL, Docker, CI)</span>: Evaluates software tools by generating adapters, running them in disposable sandboxes and scoring the output with a deterministic evaluator.</div>
-<div class="proj"><b>Lactic</b> <span class="tag">(Graph RAG, embeddings, agents, Flutter)</span>: AI tutor app for Singapore A-Level students: hybrid vector and graph retrieval over 30k+ chunks, a deterministic agent harness and model routing through OpenRouter.</div>
-<div class="proj"><b>ESG Evidence Engine</b> <span class="tag">(FastAPI, LLM agents, Sentinel-2)</span>: Research agent that checks companies' ESG claims against sourced evidence and satellite imagery, producing cited reports. PolyFinTech 2026 finalist (team).</div>
-<div class="proj"><b>Edge Human Detection</b> <span class="tag">(Computer vision, YOLO, PyTorch)</span>: Fine-tuned YOLO11 on thermal imagery for night-vision CCTV, with temporal filtering to cut false alarms and on-device inference.</div>
+<h2>Projects</h2>
+<ul class="tight">
+  <li><b>AgentLabs</b>: red-teams AI agents, auto-patches failures and retests; LoRA fine-tuning (live demo)</li>
+  <li><b>ProofBench</b>: benchmarks software tools in sandboxes with a deterministic evaluator</li>
+  <li><b>Lactic</b>: A-Level AI tutor app with graph RAG over 30k+ chunks</li>
+  <li><b>Edge Human Detection</b>: YOLO fine-tuned on thermal imagery for night CCTV</li>
+</ul>
 
 <h2>Skills</h2>
 <div class="skills">
-  <div><b>GenAI / LLM</b><span>RAG, embeddings and vector search, agents and tool use, LLM evaluation and red-teaming, prompt engineering, vision-language models, LoRA fine-tuning, OpenAI / OpenRouter / DeepSeek APIs, LangChain</span></div>
-  <div><b>ML</b><span>PyTorch, TensorFlow, Hugging Face Transformers / PEFT, scikit-learn, CNNs, YOLO, OpenCV, time-series forecasting</span></div>
-  <div><b>Languages</b><span>Python, TypeScript, JavaScript, SQL, Dart, Go</span></div>
-  <div><b>Backend &amp; apps</b><span>FastAPI, Node.js, React, Next.js, Flutter</span></div>
-  <div><b>Deploy &amp; data</b><span>Docker, Azure, Railway, GitHub Actions CI, PostgreSQL, Supabase, Power BI, Tableau</span></div>
+  <div><b>GenAI</b><span>RAG, agents, LLM evaluation, fine-tuning (LoRA), prompt engineering, vision models</span></div>
+  <div><b>ML</b><span>PyTorch, TensorFlow, Hugging Face, scikit-learn, YOLO, OpenCV</span></div>
+  <div><b>Engineering</b><span>Python, TypeScript, SQL, FastAPI, React, Next.js, Docker, Azure, PostgreSQL</span></div>
 </div>
 
 <h2>Education</h2>
 <div class="item">
   <div class="row"><div><span class="title">Diploma in Applied AI &amp; Analytics</span>, <span class="org">Singapore Polytechnic</span></div><span class="date">2024 - 2027</span></div>
-  <div>CGPA 3.83 / 4.00 | Distinction (top 5% of cohort) in Deep Learning, Practical AI, DevOps and Automation for AI, Programming for Data Analytics, Front-End Development, Data Storytelling | CCA Gold with Honours</div>
+  <div>CGPA 3.83 / 4.00 | Top 5% in Deep Learning, Practical AI, DevOps for AI</div>
 </div>
 <div class="item">
   <div class="row"><div><span class="title">GCE O-Level</span>, <span class="org">Chung Cheng High School (Main)</span>, MOE-ASEAN Scholar</div><span class="date">2022 - 2023</span></div>
 </div>
 
-<h2>Certifications &amp; Affiliations</h2>
-<p><b>AWS Certified AI Practitioner</b> (2026) | <b>Google AI Professional Certificate</b> (2026) | <b>Certified AI Trainer, AI Singapore</b> (Youth AI Train-the-Trainer Programme) | MongoDB: Memory for AI Applications | NVIDIA Fundamentals of Deep Learning | AI Ready ASEAN (AI Singapore) | Member, Singapore Computer Society | Languages: English, Chinese</p>
+<h2>Certifications</h2>
+<p>AWS Certified AI Practitioner | Google AI Professional Certificate | Certified AI Trainer (AI Singapore) | NVIDIA Fundamentals of Deep Learning</p>
 </body>
 </html>
