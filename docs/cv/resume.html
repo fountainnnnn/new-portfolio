@@ -4,105 +4,105 @@
 <meta charset="utf-8" />
 <title>Ng Yu Hang (Mervin) - CV</title>
 <style>
-  @page { size: A4; margin: 14mm 16mm; }
+  @page { size: A4; margin: 11mm 14mm; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: "Times New Roman", Times, serif; font-size: 10.8pt; line-height: 1.3; color: #000; }
+  body { font-family: "Times New Roman", Times, serif; font-size: 10.8pt; line-height: 1.4; color: #000; }
   a { color: inherit; text-decoration: none; }
-  header { text-align: center; margin-bottom: 8px; }
+  header { text-align: center; margin-bottom: 6px; }
   h1 { font-size: 21pt; font-weight: 700; }
-  .role { font-size: 11.5pt; margin-top: 3px; }
-  .contact { font-size: 10.2pt; margin-top: 4px; }
-  h2 { font-size: 11.5pt; font-weight: 700; text-transform: uppercase; border-bottom: 1px solid #000; margin: 9px 0 4px; padding-bottom: 2px; }
-  .item { margin-bottom: 5px; }
-  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-  .title { font-weight: 700; }
-  .org { font-style: italic; }
-  .date { white-space: nowrap; }
-  ul { margin: 3px 0 0 17px; }
-  li { margin-bottom: 0.5px; }
-  .proj { margin-bottom: 2px; }
-  .tag { font-style: italic; }
-  ul.awards { margin-left: 15px; }
-  .skills div { display: grid; grid-template-columns: 110px 1fr; margin-bottom: 3px; }
-  .awards td { padding: 0 22px 3px 0; vertical-align: top; }
-  .tight li { margin-bottom: 1px; }
+  .contact { font-size: 10pt; margin-top: 3px; }
+  h2 { font-size: 11.4pt; font-weight: 700; text-transform: uppercase; border-bottom: 1px solid #000; margin: 11px 0 4px; padding-bottom: 1px; }
+  .entry { margin-bottom: 4px; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .b { font-weight: 700; }
+  .i { font-style: italic; }
+  ul { margin: 2px 0 0 17px; }
+  li { margin-bottom: 1.5px; }
+  .awards td { padding: 0 20px 2px 0; vertical-align: top; }
+  .skills div { display: grid; grid-template-columns: 130px 1fr; margin-bottom: 1.5px; }
 </style>
 </head>
 <body>
 <header>
   <h1>Ng Yu Hang (Mervin)</h1>
-  <div class="role">AI / ML Engineer | Generative AI | LLM Applications</div>
   <div class="contact">+65 9186 3614 | spiralcrust@gmail.com | <a href="https://ngyuhang.com">ngyuhang.com</a> | <a href="https://github.com/fountainnnnn">github.com/fountainnnnn</a> | <a href="https://www.linkedin.com/in/ngyuhang/">linkedin.com/in/ngyuhang</a></div>
 </header>
 
-<h2>Summary</h2>
-<p>AI engineer who builds and ships LLM systems end to end: RAG, agents, evaluation and deployment. Delivered production AI for Singapore Polytechnic and industry clients.</p>
+<h2>Education</h2>
+<div class="entry">
+  <div class="row"><span class="b">Singapore Polytechnic</span><span>Singapore</span></div>
+  <div class="row"><span class="i">Diploma in Applied AI &amp; Analytics; CGPA 3.83 / 4.00</span><span class="i">Apr 2024 - Apr 2027 (expected)</span></div>
+  <ul>
+    <li>Director's Honour Roll AY25/26; top 5% in Deep Learning, Practical AI, DevOps for AI</li>
+  </ul>
+</div>
 
 <h2>Experience</h2>
-<div class="item">
-  <div class="row"><div><span class="title">Founding Product &amp; AI Engineer (Part-time)</span>, <span class="org">Influencees</span></div><span class="date">Sep 2026 - Present</span></div>
-  <ul class="tight">
-    <li>Built Ai-kyo, an agentic AI assistant for creators with tool integrations and orchestration</li>
-    <li>Built a Unified Inbox for 6 channels (WhatsApp, Instagram, Messenger, LinkedIn, TikTok, Gmail)</li>
-    <li>Full-stack APIs and testing; cut inbox sign-in lag from 1.1 s to 12 ms; 10 PRs merged</li>
+<div class="entry">
+  <div class="row"><span class="b">Founding Product &amp; AI Engineer (Part-time)</span><span>Sep 2026 - Present</span></div>
+  <div class="row"><span class="i">Influencees</span><span class="i">Singapore (Remote)</span></div>
+  <ul>
+    <li>Built Ai-kyo, an agentic AI assistant for creators, by orchestrating an intent-routed LLM agent with tool integrations</li>
+    <li>Unified 6 messaging channels into one inbox (WhatsApp, Instagram, LinkedIn, TikTok, Gmail and more)</li>
+    <li>Cut inbox sign-in lag from 1.1 s to 12 ms by profiling the streaming path; shipped 10 PRs to production</li>
   </ul>
 </div>
-<div class="item">
-  <div class="row"><div><span class="title">Full-Stack AI Engineer (Intern)</span>, <span class="org">SP Data Science &amp; Analytics Centre</span></div><span class="date">Mar 2026 - Present</span></div>
-  <ul class="tight">
-    <li>RAG chatbot for EM Services (Azure AI Search, SharePoint): ~70-85% faster retrieval, ~60% less manual search</li>
-    <li>LLM grader for Power BI dashboards: ~50-70% less grading time</li>
+<div class="entry">
+  <div class="row"><span class="b">Full-Stack AI Engineer (Intern)</span><span>Mar 2026 - Present</span></div>
+  <div class="row"><span class="i">SP Data Science &amp; Analytics Centre</span><span class="i">Singapore</span></div>
+  <ul>
+    <li>Cut retrieval time ~70-85% and manual search ~60% for EM Services with an Azure AI Search RAG chatbot</li>
+    <li>Cut Power BI grading time ~50-70% with an LLM grader that scores .pbix dashboards against rubrics</li>
   </ul>
 </div>
-<div class="item">
-  <div class="row"><div><span class="title">AI Researcher / Developer (Part-time)</span>, <span class="org">PetaniAI</span></div><span class="date">May 2026 - Aug 2026</span></div>
-  <ul class="tight">
-    <li>Benchmarked LLMs against the company's own requirements</li>
-    <li>Built prototypes on new models and tools</li>
+<div class="entry">
+  <div class="row"><span class="b">AI Researcher / Developer (Part-time)</span><span>May 2026 - Aug 2026</span></div>
+  <div class="row"><span class="i">PetaniAI</span><span class="i">Singapore (Hybrid)</span></div>
+  <ul>
+    <li>Informed model choices by benchmarking LLMs on the company's own requirements</li>
   </ul>
 </div>
-<div class="item">
-  <div class="row"><div><span class="title">Student Developer</span>, <span class="org">Singapore Polytechnic, School of Computing</span></div><span class="date">Sep 2025 - Feb 2026</span></div>
-  <ul class="tight">
-    <li>Built and user-tested a GenAI chatbot for a paid internal client</li>
-    <li>Presented to SP's Deputy Principal and PCEO, and to hundreds of staff at a seminar</li>
+<div class="entry">
+  <div class="row"><span class="b">Student Developer</span><span>Sep 2025 - Feb 2026</span></div>
+  <div class="row"><span class="i">Singapore Polytechnic, School of Computing</span><span class="i">Singapore</span></div>
+  <ul>
+    <li>Delivered a user-tested GenAI chatbot for a paid client; presented to SP's Deputy Principal and PCEO</li>
   </ul>
 </div>
 
-<h2>Awards</h2>
+<h2>Projects</h2>
+<div class="entry">
+  <div class="row"><span><span class="b">AgentLabs</span> | <span class="i">Python, FastAPI, React, PyTorch (LoRA), Docker</span></span><span>2026</span></div>
+  <ul><li>Hardened AI agents against 200 adversarial attacks via an attack, verify, auto-patch and retest loop (live demo)</li></ul>
+</div>
+<div class="entry">
+  <div class="row"><span><span class="b">ProofBench</span> | <span class="i">Python, FastAPI, PostgreSQL, Docker, GitHub Actions</span></span><span>2026</span></div>
+  <ul><li>Evaluated developer tools by generating adapters, running them in sandboxes and scoring output deterministically</li></ul>
+</div>
+<div class="entry">
+  <div class="row"><span><span class="b">Lactic</span> | <span class="i">Python, Flutter, Supabase, embeddings</span></span><span>2026</span></div>
+  <ul><li>Built an A-Level AI tutor with hybrid vector and graph retrieval over 31k+ chunks</li></ul>
+</div>
+<div class="entry">
+  <div class="row"><span><span class="b">Edge Human Detection</span> | <span class="i">Python, PyTorch, YOLO, OpenCV, Docker</span></span><span>2026</span></div>
+  <ul><li>Fine-tuned YOLO11 on thermal imagery for night-vision person detection with multi-frame checks</li></ul>
+</div>
+
+<h2>Achievements</h2>
 <table class="awards">
   <tr><td><b>Projet: Hack &amp; Hire</b>: Winner</td><td><b>National Olympiad in AI 2026</b>: Bronze (top 60)</td></tr>
   <tr><td><b>'SUP Build2026</b>: Top 3 + Best Use of Zo</td><td><b>OpenClaw Hackathon</b>: Top 3</td></tr>
   <tr><td><b>Daytona HackSprint</b>: 2nd runner-up</td><td><b>Agent Forge Hackathon</b>: 3rd runner-up</td></tr>
   <tr><td><b>NAISC (Huawei Track)</b>: Top 10</td><td><b>PolyFinTech 2026 (ESG)</b>: Finalist</td></tr>
-  <tr><td colspan="2"><b>Director's Honour Roll</b> AY25/26</td></tr>
 </table>
 
-<h2>Projects</h2>
-<ul class="tight">
-  <li><b>AgentLabs</b>: red-teams AI agents, auto-patches failures and retests; LoRA fine-tuning (live demo)</li>
-  <li><b>ProofBench</b>: benchmarks software tools in sandboxes with a deterministic evaluator</li>
-  <li><b>Lactic</b>: A-Level AI tutor app with graph RAG over 30k+ chunks</li>
-  <li><b>Edge Human Detection</b>: YOLO fine-tuned on thermal imagery for night CCTV</li>
-</ul>
-
-<h2>Skills</h2>
+<h2>Technical Skills</h2>
 <div class="skills">
-  <div><b>GenAI</b><span>RAG, agents, LLM evaluation, fine-tuning (LoRA), prompt engineering, vision models</span></div>
-  <div><b>ML</b><span>PyTorch, TensorFlow, Hugging Face, scikit-learn, YOLO, OpenCV</span></div>
-  <div><b>Engineering</b><span>Python, TypeScript, SQL, FastAPI, React, Next.js, Docker, Azure, PostgreSQL</span></div>
+  <div><b>Languages</b><span>Python, TypeScript, JavaScript, SQL, Dart, Go</span></div>
+  <div><b>Generative AI</b><span>RAG, agents, tool use, LLM evaluation, LoRA fine-tuning, prompt engineering, VLMs</span></div>
+  <div><b>ML</b><span>PyTorch, TensorFlow, Hugging Face, scikit-learn, LangChain, YOLO, OpenCV</span></div>
+  <div><b>Engineering</b><span>FastAPI, Node.js, React, Next.js, Docker, Azure, AWS, PostgreSQL, Supabase, GitHub Actions</span></div>
+  <div><b>Certifications</b><span>AWS Certified AI Practitioner, Google AI Professional, AI Singapore Certified Trainer</span></div>
 </div>
-
-<h2>Education</h2>
-<div class="item">
-  <div class="row"><div><span class="title">Diploma in Applied AI &amp; Analytics</span>, <span class="org">Singapore Polytechnic</span></div><span class="date">2024 - 2027</span></div>
-  <div>CGPA 3.83 / 4.00 | Top 5% in Deep Learning, Practical AI, DevOps for AI</div>
-</div>
-<div class="item">
-  <div class="row"><div><span class="title">GCE O-Level</span>, <span class="org">Chung Cheng High School (Main)</span>, MOE-ASEAN Scholar</div><span class="date">2022 - 2023</span></div>
-</div>
-
-<h2>Certifications</h2>
-<p>AWS Certified AI Practitioner (813/1000) | Google AI Professional Certificate | Certified AI Trainer, AI Singapore (student AI speaker in schools) | NVIDIA Fundamentals of Deep Learning</p>
 </body>
 </html>
