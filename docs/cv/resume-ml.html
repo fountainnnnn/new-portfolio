@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Ng Yu Hang (Mervin) - CV (ML Engineer)</title>
+<style>
+  @page { size: A4; margin: 11mm 14mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Times New Roman", Times, serif; font-size: 10.4pt; line-height: 1.26; color: #000; }
+  a { color: inherit; text-decoration: none; }
+  header { text-align: center; margin-bottom: 6px; }
+  h1 { font-size: 21pt; font-weight: 700; }
+  .contact { font-size: 10pt; margin-top: 3px; }
+  h2 { font-size: 11.4pt; font-weight: 700; text-transform: uppercase; border-bottom: 1px solid #000; margin: 11px 0 4px; padding-bottom: 1px; }
+  .entry { margin-bottom: 4px; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .b { font-weight: 700; }
+  .i { font-style: italic; }
+  ul { margin: 2px 0 0 17px; }
+  li { margin-bottom: 1.5px; }
+  ul.noai { margin-bottom: 0; }
+  ul.hacks { display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; margin-top: 0; }
+  .skills div { display: grid; grid-template-columns: 130px 1fr; margin-bottom: 1.5px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Ng Yu Hang (Mervin)</h1>
+  <div class="contact">+65 9186 3614 | spiralcrust@gmail.com | <a href="https://ngyuhang.com">ngyuhang.com</a> | <a href="https://github.com/fountainnnnn">github.com/fountainnnnn</a> | <a href="https://www.linkedin.com/in/ngyuhang/">linkedin.com/in/ngyuhang</a></div>
+</header>
+
+<h2>Education</h2>
+<div class="entry">
+  <div class="row"><span class="b">Singapore Polytechnic</span><span>Singapore</span></div>
+  <div class="row"><span class="i">Diploma in Applied AI &amp; Analytics; CGPA 3.83 / 4.00</span><span class="i">Apr 2024 - Apr 2027 (expected)</span></div>
+  <ul>
+    <li>Director's Honour Roll AY25/26; top 5% in Deep Learning, Practical AI, DevOps for AI</li>
+  </ul>
+</div>
+
+<h2>Experience</h2>
+<div class="entry">
+  <div class="row"><span class="b">Founding Product &amp; AI Engineer (Part-time)</span><span>Sep 2026 - Present</span></div>
+  <div class="row"><span class="i">Influencees</span><span class="i">Singapore (Hybrid)</span></div>
+  <ul>
+    <li>Built Ai-kyo, an agentic AI assistant for creators, by orchestrating an intent-routed LLM agent with tool integrations</li>
+    <li>Unified 6 messaging channels into one inbox (WhatsApp, Instagram, LinkedIn, TikTok, Gmail and more)</li>
+    <li>Cut inbox sign-in lag from 1.1 s to 12 ms by profiling the streaming path; shipped 10 PRs to production</li>
+  </ul>
+</div>
+<div class="entry">
+  <div class="row"><span class="b">Full-Stack AI Engineer (Intern)</span><span>Mar 2026 - Present</span></div>
+  <div class="row"><span class="i">SP Data Science &amp; Analytics Centre</span><span class="i">Singapore</span></div>
+  <ul>
+    <li>Cut retrieval time ~70-85% and manual search ~60% for EM Services with an Azure AI Search RAG chatbot</li>
+    <li>Cut Power BI grading time ~50-70% with an LLM grader that scores .pbix dashboards against rubrics</li>
+  </ul>
+</div>
+<div class="entry">
+  <div class="row"><span class="b">AI Researcher / Developer (Part-time)</span><span>May 2026 - Aug 2026</span></div>
+  <div class="row"><span class="i">PetaniAI</span><span class="i">Singapore (Hybrid)</span></div>
+  <ul>
+    <li>Informed model choices by benchmarking LLMs on the company's own requirements</li>
+    <li>Researched and tested emerging models and tools, prototyping the most promising</li>
+  </ul>
+</div>
+<div class="entry">
+  <div class="row"><span class="b">Student Developer</span><span>Sep 2025 - Feb 2026</span></div>
+  <div class="row"><span class="i">Singapore Polytechnic, Department of Communications</span><span class="i">Singapore</span></div>
+  <ul>
+    <li>Built LLM-as-a-judge evaluation and guardrails for a RAG chat agent on AWS (paid project)</li>
+    <li>Built the full stack; piloted at SP Open House 2026 and presented to SP's Deputy Principal and PCEO</li>
+  </ul>
+</div>
+
+<h2>ML Projects</h2>
+<div class="entry">
+  <div class="row"><span><span class="b">Edge Human Detection</span> | <span class="i">PyTorch, YOLO11, OpenCV, Docker</span></span><span>2026</span></div>
+  <ul><li>Fine-tuned YOLO11 on KAIST thermal data for night CCTV, with a precision/recall test harness</li></ul>
+</div>
+<div class="entry">
+  <div class="row"><span><span class="b">Covid-19 X-ray Classifier</span> | <span class="i">PyTorch</span></span><span>2026</span></div>
+  <ul><li>91% test accuracy on 4,233 X-rays (4 classes) with a from-scratch CNN and class-weighted loss</li></ul>
+</div>
+<div class="entry">
+  <div class="row"><span><span class="b">AgentLabs</span> | <span class="i">PyTorch, PEFT (LoRA), FastAPI</span></span><span>2026</span></div>
+  <ul><li>LoRA fine-tuning plus adversarial evaluation over 200 attacks with deterministic verifiers (live demo)</li></ul>
+</div>
+<div class="entry">
+  <div class="row"><span><span class="b">Movie Review Sentiment</span> | <span class="i">TensorFlow, Keras (coursework)</span></span><span>2025</span></div>
+  <ul><li>91.6% test accuracy, 91.7% macro F1 from a grid search over LSTM, BiLSTM and GRU models</li></ul>
+</div>
+<div class="entry">
+  <div class="row"><span><span class="b">Energy Consumption Forecasting</span> | <span class="i">Statsmodels (coursework)</span></span><span>2025</span></div>
+  <ul><li>Forecast 60 months of demand with tuned SARIMAX and Holt-Winters models; 3.57% MAPE on electricity</li></ul>
+</div>
+
+<h2>Honors &amp; Awards</h2>
+<ul class="noai"><li><b>National Olympiad in Artificial Intelligence (NOAI) 2026</b>: Bronze, top 60 in all of Singapore</li></ul>
+<ul class="hacks">
+  <li><b>Projet: Hack &amp; Hire</b>: Winner</li>
+  <li><b>'SUP Build2026</b>: Top 3, Best Use of Zo</li>
+  <li><b>OpenClaw Hackathon</b>: Top 3</li>
+  <li><b>Daytona HackSprint</b>: 2nd runner-up</li>
+  <li><b>Agent Forge Hackathon</b>: 3rd runner-up</li>
+  <li><b>NAISC (Huawei Track)</b>: Top 10</li>
+  <li><b>PolyFinTech 2026 (ESG Category)</b>: Finalist</li>
+</ul>
+
+<h2>Technical Skills</h2>
+<div class="skills">
+  <div><b>ML / DL</b><span>PyTorch, TensorFlow, Keras, scikit-learn, Hugging Face, CNNs, RNNs, YOLO, OpenCV</span></div>
+  <div><b>Evaluation</b><span>Precision/recall, F1, MAPE, model benchmarking, LLM-as-a-judge, adversarial testing</span></div>
+  <div><b>Generative AI</b><span>LoRA fine-tuning, RAG, embeddings and vector search, agents, prompt engineering</span></div>
+  <div><b>Engineering</b><span>Python, SQL, TypeScript, FastAPI, Docker, Azure, AWS, PostgreSQL, GitHub Actions</span></div>
+  <div><b>Certifications</b><span>AWS Certified AI Practitioner, Google AI Professional, AI Singapore Certified Trainer</span></div>
+</div>
+</body>
+</html>
