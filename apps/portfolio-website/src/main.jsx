@@ -640,7 +640,7 @@ function HomePage() {
                 </p>
                 <div className="hero-actions">
                   <a href="#projects" className="btn btn-primary">My Projects <ArrowDown size={18} /></a>
-                  <a href="/Resume.pdf" className="btn btn-outline-dark" download>Download CV <Download size={18} /></a>
+                  <a href="/Resume.pdf?v=20261022" className="btn btn-outline-dark" download>Download CV <Download size={18} /></a>
                 </div>
                 <div className="d-flex justify-content-md-start justify-content-center gap-4 mt-4">
                   <a href="https://github.com/fountainnnnn" target="_blank" rel="noreferrer" aria-label="GitHub">
