@@ -625,6 +625,7 @@ function proxyProjectPageUpgrade(request, socket, head) {
     method: request.method,
     headers,
     family: 4,
+    agent: false,
   });
 
   proxyRequest.on("upgrade", (proxyResponse, proxySocket, proxyHead) => {
@@ -682,6 +683,8 @@ function proxyRequestToTarget(request, response, url, targetConfig, options) {
         headers,
         // every project service listens on IPv4; over IPv6 some refuse the connection
         family: 4,
+        // a fresh connection each time: a reused idle one can be closed by the service mid-request (ECONNRESET)
+        agent: false,
       },
       proxyResponse => {
         const responseHeaders = { ...proxyResponse.headers };
