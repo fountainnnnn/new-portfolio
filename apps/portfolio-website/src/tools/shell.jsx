@@ -61,6 +61,9 @@ function loadMotionScripts() {
   });
 }
 
+// the paper background in index.html is for the portfolio pages; the tools keep their own
+document.getElementById("paper-bg")?.remove();
+
 // placed at the top of <head>, before the tools' own styles, so those still override Bootstrap as they did before
 [...HEAD_LINKS].reverse().forEach((href) => {
   if (document.querySelector(`link[href="${href}"]`)) return;
