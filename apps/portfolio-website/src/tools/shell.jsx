@@ -113,6 +113,11 @@ function SiteNav({ active = "" }) {
 export function ProjectShell({ bodyClass, kicker, title, lede, cta, preview, children }) {
   // the shared motion script looks for page elements, so it starts once they're rendered (as before)
   useEffect(() => { loadMotionScripts(); }, []);
+  // the tool's backend may be asleep on Railway; a cheap request now wakes it before the visitor needs it
+  useEffect(() => {
+    const api = { "project-quiz-slide": "quiz-slide-generator", "project-mock-paper": "mock-paper-generator", "project-file-chat": "file-chat-assistant", "project-coding-quiz": "coding-quiz" }[bodyClass];
+    if (api) fetch(`/api/${api}/healthz`).catch(() => {});
+  }, [bodyClass]);
   useEffect(() => {
     document.body.className = `project-app ${bodyClass}`;
     return () => { document.body.className = ""; };

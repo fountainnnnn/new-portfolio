@@ -662,17 +662,26 @@ function proxyRequestToTarget(request, response, url, targetConfig, options) {
   headers["x-forwarded-prefix"] = targetConfig.prefix;
   headers["x-forwarded-proto"] = getForwardedProto(request);
 
-  // GET and HEAD have no body, so a connection that fails before any response can safely be tried again
+  // Some project services sleep on Railway when idle and refuse connections while they wake.
+  // GET and HEAD carry no body, so a refused connection is retried with back-off (about 9 s in all);
+  // timeouts and anything after a response has started are never retried.
   const canRetry = request.method === "GET" || request.method === "HEAD";
+  if (canRetry) { delete headers["content-length"]; delete headers["transfer-encoding"]; delete headers.expect; }
+  const RETRY_DELAYS_MS = [300, 700, 1500, 2500, 4000];
+  const RETRYABLE = new Set(["ECONNREFUSED", "EHOSTUNREACH", "ENETUNREACH", "EAI_AGAIN"]);
+  let current = null;
+  const stop = () => current?.destroy(new Error("Client aborted request."));
+  request.on("aborted", stop);
+  response.on("close", () => { if (!response.writableFinished) stop(); });
+
   const send = (attempt) => {
     const proxyRequest = transport.request(
       upstreamUrl,
       {
         method: request.method,
         headers,
-        // every project service listens on IPv4; over IPv6 some refuse the connection.
-        // The retry lets Node pick the family, in case one path is briefly unavailable.
-        family: attempt === 0 ? 4 : undefined,
+        // every project service listens on IPv4; over IPv6 some refuse the connection
+        family: 4,
       },
       proxyResponse => {
         const responseHeaders = { ...proxyResponse.headers };
@@ -684,6 +693,7 @@ function proxyRequestToTarget(request, response, url, targetConfig, options) {
         proxyResponse.pipe(response);
       },
     );
+    current = proxyRequest;
 
     proxyRequest.setTimeout(proxyTimeoutMs, () => {
       proxyRequest.destroy(new Error(`Upstream timed out after ${Math.round(proxyTimeoutMs / 1000)}s.`));
@@ -694,22 +704,17 @@ function proxyRequestToTarget(request, response, url, targetConfig, options) {
         response.destroy();
         return;
       }
-      console.error("Proxy request failed", { prefix: targetConfig.prefix, path: url.pathname, attempt, code: error.code, message: error.message });
-      if (canRetry && attempt === 0 && !request.destroyed) {
-        setTimeout(() => send(1), 150);
+      const delay = RETRY_DELAYS_MS[attempt];
+      if (canRetry && delay !== undefined && RETRYABLE.has(error.code) && !request.destroyed) {
+        setTimeout(() => { if (!request.destroyed && !response.destroyed) send(attempt + 1); }, delay);
         return;
       }
+      console.error("Proxy request failed", { prefix: targetConfig.prefix, path: url.pathname, attempts: attempt + 1, code: error.code, message: error.message });
       sendJson(response, 502, {
         error: `Project service unavailable for ${targetConfig.prefix}.`,
         detail: error.message,
       });
     });
-
-    if (attempt === 0) {
-      request.on("aborted", () => {
-        proxyRequest.destroy(new Error("Client aborted request."));
-      });
-    }
 
     if (canRetry) proxyRequest.end();
     else request.pipe(proxyRequest);
