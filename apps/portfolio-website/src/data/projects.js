@@ -1,7 +1,7 @@
 // Everything on /projects. [title, one line, stack, link, thumbnail]
 import { AGENTLABS, GH, REYOLK } from "./links.js";
 
-const W = (n) => `/img/work/${n}`, S = (n) => `/img/shots/${n}.jpg`;
+const W = (n) => `/img/work/${n}`, S = (n) => `/img/shots/${n}.jpg?v=2`;   // ?v= bumps past copies Cloudflare cached before the screenshots were replaced
 
 export const PROJECT_GROUPS = [
   {
