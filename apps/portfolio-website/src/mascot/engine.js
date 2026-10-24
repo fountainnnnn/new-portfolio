@@ -181,7 +181,7 @@ export function startMascot(el) {
       if (stopped) return;
       const dt = Math.min(0.05, (now - last) / 1000); last = now;
       const S = el.offsetWidth;
-      if (intro && api.open) intro = null;
+      if (intro && api.open) { intro = null; el.style.clipPath = ""; el.style.transform = ""; el.style.pointerEvents = ""; }   // chat or contact opened mid-intro: end it cleanly so his window is clickable
       if (intro && runIntro(dt, S)) { requestAnimationFrame(frame); return; }
       el.classList.toggle("compact", compact.matches);
       el.classList.toggle("chatting", api.open);
