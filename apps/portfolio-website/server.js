@@ -624,6 +624,7 @@ function proxyProjectPageUpgrade(request, socket, head) {
   const proxyRequest = transport.request(upstreamUrl, {
     method: request.method,
     headers,
+    family: 4,
   });
 
   proxyRequest.on("upgrade", (proxyResponse, proxySocket, proxyHead) => {
@@ -666,6 +667,8 @@ function proxyRequestToTarget(request, response, url, targetConfig, options) {
     {
       method: request.method,
       headers,
+      // every project service listens on IPv4; over IPv6 some refuse the connection, which showed up as 502s
+      family: 4,
     },
     proxyResponse => {
       const responseHeaders = { ...proxyResponse.headers };
