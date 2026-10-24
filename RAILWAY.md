@@ -113,8 +113,8 @@ CONTACT_TO_EMAIL=spiralcrust@gmail.com
 CONTACT_FROM_EMAIL=Mervin's Hub <hello@your-verified-domain>
 ```
 
-Until `RESEND_API_KEY` is set the endpoint returns 503 and the form tells the
-visitor to email instead. `CONTACT_FROM_EMAIL` must use a domain verified in
+Until `RESEND_API_KEY` is set, the form opens the visitor's email app with
+their message filled in, addressed to `CONTACT_TO_EMAIL`. `CONTACT_FROM_EMAIL` must use a domain verified in
 Resend; the default `onboarding@resend.dev` only delivers to the Resend
 account's own email.
 

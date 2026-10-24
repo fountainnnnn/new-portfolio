@@ -60,11 +60,11 @@ function loadMotionScripts() {
     document.documentElement.classList.add("motion-unavailable");
   });
 }
-loadMotionScripts();
 
-HEAD_LINKS.forEach((href) => {
+// placed at the top of <head>, before the tools' own styles, so those still override Bootstrap as they did before
+[...HEAD_LINKS].reverse().forEach((href) => {
   if (document.querySelector(`link[href="${href}"]`)) return;
-  const link = document.createElement("link"); link.rel = "stylesheet"; link.href = href; document.head.appendChild(link);
+  const link = document.createElement("link"); link.rel = "stylesheet"; link.href = href; document.head.prepend(link);
 });
 
 const navItems = [
@@ -108,6 +108,8 @@ function SiteNav({ active = "" }) {
 }
 
 export function ProjectShell({ bodyClass, kicker, title, lede, cta, preview, children }) {
+  // the shared motion script looks for page elements, so it starts once they're rendered (as before)
+  useEffect(() => { loadMotionScripts(); }, []);
   useEffect(() => {
     document.body.className = `project-app ${bodyClass}`;
     return () => { document.body.className = ""; };

@@ -387,8 +387,8 @@ async function handleChat(request, response) {
 // the contact form on the home page: emails the message to Mervin through Resend
 async function handleContact(request, response) {
   const key = process.env.RESEND_API_KEY;
-  if (!key) {
-    sendJson(response, 503, { error: "The contact form isn't connected yet." });
+  if (!key) {   // not connected to Resend yet: the page hands the message to the visitor's email app instead
+    sendJson(response, 200, { ok: false, fallback: "email", to: contactToEmail });
     return;
   }
 

@@ -4,6 +4,7 @@
 .skill:nth-of-type(even) .viz { order: -1; }
 .skill .txt { max-width: 440px; }
 .skill p { margin-top: var(--stack-sm); }
+.skill .txt > p:not(.built) { font-size: 18px; line-height: 1.5; color: var(--body); }
 .skill .tags { margin-top: var(--stack-md); display: flex; flex-wrap: wrap; gap: 8px; }
 .skill .tags span { font-size: 13px; padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--body); }
 .skill .built { margin-top: 18px; font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 14px; }
@@ -18,4 +19,11 @@
   .skill:nth-of-type(even) .viz { order: 0; }
   .viz { aspect-ratio: 1 / 1; }
   .viz .hint { display: none; }
+}
+/* phones: one short line under each title, with room around it */
+@media (max-width: 600px) {
+  .skill { padding: 56px 0; gap: 24px; }
+  .skill .txt > p:not(.built) { font-size: 16.5px; }
+  .skill .tags { margin-top: 18px; }
+  .skill .built { margin-top: 16px; }
 }

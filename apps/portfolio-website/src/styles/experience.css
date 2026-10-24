@@ -17,3 +17,10 @@
 }
 /* touch screens: no sticky dark hover on the experience rows */
 @media (hover: none) { .xrow::before { display: none; } .xrow:hover, .xrow:hover p, .xrow:hover h3 { color: inherit; } .xrow:hover .meta, .xrow:hover .role { color: var(--muted); } }
+/* phones: the date as a small label, the company as the headline, one short line under it */
+@media (max-width: 600px) {
+  .xrow { gap: 12px; padding: 30px 16px; }
+  .xrow .meta { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+  .xrow h3 { font-size: 22px; }
+  .xrow > p:last-child { font-size: 15.5px; line-height: 1.55; }
+}

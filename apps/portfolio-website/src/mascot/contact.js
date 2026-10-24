@@ -23,6 +23,12 @@ export function startContact(el, mascot) {
     try {
       const res = await fetch(CONTACT_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, message, page: location.href }) });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json().catch(() => ({}));
+      if (data.fallback === "email") {   // email sending isn't set up: open their mail app with the message filled in
+        location.href = `mailto:${data.to}?subject=${encodeURIComponent("Hello from ngyuhang.com")}&body=${encodeURIComponent(`${message}\n\nReply to: ${email}`)}`;
+        setStatus("Opening your email app with your message.", "ok");
+        return;
+      }
       contactForm.reset(); setStatus("Sent! I'll get back to you soon.", "ok"); mascot.cheer = 1.4;
     } catch {
       setStatus("Couldn't send just now. Email me at spiralcrust@gmail.com instead.", "err");

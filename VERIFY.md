@@ -3,7 +3,7 @@
 ## Standard Checks
 - Portfolio route smoke: `/` (200), `/projects` (200), `/certificates` (308 to `/projects#certs`), `/projects.html` and `/index.html` (308 to the clean URL), `/robots.txt`, `/sitemap.xml`, `/llms.txt`.
 - Portfolio build: `npm run build` from `apps/portfolio-website`.
-- Contact API: without `RESEND_API_KEY`, `POST /api/contact` returns 503 and the form shows the email fallback; with it, a test message arrives.
+- Contact API: without `RESEND_API_KEY`, `POST /api/contact` returns `{ ok: false, fallback: "email" }` and the form opens a prefilled email; with it, a test message arrives.
 - Link check: every `href` and `img` on `/` and `/projects` returns 200 (LinkedIn returns 999 to bots, which is fine).
 - Project page smoke: `/quiz-slide-generator/`, `/mock-paper-generator/`, `/file-chat-assistant/`, `/coding-quiz/`, `/auto-dashboard`.
 - Auto Dashboard frontend: `npm run lint`, `npm run build`, `npm run test:e2e` from `projects/auto-dashboard/frontend`.

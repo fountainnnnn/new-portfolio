@@ -55,15 +55,18 @@ export function startHome() {
     if (document.documentElement.classList.contains("no-intro")) { el.style.display = "none"; intro(); return; }
     document.body.classList.add("loading");
     let done = false;
-    const finish = () => {
+    // instant: the visitor skipped, so it goes at once; otherwise it fades out as on the old site
+    const finish = (instant) => {
       if (done) return; done = true;
-      el.classList.add("is-hiding"); document.body.classList.remove("loading");
+      document.body.classList.remove("loading");
       removeEventListener("keydown", skip); clearTimeout(timer);
-      intro(); setTimeout(() => (el.style.display = "none"), 1900);
+      if (instant) el.style.display = "none";
+      else { el.classList.add("is-hiding"); setTimeout(() => (el.style.display = "none"), 1900); }
+      intro();
     };
-    const skip = (e) => { if (["Enter", " ", "Escape"].includes(e.key)) finish(); };
-    const timer = setTimeout(finish, reduce ? 1100 : 8400);   // same length as the current site
-    addEventListener("keydown", skip); el.addEventListener("click", finish);
+    const skip = (e) => { if (["Enter", " ", "Escape"].includes(e.key)) finish(true); };
+    const timer = setTimeout(() => finish(false), reduce ? 1100 : 8400);   // same length as the previous site
+    addEventListener("keydown", skip); el.addEventListener("click", () => finish(true));
   })();
 
   /* ---------- detector: scan, boxes, caption ---------- */
