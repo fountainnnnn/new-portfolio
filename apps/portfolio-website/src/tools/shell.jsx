@@ -218,6 +218,7 @@ function SiteFooter() {
   return <footer className="site-footer footer-section bg-dark text-light py-4"><div className="container text-center"><small>&copy; 2026 Mervin Ng. All rights reserved.</small></div></footer>;
 }
 
+// ?api= points a tool at another backend while developing; production always uses its own
 export function getApiBase(defaultBase) {
-  return new URLSearchParams(window.location.search).get("api") || defaultBase;
+  return (import.meta.env.DEV && new URLSearchParams(window.location.search).get("api")) || defaultBase;
 }

@@ -58,6 +58,7 @@ const deepSeekBaseUrl = (process.env.DEEPSEEK_BASE_URL || "https://api.deepseek.
 const chatModel = process.env.DEEPSEEK_MODEL || "deepseek-v4-flash";
 const contactRateWindowMs = Number(process.env.CONTACT_RATE_WINDOW_MS || 10 * 60_000);
 const contactRateMax = Number(process.env.CONTACT_RATE_MAX || 5);
+const contactGlobalMax = Number(process.env.CONTACT_GLOBAL_MAX_PER_HOUR || 40);
 const contactToEmail = process.env.CONTACT_TO_EMAIL || "spiralcrust@gmail.com";
 const contactFromEmail = process.env.CONTACT_FROM_EMAIL || "Mervin's Hub <onboarding@resend.dev>";
 const projectApiRateWindowMs = Number(process.env.PROJECT_API_RATE_WINDOW_MS || 60_000);
@@ -263,7 +264,8 @@ function applyCorsHeaders(request, response) {
 }
 
 function getClientId(request) {
-  const forwardedFor = String(request.headers["x-forwarded-for"] || "").split(",")[0].trim();
+  // Railway's proxy appends the real client address last; earlier entries can be set by the client
+  const forwardedFor = String(request.headers["x-forwarded-for"] || "").split(",").map((part) => part.trim()).filter(Boolean).pop();
   return forwardedFor || request.socket.remoteAddress || "local";
 }
 
@@ -411,7 +413,8 @@ async function handleContact(request, response) {
   }
 
   const clientId = getClientId(request);
-  if (!allowRequest(`contact:${clientId}`, contactRateWindowMs, contactRateMax)) {
+  // per visitor, plus a ceiling on all contact mail in case the per-visitor limit is dodged
+  if (!allowRequest(`contact:${clientId}`, contactRateWindowMs, contactRateMax) || !allowRequest("contact:all", 60 * 60_000, contactGlobalMax)) {
     sendJson(response, 429, { error: "Too many messages. Try again later." });
     return;
   }
