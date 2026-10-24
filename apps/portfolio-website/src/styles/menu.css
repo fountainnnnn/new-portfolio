@@ -1,0 +1,11 @@
+/* Menu button and drawer, shown once you scroll past the hero */
+.menu-btn { position: fixed; top: 22px; right: var(--gutter); z-index: 60; width: 56px; height: 56px; border-radius: 50%; background: var(--ink); border: 0; cursor: pointer; transform: scale(0); display: grid; place-items: center; box-shadow: 0 0 0 1px rgba(255,255,255,.18); }
+.menu-btn i { display: block; width: 22px; height: 1.5px; position: relative; }
+.menu-btn i::before, .menu-btn i::after { content: ""; position: absolute; left: 0; width: 100%; height: 1.5px; background: #fff; transition: transform .4s var(--ease), top .4s var(--ease); }
+.menu-btn i::before { top: -4px; } .menu-btn i::after { top: 4px; }
+.menu-btn.open i::before { top: 0; transform: rotate(45deg); } .menu-btn.open i::after { top: 0; transform: rotate(-45deg); }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100vw); z-index: 55; background: var(--ink); color: var(--paper); padding: 120px 52px 44px; transform: translateX(105%); transition: transform .8s var(--ease); display: flex; flex-direction: column; justify-content: space-between; }
+.drawer.open { transform: none; }
+.drawer ul { list-style: none; display: grid; gap: 2px; }
+.drawer ul a { font-family: var(--serif); font-size: clamp(36px, 4.6vw, 52px); letter-spacing: -0.02em; display: block; }
+.drawer .soc { display: flex; gap: 22px; font-size: 15px; color: #a6a29a; }

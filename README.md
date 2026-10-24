@@ -7,7 +7,16 @@ school-project applications.
 
 ```txt
 apps/
-  portfolio-website/
+  portfolio-website/        public site: React + Vite app and the Node server
+    src/
+      pages/                home and /projects
+      components/           one file per home section, each with its own stylesheet in styles/
+      data/                 projects, skills, experience, certificates, links
+      visuals/              the live canvases in "What I can build"
+      mascot/               mini Mervin, his chat, and the contact form
+      tools/                the four AI demo tools (quiz slides, mock paper, document chat, coding quiz)
+    img/                    photos, project screenshots, certificates, mascot poses
+    server.js               static files, clean URLs, /api/chat, /api/contact and the project proxies
 
 services/
   coding-quiz/

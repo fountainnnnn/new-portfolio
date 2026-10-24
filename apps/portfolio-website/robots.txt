@@ -1,0 +1,16 @@
+# Mervin's Hub (ngyuhang.com): portfolio of Ng Yu Hang (Mervin)
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# AI crawlers are welcome; a plain-text summary of the site is at /llms.txt
+User-agent: GPTBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://ngyuhang.com/sitemap.xml

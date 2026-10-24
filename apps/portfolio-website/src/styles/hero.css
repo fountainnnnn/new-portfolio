@@ -1,0 +1,67 @@
+/* Hero: name, role, buttons and the detected photo */
+.hero { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; }
+.hero .body { flex: 1; display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(32px, 6vw, 96px); align-items: center; padding-bottom: 6vh; }
+.hero .hi { font-size: var(--t-small); color: var(--muted); margin-bottom: var(--stack-md); display: flex; align-items: center; gap: 10px; }
+.hero .hi::before { content: ""; width: 24px; height: 1px; background: var(--muted); }
+.hero .display { max-width: 12ch; min-height: 2.05em; }
+.hero .display .cursor { display: inline-block; width: 3px; height: .82em; margin-left: 6px; background: var(--ink); vertical-align: -0.05em; animation: blink .8s steps(1) infinite; }
+.hero .role { margin-top: var(--stack-md); font-size: var(--t-lead); line-height: 1.25; letter-spacing: -0.015em; color: var(--ink); }
+.hero .loc { margin-top: 12px; display: flex; align-items: center; gap: 6px; font-size: var(--t-small); color: var(--muted); }
+.hero .loc svg { width: 15px; height: 15px; }
+.hero .intro { margin-top: 18px; max-width: 40ch; font-size: 17px; }
+.hero .ctas { margin-top: var(--stack-lg); display: flex; flex-wrap: wrap; gap: 12px; }
+.hero .social { margin-top: 24px; display: flex; gap: 20px; }
+.hero .social a { display: block; border-radius: 6px; transition: transform .3s var(--ease), opacity .3s; opacity: .9; }
+.hero .social a:hover { transform: translateY(-2px); opacity: 1; }
+.hero .social img { height: 34px; width: auto; }
+/* back to top, once they are a screen down */
+.to-top { position: fixed; right: 20px; bottom: 20px; z-index: 66; width: 46px; height: 46px; border-radius: 50%; border: 0; background: var(--ink); color: var(--paper); display: grid; place-items: center; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,.18), 0 0 0 1px rgba(244,242,236,.22); opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .35s, transform .35s var(--ease), background .25s; }
+.to-top.on { opacity: 1; transform: none; pointer-events: auto; }
+.to-top:hover { background: #000; }
+.to-top svg { width: 18px; height: 18px; }
+/* a quiet nudge to scroll, gone once they do */
+.cue { align-self: center; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 28px; font-size: var(--t-small); color: var(--muted); transition: opacity .5s, color .25s; }
+.cue:hover { color: var(--ink); }
+.cue svg { width: 15px; height: 15px; animation: nudge 2.4s var(--ease) infinite; }
+.cue.gone { opacity: 0; pointer-events: none; }
+@keyframes nudge { 0%, 60%, 100% { transform: none; } 30% { transform: translateY(4px); } }
+@media (prefers-reduced-motion: reduce) { .cue svg { animation: none; } }
+
+/* detection figure */
+.det { margin: 0; justify-self: center; width: min(100%, 400px); }
+.det .frame { position: relative; aspect-ratio: 1; }
+.det .photo { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; background: #e2ddd1; box-shadow: 0 0 0 1px var(--line); }
+.det .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+.det .scan { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--blue); box-shadow: 0 0 24px 6px rgba(0,113,227,.18); opacity: 0; }
+.det .box { position: absolute; border: 1.5px solid var(--ink); border-radius: 2px; opacity: 0; transform-origin: 0 0; will-change: transform; }
+.det .box::after { content: attr(data-show); position: absolute; left: -1.5px; bottom: 100%; transform: translateY(-2px); white-space: nowrap; background: var(--ink); color: var(--paper); font: 500 11.5px var(--mono); padding: 3px 6px; border-radius: 2px; }
+.det .box.in::after { bottom: auto; top: 0; left: 0; transform: none; }
+.det .box.main { border-color: var(--blue); border-width: 2px; }
+.det .box.main::after { background: var(--blue); color: #fff; font-size: 13px; }
+.det figcaption { margin-top: 22px; justify-content: center; display: flex; gap: 12px; align-items: baseline; font: 13.5px var(--mono); color: var(--ink); min-height: 1.5em; }
+.det .model { color: var(--muted); flex: none; }
+.det .caret { width: 7px; height: 14px; background: var(--ink); align-self: center; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+@media (max-width: 960px) {
+  .hero .body { grid-template-columns: 1fr; padding-top: 4vh; gap: var(--stack-lg); }
+  .det { justify-self: center; width: min(100%, 300px); }
+}
+/* phones: the whole intro fits on the first screen, photo first and smaller */
+@media (max-width: 600px) {
+  .hero .body { padding-top: 8px; padding-bottom: 16px; gap: 18px; align-content: start; }
+  .det { order: -1; width: 180px; }
+  .det figcaption { margin-top: 10px; font-size: 11.5px; gap: 8px; width: min(335px, calc(100vw - 40px)); margin-left: 50%; transform: translateX(-50%); }
+  .det .box::after { font-size: 9.5px; padding: 2px 4px; }
+  .det .box.main::after { font-size: 10.5px; }
+  .hero .display { font-size: 34px; }
+  .hero .role { margin-top: 12px; font-size: 20px; }
+  .hero .loc { margin-top: 6px; }
+  .hero .intro { margin-top: 10px; font-size: 15.5px; line-height: 1.5; }
+  .hero .ctas { margin-top: 20px; gap: 10px; }
+  .hero .ctas .btn { height: 44px; padding: 0 18px; font-size: 14.5px; }
+  .hero .ctas .btn.talk { padding-left: 5px; }
+  .btn.talk .face { width: 32px; height: 32px; }
+  .hero .social { margin-top: 16px; gap: 16px; }
+  .hero .social img { height: 28px; }
+}
+@media (prefers-reduced-motion: reduce) { .det .caret { animation: none; } }

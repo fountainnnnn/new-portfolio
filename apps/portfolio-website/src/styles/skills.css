@@ -1,0 +1,21 @@
+/* What I can build */
+.skill { display: grid; grid-template-columns: 5fr 7fr; gap: clamp(32px, 6vw, 96px); align-items: center; padding: var(--stack-lg) 0; }
+.skill + .skill { border-top: 1px solid var(--line); }
+.skill:nth-of-type(even) .viz { order: -1; }
+.skill .txt { max-width: 440px; }
+.skill p { margin-top: var(--stack-sm); }
+.skill .tags { margin-top: var(--stack-md); display: flex; flex-wrap: wrap; gap: 8px; }
+.skill .tags span { font-size: 13px; padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--body); }
+.skill .built { margin-top: 18px; font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.skill .built span { width: 100%; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
+.skill .built a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; transition: text-decoration-color .25s; }
+.skill .built a:hover { text-decoration-color: var(--ink); }
+.viz { position: relative; aspect-ratio: 1 / .74; background: #efece4; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.viz canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.viz .hint { position: absolute; right: 14px; bottom: 12px; font-size: 12px; color: var(--muted); pointer-events: none; }
+@media (max-width: 960px) {
+  .skill { grid-template-columns: 1fr; gap: var(--stack-md); }
+  .skill:nth-of-type(even) .viz { order: 0; }
+  .viz { aspect-ratio: 1 / 1; }
+  .viz .hint { display: none; }
+}

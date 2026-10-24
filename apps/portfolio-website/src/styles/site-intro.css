@@ -1,0 +1,24 @@
+/* Opening intro: the same three lines and timing as the previous site */
+.site-intro { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 32px; background: var(--paper); color: var(--ink); transition: opacity 1.85s cubic-bezier(.16, 1, .3, 1), visibility 1.85s ease; cursor: pointer; }
+.site-intro.is-hiding { opacity: 0; visibility: hidden; pointer-events: none; }
+html.no-intro .site-intro { display: none; }
+.intro-stage { position: relative; width: min(900px, 100%); min-height: 260px; }
+.intro-line { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0; text-align: center; opacity: 0; font-family: var(--serif); font-weight: 400; line-height: 1.05; letter-spacing: -0.025em; transform: translateY(26px) scale(.985); will-change: opacity, transform, filter; }
+.intro-line-hello { font-size: clamp(3.2rem, 10vw, 7.4rem); }
+.intro-line-name { font-size: clamp(2.35rem, 7.6vw, 5.6rem); }
+.intro-line-name span { margin-top: 18px; font-family: var(--sans); color: var(--muted); font-size: clamp(1.25rem, 3vw, 1.95rem); letter-spacing: -0.005em; line-height: 1.35; }
+.intro-line-welcome { font-size: clamp(2.15rem, 7vw, 5.2rem); }
+.site-intro.is-playing .intro-line-hello { animation: introTitleBeat 2.65s cubic-bezier(.16, 1, .3, 1) .28s both; }
+.site-intro.is-playing .intro-line-name { animation: introTitleBeat 3.35s cubic-bezier(.16, 1, .3, 1) 2.85s both; }
+.site-intro.is-playing .intro-line-welcome { animation: introTitleBeat 2.75s cubic-bezier(.16, 1, .3, 1) 5.95s both; }
+@keyframes introTitleBeat {
+  0% { opacity: 0; filter: blur(18px); transform: translateY(26px) scale(.985); }
+  34%, 74% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
+  100% { opacity: 0; filter: blur(16px); transform: translateY(-8px) scale(1.006); }
+}
+@media (max-width: 600px) { .intro-stage { min-height: min(240px, 48dvh); } .intro-line-welcome { font-size: clamp(2rem, 13vw, 3.2rem); line-height: 1.08; } }
+@media (prefers-reduced-motion: reduce) {
+  .site-intro, .intro-line { transition: none; }
+  .site-intro.is-playing .intro-line { animation: none; }
+  .site-intro.is-playing .intro-line-welcome { opacity: 1; filter: none; transform: none; }
+}

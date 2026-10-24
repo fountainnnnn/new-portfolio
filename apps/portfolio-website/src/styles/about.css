@@ -1,0 +1,13 @@
+/* About */
+.about .grid { display: grid; grid-template-columns: 1fr minmax(0, 360px); gap: clamp(40px, 8vw, 120px); align-items: start; }
+.about .lead .w { opacity: .16; }
+.about .side { display: grid; gap: var(--stack-md); padding-top: 8px; }
+.about .side p { font-size: var(--t-body); }
+.about dl { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.about dl div { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: var(--t-small); }
+.about dt { color: var(--muted); }
+.about dd { color: var(--ink); text-align: right; }
+@media (max-width: 960px) {
+  .about .grid { grid-template-columns: 1fr; gap: var(--stack-md); }
+}
+@media (prefers-reduced-motion: reduce) { .about .lead .w { opacity: 1; } }

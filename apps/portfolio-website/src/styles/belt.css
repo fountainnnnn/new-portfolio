@@ -1,0 +1,9 @@
+/* Tools belt */
+.belt-wrap { padding-top: var(--section); overflow: hidden; }
+.belt-wrap .meta { margin-bottom: var(--stack-sm); }
+.belt { display: flex; width: max-content; will-change: transform; }
+.belt img { height: 56px; width: auto; padding-right: 20px; opacity: .85; transition: opacity .4s; }
+.belt-wrap:hover .belt img { opacity: 1; }
+@media (max-width: 960px) {
+  .belt img { height: 44px; }
+}

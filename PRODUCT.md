@@ -2,7 +2,7 @@
 
 ## Status
 - Draft source of truth for the public portfolio host.
-- Last refreshed: 2026-05-27.
+- Last refreshed: 2026-10-25.
 
 ## Product Summary
 This repository hosts Mervin Ng's public portfolio, project pages, certificates, and deployable project integrations. The site should help visitors quickly understand what Mervin builds, inspect selected AI/full-stack projects, and navigate into working demos without the portfolio feeling like a generic template.
@@ -32,11 +32,12 @@ This repository hosts Mervin Ng's public portfolio, project pages, certificates,
 - Do not make visual effects depend on fragile build tooling.
 
 ## Key Surfaces
-- Home page: `apps/portfolio-website/index.html`.
-- Project listing: `apps/portfolio-website/projects.html`.
-- Certificates listing and modal: `apps/portfolio-website/certificates.html`.
-- Static project pages: `quiz-slide-generator`, `mock-paper-generator`, `file-chat-assistant`, `coding-quiz`.
-- Integrated Decidr Auto Dashboard route: `/auto-dashboard`.
+- Home: `/` (sections: hero, about, what I can build, selected work, experience, competitions, certifications, contact).
+- Projects and certificates: `/projects` (builds, small AI apps, school work, then every certificate with an issuer filter). `/certificates` redirects to `/projects#certs`.
+- AI demo tools: `/quiz-slide-generator/`, `/mock-paper-generator/`, `/file-chat-assistant/`, `/coding-quiz/`.
+- Proxied apps: `/auto-dashboard`, `/school-hdb-resale-ca1/`, `/school-veggie-ai-ca2/`.
+- Contact: the form in mini Mervin's window posts to `/api/contact`, which emails Mervin through Resend.
+- Crawlers: `/robots.txt`, `/sitemap.xml`, `/llms.txt`, link previews and Person structured data in `index.html`.
 
 ## Success Signals
 - Visitors can scan the page without waiting on effects.

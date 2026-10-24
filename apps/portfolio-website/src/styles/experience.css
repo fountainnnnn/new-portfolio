@@ -1,0 +1,19 @@
+/* Experience */
+.xrow { position: relative; display: grid; grid-template-columns: 180px minmax(0, 1fr) minmax(0, 1.25fr); gap: clamp(20px, 3vw, 48px); align-items: center; padding: 28px 20px; margin: 0 -20px; border-bottom: 1px solid var(--line); overflow: hidden; isolation: isolate; }
+.xrow:first-of-type { border-top: 1px solid var(--line); }
+.xrow::before { content: ""; position: absolute; inset: 0; background: var(--ink); transform: translateY(101%); transition: transform .5s var(--ease); z-index: -1; }
+.xrow:hover::before { transform: none; }
+.xrow:hover, .xrow:hover p, .xrow:hover h3 { color: var(--paper); }
+.xrow:hover .meta, .xrow:hover .role { color: #a6a29a; }
+.xrow h3 { font-family: var(--serif); font-weight: 400; font-size: 24px; line-height: 1.2; transition: color .3s; }
+.xrow .co { display: flex; gap: 16px; align-items: center; }
+.xrow .logo { flex: none; width: 48px; height: 48px; border-radius: 12px; background: #fff; border: 1px solid var(--line); display: grid; place-items: center; overflow: hidden; }
+.xrow .logo img { width: 72%; height: 72%; object-fit: contain; }
+.xrow .role { font-size: var(--t-small); color: var(--muted); margin-top: 2px; transition: color .3s; }
+.xrow p { font-size: 15.5px; transition: color .3s; }
+@media (max-width: 960px) {
+  .xrow { grid-template-columns: 1fr; gap: 8px; padding: 24px 16px; margin: 0 -16px; }
+  .xrow .logo { width: 40px; height: 40px; }
+}
+/* touch screens: no sticky dark hover on the experience rows */
+@media (hover: none) { .xrow::before { display: none; } .xrow:hover, .xrow:hover p, .xrow:hover h3 { color: inherit; } .xrow:hover .meta, .xrow:hover .role { color: var(--muted); } }

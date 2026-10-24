@@ -1,0 +1,30 @@
+/* Competitions and certifications */
+.wgrid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: clamp(16px, 2.4vw, 32px); align-items: stretch; }
+.wgrid > div { padding: 28px; border: 1px solid var(--line); border-radius: 12px; }
+.wgrid b { display: block; font-family: var(--serif); font-weight: 400; font-size: 30px; line-height: 1.1; }
+.wgrid span { display: block; margin-top: 6px; font-size: var(--t-small); color: var(--muted); }
+.wgrid p { margin-top: 18px; font-size: 15px; color: var(--body); }
+.wgrid .lead-win { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.wgrid .lead-win b { font-size: clamp(36px, 3.6vw, 52px); color: #d39b6a; }
+.wgrid .lead-win span { color: #b9b4aa; }
+.wgrid .lead-win p { color: #d9d5cc; max-width: 420px; }
+.wgrid .lead-win { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; }
+.wgrid .lead-win img { width: clamp(120px, 11vw, 170px); border-radius: 4px; transform: rotate(3deg); box-shadow: 0 18px 40px rgba(0,0,0,.45); }
+.cgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(16px, 2.4vw, 32px); }
+.cgrid > .cert-card { display: block; text-align: left; font: inherit; color: inherit; background: none; padding: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; cursor: zoom-in; transition: border-color .3s; }
+.cgrid > .cert-card:hover { border-color: var(--ink); }
+.cgrid .mat { display: grid; place-items: center; aspect-ratio: 4 / 3; background: var(--paper-2); }
+.cgrid .mat img { max-width: 84%; max-height: 80%; object-fit: contain; box-shadow: 0 10px 24px rgba(28,29,32,.14); transition: transform .6s var(--ease); }
+.cgrid .cert-card:hover .mat img { transform: scale(1.03); }
+.cgrid .logo { display: block; margin: 18px 20px 12px; }
+.cgrid .logo img { width: 22px; height: 22px; opacity: .85; }
+.cgrid b { display: block; margin: 0 20px; font-family: var(--serif); font-weight: 400; font-size: 20px; line-height: 1.2; }
+.cgrid .by { display: block; margin: 6px 20px 20px; font-size: var(--t-small); color: var(--muted); }
+dialog.cert-view { margin: auto; border: 0; padding: 0; background: none; max-width: min(92vw, 1100px); }
+dialog.cert-view::backdrop { background: rgba(20,19,17,.82); }
+dialog.cert-view img { max-height: 86vh; width: auto; border-radius: 6px; }
+@media (max-width: 960px) {
+  .wgrid { grid-template-columns: 1fr; }
+  .cgrid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 520px) { .cgrid { grid-template-columns: 1fr; } }

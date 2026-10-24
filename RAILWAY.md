@@ -84,11 +84,39 @@ Create `DEEPSEEK_BASE_URL=https://api.deepseek.com` and
 code default for both values, but shared variables keep every service explicit
 and make future provider changes a single project-level edit.
 
-Add this variable to `school-veggie-ai-ca2`:
+Add these variables to `school-veggie-ai-ca2`:
 
 ```env
 MODEL_INFERENCE_URL=http://${{school-veggie-ai-cnn.RAILWAY_PRIVATE_DOMAIN}}:8501
+APP_BASE_PATH=/school-veggie-ai-ca2
 ```
+
+And this one to `school-hdb-resale-ca1`:
+
+```env
+APP_BASE_PATH=/school-hdb-resale-ca1
+```
+
+The portfolio forwards `/school-…/` paths to these apps unchanged, so each app
+must know its prefix. Without `APP_BASE_PATH` they serve only at `/` and every
+proxied page is a Flask 404.
+
+## Contact form
+
+The home page's contact form posts to `/api/contact` on the portfolio service,
+which sends the message with [Resend](https://resend.com). Add to the portfolio
+service:
+
+```env
+RESEND_API_KEY=re_...
+CONTACT_TO_EMAIL=spiralcrust@gmail.com
+CONTACT_FROM_EMAIL=Mervin's Hub <hello@your-verified-domain>
+```
+
+Until `RESEND_API_KEY` is set the endpoint returns 503 and the form tells the
+visitor to email instead. `CONTACT_FROM_EMAIL` must use a domain verified in
+Resend; the default `onboarding@resend.dev` only delivers to the Resend
+account's own email.
 
 Set the school-project secrets on their respective services:
 

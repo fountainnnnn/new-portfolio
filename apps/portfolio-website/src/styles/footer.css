@@ -1,0 +1,20 @@
+/* Footer */
+.contact { position: relative; margin-top: var(--section); background: var(--ink); color: var(--paper); padding: calc(var(--section) * 1.2) 0 32px; }
+.contact p, .contact .meta { color: #a6a29a; }
+.curve { position: absolute; left: 0; right: 0; top: -1px; height: 14vh; overflow: hidden; pointer-events: none; }
+.curve div { position: absolute; left: -15%; width: 130%; height: 400%; bottom: 0; background: var(--paper); border-radius: 0 0 50% 50%; }
+.contact h2 { font-family: var(--serif); font-weight: 400; color: var(--paper); font-size: clamp(48px, 7vw, 112px); line-height: 1; letter-spacing: -0.025em; display: flex; align-items: center; gap: 24px; }
+.contact h2 img { width: clamp(64px, 6vw, 96px); height: clamp(64px, 6vw, 96px); border-radius: 50%; object-fit: cover; object-position: 50% 12%; background: #4a4b50; }
+.contact .rule { position: relative; margin: var(--stack-lg) 0; border-top: 1px solid rgba(244,242,236,.18); }
+.contact .pills { display: flex; flex-wrap: wrap; gap: 12px; padding-top: var(--stack-lg); }
+.contact .btn { border-color: rgba(244,242,236,.3); color: var(--paper); }
+.contact .btn:hover { background: var(--paper); color: var(--ink); }
+.contact .btn.talk { background: var(--paper); color: var(--ink); border: 1px solid var(--paper); }
+.contact .btn.talk:hover { background: #fff; color: var(--ink); }
+.contact .foot { margin-top: calc(var(--section) * .8); display: flex; justify-content: space-between; gap: 32px; flex-wrap: wrap; font-size: var(--t-small); }
+.contact .foot .meta { display: block; margin-bottom: 6px; font-size: 12px; }
+.contact .foot .grp { display: flex; gap: 48px; }
+.contact .foot .soc { display: flex; gap: 22px; }
+@media (max-width: 960px) {
+  .contact .foot .grp { flex-direction: column; gap: 20px; }
+}

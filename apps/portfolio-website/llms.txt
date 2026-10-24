@@ -1,0 +1,42 @@
+# Mervin's Hub (ngyuhang.com)
+
+> Portfolio of Ng Yu Hang, who goes by Mervin: a full-stack AI developer and data scientist in Singapore, studying Applied AI & Analytics at Singapore Polytechnic. He builds AI agents, machine learning and computer vision models, agentic RAG systems, and the full-stack apps around them.
+
+## About
+- Name: Ng Yu Hang (Mervin)
+- Location: Singapore
+- Role: Full-stack AI Developer / Data Scientist
+- Studying: Diploma in Applied AI & Analytics, Singapore Polytechnic
+- Award: Bronze medal, National Olympiad in Artificial Intelligence (NOAI) 2026, AI Singapore
+- Hackathons: Top 3 at 'SUP Build 2026 (SUPAgent), Top 3 at the OpenClaw Hackathon (GrowthLab News), PolyFinTech 2026 finalist (ESG Evidence Engine)
+- Certified: AWS Certified AI Practitioner, NVIDIA Fundamentals of Deep Learning, Hugging Face LLM Post Training, IBM Machine Learning and Deep Learning, and 25 more
+
+## Experience
+- Influencees: Founding Product & AI Engineer (Sep 2026 to now). Agentic AI features end to end: AI assistants, tool integrations, orchestration workflows, backend, frontend and APIs.
+- Reyolk: Founder (Sep 2026 to now). An AI-assisted platform that runs a small business's operations from one place. https://reyolk.app
+- SP Data Science & Analytics Centre: Full-Stack AI Engineer, intern (Mar 2026 to now). An Azure RAG chatbot for EM Services, a town council managing agent, and an LLM system that grades Power BI dashboards.
+- PetaniAI: AI Researcher / Developer (May to Aug 2026). Tested new AI models and systems and built prototypes on the strongest.
+- Singapore Polytechnic, School of Computing: Student Developer (Sep 2025 to Feb 2026). SPOH Chatbot, a paid client project: an end-to-end generative AI chatbot on the cloud, presented to SP's Deputy Principal and hundreds of staff.
+
+## Skills
+- AI agents: tool use, guardrails, evals, LangChain, Claude and OpenAI APIs
+- Machine learning: regression, classification, clustering, forecasting (scikit-learn, Pandas); deep learning with PyTorch and TensorFlow (CNNs, RNNs, GANs, reinforcement learning, LoRA fine-tuning)
+- Computer vision: YOLO, CNNs, OpenCV
+- Agentic RAG: embeddings, vector and graph search, Azure AI Search, Supabase, LLM-as-a-judge evaluation
+- Full-stack: React, Next.js, FastAPI, Node.js, Postgres, Supabase, Docker, Azure, AWS, Railway
+
+## Selected projects
+- [Reyolk](https://reyolk.app): an AI operating system for small service businesses
+- [AgentLabs](https://agentlabs-production-efd2.up.railway.app/): attacks AI agents with adversarial prompts, then patches and retests them; trains LoRA adapters for small open models
+- [ESG Evidence Engine](https://github.com/fountainnnnn/esg-evidence-engine): research agents that check company ESG claims against evidence, including satellite images
+- [All projects and certificates](https://ngyuhang.com/projects)
+
+## Pages
+- [Home](https://ngyuhang.com/)
+- [Projects and certificates](https://ngyuhang.com/projects)
+- [CV (PDF)](https://ngyuhang.com/Resume.pdf)
+
+## Contact
+- Email: spiralcrust@gmail.com
+- GitHub: https://github.com/fountainnnnn
+- LinkedIn: https://www.linkedin.com/in/ngyuhang/
