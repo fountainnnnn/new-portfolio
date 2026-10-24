@@ -57,7 +57,7 @@ COPY . .
 EXPOSE 7860
 
 # Run FastAPI from root-level app.py
-CMD ["sh", "-c", "exec uvicorn app:app --host 0.0.0.0 --port ${PORT:-7860}"]
+CMD ["sh", "-c", "exec uvicorn app:app --host :: --port ${PORT:-7860}"]
 
 # If you instead have a shim app.py at project root, swap the above with:
 # CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860"]

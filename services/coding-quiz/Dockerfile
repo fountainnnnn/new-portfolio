@@ -33,4 +33,4 @@ EXPOSE 7860
 # --------------------------------------------------------
 # Start FastAPI app
 # --------------------------------------------------------
-CMD ["sh", "-c", "exec uvicorn app:app --host 0.0.0.0 --port ${PORT:-7860}"]
+CMD ["sh", "-c", "exec uvicorn app:app --host :: --port ${PORT:-7860}"]
