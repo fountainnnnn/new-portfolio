@@ -662,45 +662,59 @@ function proxyRequestToTarget(request, response, url, targetConfig, options) {
   headers["x-forwarded-prefix"] = targetConfig.prefix;
   headers["x-forwarded-proto"] = getForwardedProto(request);
 
-  const proxyRequest = transport.request(
-    upstreamUrl,
-    {
-      method: request.method,
-      headers,
-      // every project service listens on IPv4; over IPv6 some refuse the connection, which showed up as 502s
-      family: 4,
-    },
-    proxyResponse => {
-      const responseHeaders = { ...proxyResponse.headers };
-      delete responseHeaders["access-control-allow-origin"];
-      delete responseHeaders["access-control-allow-methods"];
-      delete responseHeaders["access-control-allow-headers"];
+  // GET and HEAD have no body, so a connection that fails before any response can safely be tried again
+  const canRetry = request.method === "GET" || request.method === "HEAD";
+  const send = (attempt) => {
+    const proxyRequest = transport.request(
+      upstreamUrl,
+      {
+        method: request.method,
+        headers,
+        // every project service listens on IPv4; over IPv6 some refuse the connection.
+        // The retry lets Node pick the family, in case one path is briefly unavailable.
+        family: attempt === 0 ? 4 : undefined,
+      },
+      proxyResponse => {
+        const responseHeaders = { ...proxyResponse.headers };
+        delete responseHeaders["access-control-allow-origin"];
+        delete responseHeaders["access-control-allow-methods"];
+        delete responseHeaders["access-control-allow-headers"];
 
-      response.writeHead(proxyResponse.statusCode || 502, responseHeaders);
-      proxyResponse.pipe(response);
-    },
-  );
+        response.writeHead(proxyResponse.statusCode || 502, responseHeaders);
+        proxyResponse.pipe(response);
+      },
+    );
 
-  proxyRequest.setTimeout(proxyTimeoutMs, () => {
-    proxyRequest.destroy(new Error(`Upstream timed out after ${Math.round(proxyTimeoutMs / 1000)}s.`));
-  });
-
-  proxyRequest.on("error", error => {
-    if (response.headersSent || response.destroyed) {
-      response.destroy();
-      return;
-    }
-    sendJson(response, 502, {
-      error: `Project service unavailable for ${targetConfig.prefix}.`,
-      detail: error.message,
+    proxyRequest.setTimeout(proxyTimeoutMs, () => {
+      proxyRequest.destroy(new Error(`Upstream timed out after ${Math.round(proxyTimeoutMs / 1000)}s.`));
     });
-  });
 
-  request.on("aborted", () => {
-    proxyRequest.destroy(new Error("Client aborted request."));
-  });
+    proxyRequest.on("error", error => {
+      if (response.headersSent || response.destroyed) {
+        response.destroy();
+        return;
+      }
+      console.error("Proxy request failed", { prefix: targetConfig.prefix, path: url.pathname, attempt, code: error.code, message: error.message });
+      if (canRetry && attempt === 0 && !request.destroyed) {
+        setTimeout(() => send(1), 150);
+        return;
+      }
+      sendJson(response, 502, {
+        error: `Project service unavailable for ${targetConfig.prefix}.`,
+        detail: error.message,
+      });
+    });
 
-  request.pipe(proxyRequest);
+    if (attempt === 0) {
+      request.on("aborted", () => {
+        proxyRequest.destroy(new Error("Client aborted request."));
+      });
+    }
+
+    if (canRetry) proxyRequest.end();
+    else request.pipe(proxyRequest);
+  };
+  send(0);
 }
 
 function serveStatic(request, response) {
