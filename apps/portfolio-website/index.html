@@ -46,8 +46,12 @@
       }
     </script>
 
-    <!-- linking to a section skips the opening lines; decided before anything paints -->
-    <script>if (location.hash) document.documentElement.classList.add("no-intro");</script>
+    <!-- linking to a section, or coming back to the home page after the opening has played once in this tab, skips it (only the home page marks it as seen); decided before anything paints -->
+    <script>
+      var introSeen = false;
+      try { introSeen = !!sessionStorage.getItem("intro-seen"); if (location.pathname === "/") sessionStorage.setItem("intro-seen", "1"); } catch (e) {}
+      if (location.hash || introSeen) document.documentElement.classList.add("no-intro");
+    </script>
     <style id="paper-bg">html, body { background: #f4f2ec; }</style>
   </head>
   <body>

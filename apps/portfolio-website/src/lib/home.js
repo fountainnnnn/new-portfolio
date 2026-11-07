@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 export function startHome() {
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const fine = matchMedia("(pointer: fine)").matches;
+  const crew = document.documentElement.classList.contains("crew-on");   // the agent crew (mascot/crew.js) builds the page instead of the GSAP reveals below
   gsap.registerPlugin(ScrollTrigger);
   /* ---------- work tiles: the first two flip through their pages on hover (or when in view on touch) ---------- */
   document.querySelectorAll(".tiles .tile[data-pages]").forEach((a) => {
@@ -47,7 +48,7 @@ export function startHome() {
   }
   function intro() {
     typeTitle();
-    if (!reduce) gsap.from(".hero .body > div > *:not(h1)", { y: 24, opacity: 0, duration: 1.2, ease: "expo.out", stagger: 0.07, delay: 0.3 });
+    if (!reduce && !crew) gsap.from(".hero .body > div > *:not(h1)", { y: 24, opacity: 0, duration: 1.2, ease: "expo.out", stagger: 0.07, delay: 0.3 });
     startDetector();
   }
   (function siteIntro() {
@@ -65,7 +66,7 @@ export function startHome() {
       intro();
     };
     const skip = (e) => { if (["Enter", " ", "Escape"].includes(e.key)) finish(true); };
-    const timer = setTimeout(() => finish(false), reduce ? 1100 : 8400);   // same length as the previous site
+    const timer = setTimeout(() => finish(false), reduce ? 1100 : crew ? 12800 : 8400);   // the previous site's 8.4 s; the crew adds a fourth screen
     addEventListener("keydown", skip); el.addEventListener("click", () => finish(true));
   })();
 
@@ -90,7 +91,7 @@ export function startHome() {
   /* ---------- reveals ---------- */
   if (!reduce) {
     gsap.to(".about .lead .w", { opacity: 1, stagger: 0.05, ease: "none", scrollTrigger: { trigger: ".about .lead", start: "top 75%", end: "bottom 55%", scrub: true } });
-    gsap.utils.toArray(".sh, .tile, .xrow, .wgrid div, .skill .txt").forEach((el) => gsap.from(el, { y: 40, opacity: 0, duration: 1, ease: "expo.out", scrollTrigger: { trigger: el, start: "top 88%" } }));
+    if (!crew) gsap.utils.toArray(".sh, .tile, .xrow, .wgrid div, .skill .txt").forEach((el) => gsap.from(el, { y: 40, opacity: 0, duration: 1, ease: "expo.out", scrollTrigger: { trigger: el, start: "top 88%" } }));
     document.querySelectorAll(".tile .stack").forEach((s) => gsap.fromTo(s, { yPercent: 4 }, { yPercent: -4, ease: "none", scrollTrigger: { trigger: s.parentElement, start: "top bottom", end: "bottom top", scrub: true } }));
     gsap.fromTo(".curve div", { height: "400%" }, { height: "0%", ease: "none", scrollTrigger: { trigger: ".contact", start: "top bottom", end: "top 35%", scrub: true } });
   }

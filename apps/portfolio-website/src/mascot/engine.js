@@ -4,7 +4,10 @@
 
    startMascot(el) returns { api, stop }. The chat and contact form drive him through api:
    open (window showing), thinking (waiting on a reply), cheer (seconds to wave),
-   goTo(node) (walk to it and point), say(text, ms) (speech bubble). */
+   goTo(node) (walk to it and point), say(text, ms) (speech bubble).
+   The agent crew (crew.js) drives him through three more: crew (true while it runs: no climb-out intro, and each spot
+   says its `crew` line), hold ({ x, y, pose, left } in viewport px: he stands exactly there, nothing moves him, until it
+   is null and he carries on from that spot) and heroSpot() (where his hero spot is standing, in viewport px). */
 export function startMascot(el) {
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const compact = matchMedia("(max-width: 960px)");   // phones: smaller, with the chat above him
@@ -19,18 +22,18 @@ export function startMascot(el) {
   //        "top"   = stand on the element's top edge, at x = ax across it
   //        "beside" = stand just outside its right edge (left edge if there's no room), on its bottom
   const SPOTS = [
-    { sel: ".det .photo", place: "beside", pose: "wave", say: "Hi! I'm mini Mervin." },
-    { sel: ".about .side .btn", place: "right", pose: "idle", say: "A bit about me." },
-    { sel: ".skill:nth-of-type(1)", place: "gap", pose: "laptop", say: "I build AI agents." },
-    { sel: ".skill:nth-of-type(2)", place: "gap", pose: "think", say: "And machine learning." },
-    { sel: ".skill:nth-of-type(3)", place: "gap", pose: "point", say: "Computer vision too." },
-    { sel: ".skill:nth-of-type(4)", place: "gap", pose: "think", say: "Plus RAG and search." },
-    { sel: ".skill:nth-of-type(5)", place: "gap", pose: "laptop", say: "And full-stack apps." },
-    { sel: ".tiles .tile:nth-child(2) .mat", place: "top", ax: 0.18, pose: "point", say: "My best projects." },
-    { sel: "#experience .sh", place: "rule", ax: 0.5, pose: "idle", say: "Where I've worked." },
-    { sel: "#hon-h", up: ".sh", place: "rule", ax: 0.5, pose: "wave", say: "Some hackathon wins." },
-    { sel: "#cert-h", up: ".sh", place: "rule", ax: 0.5, pose: "point", say: "And certifications." },
-    { sel: ".contact .pills .btn:last-child", place: "right", pose: "wave", say: "Let's talk!" },
+    { sel: ".det .photo", place: "beside", pose: "wave", say: "Hi! I'm mini Mervin.", crew: "Hi! I'm mini Mervin." },
+    { sel: ".about .side .btn", place: "right", pose: "idle", say: "A bit about me.", crew: "About next, crew." },
+    { sel: ".skill:nth-of-type(1)", place: "gap", pose: "laptop", say: "I build AI agents.", crew: "Five skills. Agents first." },
+    { sel: ".skill:nth-of-type(2)", place: "gap", pose: "think", say: "And machine learning.", crew: "Now machine learning." },
+    { sel: ".skill:nth-of-type(3)", place: "gap", pose: "point", say: "Computer vision too.", crew: "Computer vision." },
+    { sel: ".skill:nth-of-type(4)", place: "gap", pose: "think", say: "Plus RAG and search.", crew: "RAG and search." },
+    { sel: ".skill:nth-of-type(5)", place: "gap", pose: "laptop", say: "And full-stack apps.", crew: "Full-stack apps." },
+    { sel: ".tiles .tile:nth-child(2) .mat", place: "top", ax: 0.18, pose: "point", say: "My best projects.", crew: "Careful, best projects." },
+    { sel: "#experience .sh", place: "rule", ax: 0.5, pose: "idle", say: "Where I've worked.", crew: "Experience rows next." },
+    { sel: "#hon-h", up: ".sh", place: "rule", ax: 0.5, pose: "wave", say: "Some hackathon wins.", crew: "Bring the bronze in." },
+    { sel: "#cert-h", up: ".sh", place: "rule", ax: 0.5, pose: "point", say: "And certifications.", crew: "Certificates next." },
+    { sel: ".contact .pills .btn:last-child", place: "right", pose: "wave", say: "Let's talk!", crew: "All built. Let's talk!" },
   ];
 
   const flip = el.querySelector(".flip"), bubble = el.querySelector(".say"), mini = el.querySelector(".mini");
@@ -45,7 +48,7 @@ export function startMascot(el) {
 
   // state the chat drives: open = mini chat showing, thinking = waiting for a reply,
   // focus = an element he should walk to and point at while answering
-  const api = { open: false, thinking: false, cheer: 0, focus: null, active: null, say: () => {}, goTo: () => {} };
+  const api = { open: false, thinking: false, cheer: 0, focus: null, active: null, say: () => {}, goTo: () => {}, crew: false, hold: null, heroSpot: () => null };
   let stopped = false;
 
   function start() {
@@ -88,9 +91,9 @@ export function startMascot(el) {
     // card backgrounds are fine to stand on, text, images and controls are not.
     const HARD = "h1,h2,h3,p,b,img,canvas,input,button,dl,.tags span,.built,.lead-win,.cgrid > .cert-card,.pages,.meta,.magnet,.menu-btn,.drawer,.to-top";
     const SOFT = "a,figure,.viz,.tile,.xrow,.wgrid,.belt,.det";
-    // content boxes in page coordinates, refreshed a few times a second
+    // content boxes in page coordinates, refreshed a few times a second (what the crew has hidden but not built yet still counts)
     let boxes = null, boxesAt = -1;
-    const collect = (sel) => [...document.querySelectorAll(sel)].filter((n) => !el.contains(n) && (!n.checkVisibility || n.checkVisibility({ visibilityProperty: true, opacityProperty: false })))
+    const collect = (sel) => [...document.querySelectorAll(sel)].filter((n) => !el.contains(n) && (!n.checkVisibility || n.checkVisibility({ visibilityProperty: true, opacityProperty: false }) || n.closest("[data-crew]")))
       .map((n) => n.getBoundingClientRect()).filter((r) => r.width > 0 && r.height > 0).map((r) => ({ l: r.left + scrollX, r: r.right + scrollX, t: r.top + scrollY, b: r.bottom + scrollY }));
     const content = (now) => { if (!boxes || now - boxesAt > 300) { boxes = { hard: collect(HARD), soft: collect(SOFT) }; boxesAt = now; } return boxes; };
     const hits = (list, l, r, t, b) => list.some((q) => q.l < r && q.r > l && q.t < b && q.b > t);
@@ -137,15 +140,17 @@ export function startMascot(el) {
       return (freeCache = best);
     };
 
-    let x = 0, y = 0, placed = false, active = null, lastSaid = null, walkT = 0, step = 0, override = null, overrideT = 0, running = false;
+    let x = 0, y = 0, placed = false, active = null, lastSaid = null, walkT = 0, step = 0, override = null, overrideT = 0, running = false, held = false, hinted = false;
     el.addEventListener("pointerenter", () => { if (!api.open) { override = "wave"; overrideT = 1.2; say("Click me to chat or get a tour.", 3000); } });
     el.addEventListener("click", () => document.dispatchEvent(new Event("mascot:click")));
     el.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); document.dispatchEvent(new Event("mascot:click")); } });
 
 
     // intro: he climbs up out of my photo, growing as he comes toward you, then jumps out and lands beside it
+    // (not with the crew: its fourth opening screen brings him in, and on a reload he is simply placed at his hero spot)
     const photo = document.querySelector(".det .photo"), heroSpot = spots.find((s) => s.place === "beside");
-    let intro = !reduce && photo && heroSpot && scrollY < innerHeight * 0.4 ? { t: -0.9 } : null;
+    let intro = !reduce && !api.crew && photo && heroSpot && scrollY < innerHeight * 0.4 ? { t: -0.9 } : null;
+    api.heroSpot = () => { if (!heroSpot) return null; const t = docTarget(heroSpot, el.offsetWidth || 108); return { x: t.x - scrollX, y: t.y - scrollY }; };
     const ease = (u) => 1 - (1 - u) ** 3;
     const runIntro = (dt, S) => {
       if (document.body.classList.contains("loading")) { el.style.visibility = "hidden"; return true; }
@@ -176,6 +181,14 @@ export function startMascot(el) {
       return true;
     };
 
+    // keep his speech bubble inside the screen; its tail still points at him
+    const fitBubble = () => {
+      if (!bubble.classList.contains("on")) return;
+      bubble.style.marginLeft = "0px";
+      const b = bubble.getBoundingClientRect(), shift = b.right > innerWidth - 8 ? innerWidth - 8 - b.right : b.left < 8 ? 8 - b.left : 0;
+      bubble.style.marginLeft = `${shift}px`; bubble.style.setProperty("--shift", `${shift}px`);
+    };
+
     let last = performance.now(), wasOpen = false;
     const frame = (now) => {
       if (stopped) return;
@@ -186,6 +199,19 @@ export function startMascot(el) {
       el.classList.toggle("compact", compact.matches);
       el.classList.toggle("chatting", api.open);
       if (api.open !== wasOpen) { wasOpen = api.open; bubble.classList.remove("on"); if (!api.open) { api.focus = null; override = "wave"; overrideT = 1.2; lastSaid = null; } }
+      // the crew has him: exactly where and how it says (viewport px), nothing else moves him; CSS makes him click-through
+      const h = api.hold;
+      el.classList.toggle("held", !!h);
+      if (h) {
+        left = !!h.left; setPose(h.pose); x = h.x + scrollX; y = h.y + scrollY; placed = held = true;
+        el.style.left = `${h.x}px`; el.style.top = `${h.y}px`; el.style.visibility = "visible";
+        fitBubble(); requestAnimationFrame(frame); return;
+      }
+      if (held) {   // let go: he carries on from where he stands, and says this spot's line
+        held = false; lastSaid = null;
+        // the first let-go is the end of the opening (a no-intro start never holds him): the hint the climb-out used to give
+        if (!hinted) { hinted = true; setTimeout(() => { if (scrollY < 60 && !api.open) say("Scroll down, I'll show you around.", 3400); }, 3000); }
+      }
       let tx, ty, moving = false;
 
       const s = pick(S);
@@ -213,12 +239,7 @@ export function startMascot(el) {
       // phones: a small chat centred on him, kept inside the screen
       if (compact.matches) { const W = Math.min(280, innerWidth - 24), mx = x - scrollX; mini.style.left = `${Math.max(12, Math.min(innerWidth - 12 - W, mx + S / 2 - W / 2)) - mx}px`; }
       else mini.style.left = "";
-      // keep his speech bubble inside the screen; its tail still points at him
-      if (bubble.classList.contains("on")) {
-        bubble.style.marginLeft = "0px";
-        const b = bubble.getBoundingClientRect(), shift = b.right > innerWidth - 8 ? innerWidth - 8 - b.right : b.left < 8 ? 8 - b.left : 0;
-        bubble.style.marginLeft = `${shift}px`; bubble.style.setProperty("--shift", `${shift}px`);
-      }
+      fitBubble();
       el.classList.toggle("mini-left", x - scrollX + S + 320 > innerWidth);
       el.classList.toggle("mini-down", y - scrollY < 330);
       if (api.cheer > 0) { api.cheer -= dt; setPose("wave"); }
@@ -232,7 +253,7 @@ export function startMascot(el) {
         // once he stops, face the thing this spot is about so a point lands on it
         const look = (active.place === "gap" ? active.node.querySelector(".viz") : api.focus || active.node);
         if (look) { const r = look.getBoundingClientRect(); left = r.left + r.width / 2 < x - scrollX + S / 2; }
-        setPose(active.pose); if (lastSaid !== active) { lastSaid = active; say(active.say, 2800); }
+        setPose(active.pose); if (lastSaid !== active) { lastSaid = active; say(api.crew ? active.crew : active.say, 2800); }
       }
       else setPose("idle");
 

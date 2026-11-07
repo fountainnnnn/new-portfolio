@@ -1,18 +1,22 @@
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { startMascot } from "../mascot/engine.js";
 import { startChat } from "../mascot/chat.js";
 import { startContact } from "../mascot/contact.js";
+import { startCrew } from "../mascot/crew.js";
 import { ArrowRight } from "./Icons.jsx";
 import "../styles/mascot.css";
+import "../styles/crew.css";
 
-// mini Mervin, his speech bubble, and his window (the chat, or the contact form)
+// mini Mervin, his speech bubble, and his window (the chat, or the contact form).
+// A layout effect, so the crew tags and hides what it will build before the first paint (Mascot renders last: every section is in the DOM).
 export default function Mascot() {
   const ref = useRef(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const { api, stop } = startMascot(ref.current);
     startChat(ref.current, api);
     startContact(ref.current, api);
-    return stop;
+    const stopCrew = startCrew(ref.current, api);
+    return () => { stopCrew(); stop(); };
   }, []);
   return (
     <div className="mascot" ref={ref} role="button" tabIndex={0} aria-label="Chat with mini Mervin" aria-controls="mini" aria-expanded="false" hidden>
