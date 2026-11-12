@@ -9,7 +9,7 @@ export default function Footer() {
         <h2><img src="/img/myself.png" alt="" />Let's build<br />something together</h2>
         <div className="rule" data-perch="footer"></div>
         <div className="pills">
-          <a className="btn" href={CV}>Download CV</a>
+          <a className="btn" href={CV} data-cv>Download CV</a>
           <button type="button" className="btn talk" data-contact><span className="face"><img src="/img/mascot/wave-cut.png" alt="" /></span>Get in touch</button>
         </div>
         <div className="foot">

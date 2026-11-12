@@ -20,7 +20,7 @@ export default function Hero() {
           <p className="loc"><Pin />Singapore, Singapore</p>
           <p className="intro">I build AI-backed tools, automation workflows, and practical full-stack apps around documents, data, and agentic systems.</p>
           <div className="ctas">
-            <a className="btn solid" href={CV}>Download CV</a>
+            <a className="btn solid" href={CV} data-cv>Download CV</a>
             <button type="button" className="btn talk" data-contact><span className="face"><img src="/img/mascot/wave-cut.png" alt="" /></span>Contact me</button>
           </div>
           <div className="social">
