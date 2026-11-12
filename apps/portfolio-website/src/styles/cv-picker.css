@@ -1,10 +1,11 @@
-/* The CV choice that drops down under any CV link */
+/* The CV choice that drops down from any CV link: it unfolds from the link's edge */
 .cv-drop { position: absolute; z-index: 120; display: grid; gap: 2px; padding: 6px; background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 18px 40px rgba(0,0,0,.16); font-family: var(--sans); text-align: left;
-  opacity: 0; transform: translateY(-6px) scale(.97); transform-origin: top left; visibility: hidden; pointer-events: none;
-  transition: opacity .22s ease, transform .32s cubic-bezier(.2,.8,.2,1), visibility 0s linear .32s; }
-.cv-drop.up { transform: translateY(calc(-100% + 6px)) scale(.97); transform-origin: bottom left; }
-.cv-drop.open { opacity: 1; transform: translateY(0) scale(1); visibility: visible; pointer-events: auto; transition: opacity .22s ease, transform .32s cubic-bezier(.2,.8,.2,1), visibility 0s; }
-.cv-drop.up.open { transform: translateY(-100%) scale(1); }
+  opacity: 0; clip-path: inset(0 0 100% 0 round 16px); transform: translateY(-4px); visibility: hidden; pointer-events: none;
+  transition: clip-path .34s cubic-bezier(.2,.8,.2,1), transform .34s cubic-bezier(.2,.8,.2,1), opacity .18s ease, visibility 0s linear .34s; }
+.cv-drop.up { clip-path: inset(100% 0 0 0 round 16px); transform: translateY(calc(-100% + 4px)); }
+.cv-drop.open { opacity: 1; clip-path: inset(0 0 0 0 round 16px); transform: translateY(0); visibility: visible; pointer-events: auto;
+  transition: clip-path .34s cubic-bezier(.2,.8,.2,1), transform .34s cubic-bezier(.2,.8,.2,1), opacity .18s ease, visibility 0s; }
+.cv-drop.up.open { transform: translateY(-100%); }
 .cv-drop a { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 11px 12px; border-radius: 11px; transition: background .2s; }
 .cv-drop a:hover, .cv-drop a:focus-visible { background: var(--paper-2); }
 .cv-drop a span { display: grid; gap: 1px; }

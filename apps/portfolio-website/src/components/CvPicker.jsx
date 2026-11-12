@@ -31,6 +31,12 @@ export default function CvPicker() {
         const up = r.bottom + 180 > innerHeight && r.top > 200;
         const x = Math.min(Math.max(MARGIN, r.left), innerWidth - WIDTH - MARGIN) + scrollX;
         const y = (up ? r.top - GAP : r.bottom + GAP) + scrollY;
+        // move it to the link while still closed and commit that layout, so it unfolds from the link instead of flying in
+        const el = ref.current;
+        el.classList.remove("open");
+        el.classList.toggle("up", up);
+        el.style.left = `${x}px`; el.style.top = `${y}px`;
+        void el.offsetWidth;
         setState({ open: true, x, y, up });
         return;
       }
